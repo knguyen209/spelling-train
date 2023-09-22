@@ -1,6 +1,7 @@
 import { FlatList, Text, TouchableOpacity, View } from 'react-native'
 import styles from './styles'
 import { useRouter } from 'expo-router'
+import SBText from '../commons/sb-text/SBText'
 
 interface IPracticeGame {
     name: string
@@ -31,7 +32,9 @@ const PracticeGameSelection = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.pageTitle}>Choose a practice game</Text>
+            <SBText weight='bold' size='xl' style={{ paddingBottom: 10 }}>
+                Choose a practice game
+            </SBText>
             <FlatList
                 data={practiceTypes}
                 keyExtractor={(item) => item.name}

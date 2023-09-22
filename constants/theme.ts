@@ -22,6 +22,14 @@ const COLORS = {
     white: '#FEFFFE',
 
     heart: '#F04350',
+
+    speakerColor: '#32B0F6',
+
+    correctAnswer: '#58A700',
+    incorrectAnswer: '#EA2B2B',
+
+    correctAnswerBg: '#D6FDB8',
+    incorrectAnswerBg: '#FDDFDF',
 }
 
 const FONT = {

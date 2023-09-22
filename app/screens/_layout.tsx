@@ -10,6 +10,13 @@ export default function Layout() {
                 <Stack.Screen name='practice-list-details/[id]' />
                 <Stack.Screen name='practice-game-selection/[id]' />
                 <Stack.Screen
+                    name='demo/index'
+                    options={{
+                        presentation: 'fullScreenModal',
+                        headerShown: false,
+                    }}
+                />
+                <Stack.Screen
                     name='listen-game/index'
                     options={{
                         presentation: 'fullScreenModal',

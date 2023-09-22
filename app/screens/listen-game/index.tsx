@@ -1,19 +1,26 @@
-import { Stack, useLocalSearchParams } from 'expo-router'
-import { SafeAreaView, Text, View } from 'react-native'
-import BackButton from '../../../components/commons/back-button/BackButton'
-import GameHeader from '../../../components/commons/game-header/GameHeader'
+import { useLocalSearchParams } from 'expo-router'
+import { SafeAreaView } from 'react-native'
+
+import ListenGame from '../../../components/games/listen-game/ListenGame'
 
 const ListenGameScreen = () => {
     const localParams = useLocalSearchParams()
-    console.log(localParams)
+    // console.log(localParams)
+
+    const game: ListenGameType = {
+        stages: [
+            { word: 'red', options: ['get', 'wet', 'rid'] },
+            { word: 'green', options: ['queen', 'greet', 'tween'] },
+            { word: 'blue', options: ['boo', 'flu', 'shoo'] },
+            { word: 'violet', options: ['violate', 'scarlet', 'tablet'] },
+            { word: 'scarlet', options: ['scar', 'violet', 'palette'] },
+        ],
+    }
 
     return (
-        <SafeAreaView style={{ backgroundColor: '#FFF', height: '100%' }}>
-            <View>
-                <GameHeader />
-                <Text>Listen Game</Text>
-            </View>
-        </SafeAreaView>
+        // <SafeAreaView style={{ backgroundColor: '#FFF', height: '100%' }}>
+        <ListenGame stages={game.stages} />
+        // </SafeAreaView>
     )
 }
 

@@ -11,25 +11,22 @@ const Profile = () => {
                 }}
             />
 
-            <View style={{ padding: 8 }}>
+            <View style={{ padding: 20, gap: 20 }}>
                 <SBButton
                     type='contained'
                     title='Contained Button'
                     textCentered
                     onPress={() => {}}
                 />
-            </View>
-            <View style={{ padding: 8 }}>
+
                 <SBButton type='text' title='Text Button' onPress={() => {}} />
-            </View>
-            <View style={{ padding: 8 }}>
+
                 <SBButton
                     type='outlined'
                     title='Outlined Button'
                     onPress={() => {}}
                 />
-            </View>
-            <View style={{ padding: 8 }}>
+
                 <SBButton
                     type='outlined'
                     disabled

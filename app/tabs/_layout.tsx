@@ -4,6 +4,7 @@ import store from '../../store'
 
 import { COLORS, icons } from '../../constants'
 import { Image, ImageStyle } from 'react-native'
+import SBText from '../../components/commons/sb-text/SBText'
 
 export const unstable_settings = {
     initialRouteName: 'journey',
@@ -21,10 +22,14 @@ const PageLayout = () => {
                     tabBarStyle: {
                         backgroundColor: COLORS.appBarBg,
                     },
-                    headerTitleStyle: { color: COLORS.primary },
                     tabBarActiveTintColor: COLORS.primary,
                     headerShadowVisible: false,
                     tabBarShowLabel: false,
+                    headerTitle: (title) => (
+                        <SBText weight='bold' color={COLORS.primaryBtnColor}>
+                            {title.children}
+                        </SBText>
+                    ),
                 }}
             >
                 <Tabs.Screen
