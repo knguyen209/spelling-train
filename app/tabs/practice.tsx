@@ -10,11 +10,6 @@ const Practice = () => {
 
     return (
         <View>
-            <Tabs.Screen
-                options={{
-                    title: 'Practice',
-                }}
-            />
             <PracticeListListView
                 data={practiceLists}
                 type='list'

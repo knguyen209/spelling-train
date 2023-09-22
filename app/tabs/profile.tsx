@@ -5,12 +5,6 @@ import SBButton from '../../components/commons/sb-button/SBButton'
 const Profile = () => {
     return (
         <View>
-            <Tabs.Screen
-                options={{
-                    title: 'Profile',
-                }}
-            />
-
             <View style={{ padding: 20, gap: 20 }}>
                 <SBButton
                     type='contained'
@@ -20,7 +14,6 @@ const Profile = () => {
                 />
 
                 <SBButton type='text' title='Text Button' onPress={() => {}} />
-
                 <SBButton
                     type='outlined'
                     title='Outlined Button'
