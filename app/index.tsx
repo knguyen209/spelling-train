@@ -1,5 +1,9 @@
 import { Redirect } from 'expo-router'
 
 export default function Index() {
-    return <Redirect href='/tabs/journey' />
+    const isSignedIn = false
+    if (isSignedIn) return <Redirect href='/tabs/journey' />
+
+    // return <Redirect href='/screens/get-started' />
+    return <Redirect href='welcome' />
 }

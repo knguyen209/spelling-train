@@ -1,43 +1,47 @@
 {
-  "expo": {
-    "scheme": "acme",
-    "name": "spelling-train",
-    "slug": "spelling-train",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.knguyen.dev209.spellingtrain"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "plugins": [
-      "expo-router"
-    ],
-    "extra": {
-      "router": {
-        "origin": false
-      },
-      "eas": {
-        "projectId": "f20ec534-9975-46d3-a0d5-7507348e9f4d"
-      }
+    "expo": {
+        "scheme": "acme",
+        "name": "spelling-train",
+        "slug": "spelling-train",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/icon.png",
+        "userInterfaceStyle": "light",
+        "splash": {
+            "image": "./assets/splash.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff"
+        },
+        "assetBundlePatterns": ["**/*"],
+        "ios": {
+            "supportsTablet": true
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/adaptive-icon.png",
+                "backgroundColor": "#ffffff"
+            },
+            "package": "com.knguyen.dev209.spellingtrain"
+        },
+        "web": {
+            "favicon": "./assets/favicon.png"
+        },
+        "plugins": [
+            "expo-router",
+            [
+                "expo-av",
+                {
+                    "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
+                }
+            ]
+        ],
+        "extra": {
+            "router": {
+                "origin": false
+            },
+            "eas": {
+                "projectId": "f20ec534-9975-46d3-a0d5-7507348e9f4d"
+            }
+        }
     }
-  }
 }

@@ -1,5 +1,5 @@
 const COLORS = {
-    primary: '#57CC01',
+    primary: '#FCD600',
     secondary: '#003FFB',
     tertiary: '#FF7754',
 
@@ -10,15 +10,20 @@ const COLORS = {
 
     lightWhite: '#FAFAFC',
 
-    primaryBtnColor: '#57CC01',
-    primaryBtnPressedColor: '#63E800',
+    primaryBtnColor: '#FCD600',
+    primaryBtnShadowColor: '#FA9901',
 
-    disabledBtnColor: '#E5E5E4',
+    secondaryBtnColor: '#2DBD1E',
+    secondaryBtnShadowColor: '#166F05',
+
+    disabledBtnColor: '#D7D7D7',
+    disabledBtnShadowColor: '#C0C0C0',
     disabledTxtColor: '#AEAEAE',
-    appBarBg: '#FAFAFC',
-    appBodyBg: '#FAFAFC',
+    appBarTitle: '#FCD600',
+    appBarBg: '#151F25',
+    appBodyBg: '#151F25',
 
-    black: '#4A4B4A',
+    black: '#000000',
     white: '#FEFFFE',
 
     heart: '#F04350',
@@ -30,6 +35,9 @@ const COLORS = {
 
     correctAnswerBg: '#D6FDB8',
     incorrectAnswerBg: '#FDDFDF',
+
+    messageAIBg: '#2C353A',
+    messagePlayerBg: '#8F26FF',
 }
 
 const FONT = {
@@ -47,12 +55,13 @@ const BORDER_RADIUS = {
 }
 
 const SIZES = {
-    xs: 10,
-    sm: 12,
-    md: 16,
+    xs: 14,
+    sm: 16,
+    md: 18,
     lg: 20,
     xl: 24,
-    xxl: 32,
+    xxl: 28,
+    xxxl: 32,
 }
 
 const SHADOWS = {

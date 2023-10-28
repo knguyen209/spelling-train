@@ -1,16 +1,17 @@
 import { Tabs } from 'expo-router/tabs'
+import STText from '../../components/commons/st-text/STText'
+import { COLORS, SVGS } from '../../constants'
 import { Provider } from 'react-redux'
 import store from '../../store'
+import { usePathname } from 'expo-router'
 
-import { COLORS, icons } from '../../constants'
-import { Image, ImageStyle } from 'react-native'
-import SBText from '../../components/commons/sb-text/SBText'
-
-export const unstable_settings = {
-    initialRouteName: 'journey',
-}
-
-const PageLayout = () => {
+export default function TabLayout() {
+    const pathName = usePathname()
+    const hideTabBarRoutes = [
+        '/tabs/practice/word-list',
+        '/tabs/practice/practice-game',
+        '/tabs/practice/practice-result',
+    ]
     return (
         <Provider store={store}>
             <Tabs
@@ -21,39 +22,30 @@ const PageLayout = () => {
                     },
                     tabBarStyle: {
                         backgroundColor: COLORS.appBarBg,
+                        display: hideTabBarRoutes.includes(pathName)
+                            ? 'none'
+                            : 'flex',
                     },
                     tabBarActiveTintColor: COLORS.primary,
+                    headerShown: false,
                     headerShadowVisible: false,
                     tabBarShowLabel: false,
                     headerTitle: (title) => (
-                        <SBText weight='bold' color={COLORS.primaryBtnColor}>
+                        <STText weight='bold' color={COLORS.appBarTitle}>
                             {title.children}
-                        </SBText>
+                        </STText>
                     ),
                 }}
             >
                 <Tabs.Screen
                     name='journey'
                     options={{
-                        href: '/tabs/journey',
+                        tabBarLabel: 'Journey',
                         title: 'Journey',
                         tabBarIcon: ({ focused, size }) => (
-                            <Image
-                                source={icons.trainIcon}
-                                style={getTabBarIconStyle(focused, size)}
-                            />
-                        ),
-                    }}
-                />
-                <Tabs.Screen
-                    name='profile'
-                    options={{
-                        href: '/tabs/profile',
-                        title: 'Profile',
-                        tabBarIcon: ({ focused, size }) => (
-                            <Image
-                                source={icons.profileIcon}
-                                style={getTabBarIconStyle(focused, size)}
+                            <SVGS.HomeTabIcon
+                                width={focused ? size * 1.2 : size}
+                                height={focused ? size * 1.2 : size}
                             />
                         ),
                     }}
@@ -61,12 +53,51 @@ const PageLayout = () => {
                 <Tabs.Screen
                     name='practice'
                     options={{
-                        href: '/tabs/practice',
+                        tabBarLabel: 'Practice',
                         title: 'Practice',
                         tabBarIcon: ({ focused, size }) => (
-                            <Image
-                                source={icons.practiceIcon}
-                                style={getTabBarIconStyle(focused, size)}
+                            <SVGS.PracticeTabIcon
+                                width={focused ? size * 1.2 : size}
+                                height={focused ? size * 1.2 : size}
+                            />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
+                    name='profile'
+                    options={{
+                        tabBarLabel: 'Profile',
+                        title: 'Profile',
+                        tabBarIcon: ({ focused, size }) => (
+                            <SVGS.ProfileTabIcon
+                                width={focused ? size * 1.2 : size}
+                                height={focused ? size * 1.2 : size}
+                            />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
+                    name='daily-challenge'
+                    options={{
+                        tabBarLabel: 'Daily Challenge',
+                        title: 'Daily Challenge',
+                        tabBarIcon: ({ focused, size }) => (
+                            <SVGS.DailyChallengeTabIcon
+                                width={focused ? size * 1.2 : size}
+                                height={focused ? size * 1.2 : size}
+                            />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
+                    name='feed'
+                    options={{
+                        tabBarLabel: 'Feed',
+                        title: 'Feed',
+                        tabBarIcon: ({ focused, size }) => (
+                            <SVGS.FeedTabIcon
+                                width={focused ? size * 1.2 : size}
+                                height={focused ? size * 1.2 : size}
                             />
                         ),
                     }}
@@ -75,12 +106,3 @@ const PageLayout = () => {
         </Provider>
     )
 }
-
-const getTabBarIconStyle = (focused: boolean, size: number): ImageStyle => {
-    return {
-        width: focused ? size * 1.1 : size,
-        height: focused ? size * 1.1 : size,
-    }
-}
-
-export default PageLayout

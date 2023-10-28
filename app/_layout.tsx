@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router'
 import { useFonts } from 'expo-font'
+import { COLORS } from '../constants'
 
 const PageLayout = () => {
     const [fontsLoaded] = useFonts({
@@ -15,27 +16,35 @@ const PageLayout = () => {
     }
 
     return (
-        <Stack
-            initialRouteName='index'
-            screenOptions={{
-                // headerStyle: {
-                //     backgroundColor: '#FE516A',
-                // },
-                // headerTintColor: '#FFF',
-                headerShown: false,
-            }}
-        >
+        <Stack initialRouteName='index'>
             <Stack.Screen
-                name='tabs'
+                name='welcome'
                 options={{
                     headerShown: false,
-                    title: 'Home',
                 }}
             />
             <Stack.Screen
-                name='modals/new-list'
-                options={{ presentation: 'modal' }}
+                name='get-started'
+                options={{
+                    headerShown: false,
+                }}
             />
+            <Stack.Screen
+                name='create-profile'
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <Stack.Screen
+                name='login'
+                options={{
+                    headerTitle: 'Login',
+                    headerStyle: { backgroundColor: COLORS.appBarBg },
+                    headerTitleStyle: { color: COLORS.primary },
+                    headerTintColor: COLORS.primary,
+                }}
+            />
+            <Stack.Screen name='tabs' options={{ headerShown: false }} />
         </Stack>
     )
 }

@@ -6,7 +6,32 @@ const PracticeListStore: PracticeListStateType = {
     practiceLists: [
         {
             id: nanoid(),
-            title: 'Colors',
+            title: 'Fruits',
+            words: [
+                { id: nanoid(), text: 'Mango' },
+                { id: nanoid(), text: 'Durian' },
+                { id: nanoid(), text: 'Jackfruit' },
+                { id: nanoid(), text: 'Lychee' },
+                { id: nanoid(), text: 'Mangosteen' },
+                { id: nanoid(), text: 'Pineapple' },
+            ],
+        },
+        {
+            id: nanoid(),
+            title: 'Latin Words',
+            words: [
+                { id: nanoid(), text: 'Mentor' },
+                { id: nanoid(), text: 'Aqua' },
+                { id: nanoid(), text: 'Singular' },
+                { id: nanoid(), text: 'Liberty' },
+                { id: nanoid(), text: 'Circus' },
+                { id: nanoid(), text: 'Benevolent' },
+                { id: nanoid(), text: 'Ambulance' },
+            ],
+        },
+        {
+            id: nanoid(),
+            title: 'Color',
             words: [
                 { id: nanoid(), text: 'Indigo' },
                 { id: nanoid(), text: 'Scarlet' },
@@ -16,17 +41,18 @@ const PracticeListStore: PracticeListStateType = {
         },
         {
             id: nanoid(),
-            title: 'Animals',
+            title: 'Animal',
             words: [
                 { id: nanoid(), text: 'Elephant' },
                 { id: nanoid(), text: 'Giraffe' },
                 { id: nanoid(), text: 'Rhino' },
                 { id: nanoid(), text: 'Gorilla' },
+                { id: nanoid(), text: 'Zebra' },
             ],
         },
         {
             id: nanoid(),
-            title: 'Appliances',
+            title: 'Appliance',
             words: [
                 { id: nanoid(), text: 'Refrigerator' },
                 { id: nanoid(), text: 'Microwave' },
@@ -36,7 +62,7 @@ const PracticeListStore: PracticeListStateType = {
         },
         {
             id: nanoid(),
-            title: 'Insects',
+            title: 'Insect',
             words: [
                 { id: nanoid(), text: 'Butterfly' },
                 { id: nanoid(), text: 'Bee' },

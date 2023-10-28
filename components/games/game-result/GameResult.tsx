@@ -5,14 +5,20 @@ import { COLORS } from '../../../constants'
 import AnimatedLottieView from 'lottie-react-native'
 import { useRef } from 'react'
 import SBText from '../../commons/sb-text/SBText'
-import { useRouter } from 'expo-router'
+import { useLocalSearchParams, useRouter } from 'expo-router'
+import ViewContainer from '../../commons/view-container/ViewContainer'
+import STText from '../../commons/st-text/STText'
+import STButton from '../../commons/st-button/STButton'
+import { PracticeResultType } from '../../../types/genericTypes'
 
 const GameResult = () => {
     const animation = useRef<AnimatedLottieView>(null)
     const title = 'Perfect Lesson!'
     const router = useRouter()
+    const { totalTime, noCorrect, noHintsUsed, noQuestions } =
+        useLocalSearchParams()
     return (
-        <SafeAreaView>
+        <ViewContainer>
             <View
                 style={{
                     justifyContent: 'space-between',
@@ -41,18 +47,48 @@ const GameResult = () => {
                         {title}
                     </SBText>
                 </View>
+                <View style={{ width: '100%' }}>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                        }}
+                    >
+                        <STText>Practice Time:</STText>
+                        <STText>{totalTime?.toString() || ''}</STText>
+                    </View>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                        }}
+                    >
+                        <STText>No. of Correct Answers:</STText>
+                        <STText>{noCorrect?.toString() || ''}</STText>
+                    </View>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                        }}
+                    >
+                        <STText>No. of Hints Used:</STText>
+                        <STText>{noHintsUsed?.toString() || ''}</STText>
+                    </View>
+                </View>
 
                 <View style={{ width: '100%', paddingHorizontal: 20 }}>
-                    <SBButton
-                        title='Continue'
-                        type='contained'
+                    <STButton
+                        text='Continue'
+                        textTransformType='uppercase'
                         textCentered
-                        color={COLORS.speakerColor}
-                        onPress={() => router.push('/tabs/practice')}
+                        onPress={() => {
+                            router.push('/')
+                        }}
                     />
                 </View>
             </View>
-        </SafeAreaView>
+        </ViewContainer>
     )
 }
 

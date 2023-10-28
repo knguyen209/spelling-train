@@ -13,7 +13,7 @@ const SBText = ({
     children,
     size = 'md',
     weight = 'regular',
-    color = '#000',
+    color = COLORS.white,
     style,
 }: Props) => {
     const fontSize = getFontSizeNumber(size)

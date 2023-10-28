@@ -4,6 +4,12 @@ declare module '*.png' {
     export default value
 }
 
+declare module '*.gif' {
+    import { ImageSourcePropType } from 'react-native'
+    const value: ImageSourcePropType
+    export default value
+}
+
 declare module '*.mp3' {
     import { AVPlaybackSource } from 'expo-av'
     const value: AVPlaybackSource
@@ -11,8 +17,8 @@ declare module '*.mp3' {
 }
 
 declare module '*.svg' {
-    import { ImageSourcePropType } from 'react-native'
-    import { Svg } from 'react-native-svg'
-    const value: Svg
-    export default value
+    import React from 'react'
+    import { SvgProps } from 'react-native-svg'
+    const content: React.FC<SvgProps>
+    export default content
 }
