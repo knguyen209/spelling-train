@@ -60,6 +60,26 @@ export default function PracticeTabLayout() {
                     ),
                 }}
             />
+            <Stack.Screen
+                name='ai-word-list-modal'
+                options={{
+                    presentation: 'modal',
+                    headerTitle: 'Generate Word List by AI',
+                    headerLeft: () => (
+                        <TouchableOpacity
+                            onPress={() => {
+                                router.back()
+                            }}
+                        >
+                            <SVGS.CloseIcon
+                                width={30}
+                                height={30}
+                                fill={COLORS.primary}
+                            />
+                        </TouchableOpacity>
+                    ),
+                }}
+            />
         </Stack>
     )
 }

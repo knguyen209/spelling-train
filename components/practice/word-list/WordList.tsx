@@ -1,4 +1,4 @@
-import { FlatList, Text, View } from 'react-native'
+import { FlatList, View } from 'react-native'
 import ViewContainer from '../../commons/view-container/ViewContainer'
 import usePracticeListDetailsController from '../../../view-controllers/practice-list/usePracticeListDetailsController'
 import STText from '../../commons/st-text/STText'
@@ -10,9 +10,11 @@ const WordList = ({ id }: { id: string }) => {
     if (practiceList)
         return (
             <ViewContainer>
-                <STText weight='bold' size='xl'>
-                    {practiceList.title}
-                </STText>
+                <View style={{ paddingBottom: 20 }}>
+                    <STText weight='bold' size='xl'>
+                        {practiceList.title}
+                    </STText>
+                </View>
                 <FlatList
                     data={practiceList.words}
                     keyExtractor={(item) => item.id}

@@ -8,7 +8,6 @@ const usePracticeListViewModel = () => {
     const {
         fetchingPracticeLists,
         practiceLists,
-
         creatingPracticeList,
         creatingPracticeListSuccess,
         creatingPracticeListError,

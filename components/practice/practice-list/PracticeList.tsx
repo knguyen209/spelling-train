@@ -7,8 +7,12 @@ import { PracticeListType } from '../../../types/genericTypes'
 import usePracticeListHomeController from '../../../view-controllers/practice-list/usePracticeListHomeController'
 
 const PracticeList = () => {
-    const { practiceLists, onListItemPress, onAddNewListPress } =
-        usePracticeListHomeController()
+    const {
+        practiceLists,
+        onListItemPress,
+        onAddNewListPress,
+        onGenerateNewListPress,
+    } = usePracticeListHomeController()
 
     return (
         <View
@@ -18,11 +22,17 @@ const PracticeList = () => {
                 gap: 20,
             }}
         >
-            <View style={{ paddingHorizontal: 20 }}>
+            <View style={{ paddingHorizontal: 20, gap: 10 }}>
+                <STButton
+                    text='Generate Word List'
+                    textCentered
+                    onPress={onGenerateNewListPress}
+                />
                 <STButton
                     text='New Word List'
                     textCentered
                     onPress={onAddNewListPress}
+                    primary={false}
                 />
             </View>
             <FlatList

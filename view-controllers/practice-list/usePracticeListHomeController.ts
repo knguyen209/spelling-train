@@ -11,6 +11,10 @@ const usePracticeListHomeController = () => {
         router.push('/tabs/practice/word-list-modal')
     }
 
+    const onGenerateNewListPress = () => {
+        router.push('/tabs/practice/ai-word-list-modal')
+    }
+
     const onListItemPress = (listItem: PracticeListType) => {
         router.push({
             pathname: '/tabs/practice/word-list',
@@ -26,6 +30,7 @@ const usePracticeListHomeController = () => {
         practiceLists,
         onListItemPress,
         onNewWordListPress,
+        onGenerateNewListPress,
         onAddNewListPress,
     }
 }
