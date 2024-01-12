@@ -3,9 +3,12 @@ import usePracticeListViewModel from '../../view-models/usePracticeListViewModel
 import { PracticeListType } from '../../types/genericTypes'
 
 import { nanoid } from '@reduxjs/toolkit'
+import { useRouter } from 'expo-router'
 
 const useWordListFormController = (id = '') => {
-    const { practiceLists } = usePracticeListViewModel()
+    const { practiceLists, createPracticeList } = usePracticeListViewModel()
+
+    const router = useRouter()
 
     const [practiceList, setPracticeList] = useState<PracticeListType>({
         id: nanoid(),
@@ -27,16 +30,39 @@ const useWordListFormController = (id = '') => {
         setPracticeList(updatedPracticeList)
     }
 
+    const onWordTextChanged = (id: string, newVal: string) => {
+        let updatedWords = practiceList.words.map((w) =>
+            w.id === id ? { ...w, text: newVal } : w
+        )
+
+        let length = updatedWords.length
+
+        // When the last element of the list is empty, add another text field
+        if (updatedWords[length - 1].text !== '') {
+            updatedWords.push({ id: nanoid(), text: '' })
+        }
+        setPracticeList({ ...practiceList, words: updatedWords })
+    }
+
+    const closeModal = () => {
+        router.back()
+    }
+
     useEffect(() => {
         fetchPracticeList(id)
     }, [])
 
-    const onSaveBtnPress = () => {}
+    const onSaveBtnPress = () => {
+        createPracticeList(practiceList.title, practiceList.words)
+        closeModal()
+    }
 
     return {
         practiceList,
         onListTitleChanged,
         onSaveBtnPress,
+        onWordTextChanged,
+        closeModal,
     }
 }
 

@@ -37,6 +37,9 @@ import GenieSpeaker from '../assets/svgs/genie_speaker.svg'
 import AchievementStarIcon from '../assets/svgs/achievement-star-icon.svg'
 import AchievementDiamondIcon from '../assets/svgs/achievement-diamond-icon.svg'
 
+import EditIcon from '../assets/svgs/edit.svg'
+import TrashIcon from '../assets/svgs/trash.svg'
+
 const AchievementIcons = {
     star: AchievementStarIcon,
     diamond: AchievementDiamondIcon,
@@ -81,4 +84,6 @@ export default {
     EditProfileIcon,
 
     AchievementIcons,
+    EditIcon,
+    TrashIcon,
 }

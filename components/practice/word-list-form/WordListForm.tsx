@@ -6,8 +6,12 @@ import STButton from '../../commons/st-button/STButton'
 import useWordListFormController from '../../../view-controllers/practice-list/useWordListFormController'
 
 const WordListForm = () => {
-    const { practiceList, onListTitleChanged, onSaveBtnPress } =
-        useWordListFormController()
+    const {
+        practiceList,
+        onListTitleChanged,
+        onWordTextChanged,
+        onSaveBtnPress,
+    } = useWordListFormController()
 
     return (
         <KeyboardAvoidingView
@@ -33,7 +37,17 @@ const WordListForm = () => {
                     <STText color={COLORS.primary} weight='bold'>
                         Practice Words
                     </STText>
-                    <STTextField placeholder='Enter a word' />
+                    {practiceList &&
+                        practiceList.words.map((word) => (
+                            <STTextField
+                                key={word.id}
+                                placeholder='Enter a word'
+                                val={word.text}
+                                onChange={(newVal) => {
+                                    onWordTextChanged(word.id, newVal)
+                                }}
+                            />
+                        ))}
                 </ScrollView>
                 <STButton text='Save' textCentered onPress={onSaveBtnPress} />
             </View>

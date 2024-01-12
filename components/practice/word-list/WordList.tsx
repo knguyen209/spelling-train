@@ -3,6 +3,7 @@ import ViewContainer from '../../commons/view-container/ViewContainer'
 import usePracticeListDetailsController from '../../../view-controllers/practice-list/usePracticeListDetailsController'
 import STText from '../../commons/st-text/STText'
 import STButton from '../../commons/st-button/STButton'
+import { SVGS } from '../../../constants'
 
 const WordList = ({ id }: { id: string }) => {
     const { practiceList, onStartPracticePress } =
@@ -10,11 +11,23 @@ const WordList = ({ id }: { id: string }) => {
     if (practiceList)
         return (
             <ViewContainer>
-                <View style={{ paddingBottom: 20 }}>
+                <View
+                    style={{
+                        paddingBottom: 20,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                    }}
+                >
                     <STText weight='bold' size='xl'>
                         {practiceList.title}
                     </STText>
+                    <View style={{ flexDirection: 'row', gap: 10 }}>
+                        <SVGS.EditIcon width={30} height={30} />
+                        <SVGS.TrashIcon width={30} height={30} />
+                    </View>
                 </View>
+
                 <FlatList
                     data={practiceList.words}
                     keyExtractor={(item) => item.id}

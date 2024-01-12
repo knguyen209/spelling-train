@@ -15,13 +15,20 @@ export const practiceListSlice = createSlice({
                 type: string
             }
         ) => {
-            state.practiceLists = state.practiceLists.concat([
-                {
-                    id: nanoid(),
-                    title: action.payload.title,
-                    words: action.payload.words,
-                },
-            ])
+            if (
+                action.payload.title !== '' &&
+                action.payload.words.length > 0
+            ) {
+                state.practiceLists = state.practiceLists.concat([
+                    {
+                        id: nanoid(),
+                        title: action.payload.title,
+                        words: action.payload.words.filter(
+                            (w) => w.text !== ''
+                        ),
+                    },
+                ])
+            }
         },
     },
 })
