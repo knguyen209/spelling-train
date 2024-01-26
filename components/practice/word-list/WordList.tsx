@@ -1,14 +1,15 @@
-import { FlatList, View } from 'react-native'
+import { FlatList, Text, TouchableOpacity, View } from 'react-native'
 import ViewContainer from '../../commons/view-container/ViewContainer'
-import usePracticeListDetailsController from '../../../view-controllers/practice-list/usePracticeListDetailsController'
 import STText from '../../commons/st-text/STText'
 import STButton from '../../commons/st-button/STButton'
 import { SVGS } from '../../../constants'
+import useWordListDetailsController from '../../../controllers/practice-list/useWordListDetailsController'
 
-const WordList = ({ id }: { id: string }) => {
-    const { practiceList, onStartPracticePress } =
-        usePracticeListDetailsController(id)
-    if (practiceList)
+const WordList = ({ id }: { id: number }) => {
+    const { wordList, onStartPracticePress, onEditPress, onDeletePress } =
+        useWordListDetailsController(id)
+
+    if (wordList)
         return (
             <ViewContainer>
                 <View
@@ -20,17 +21,21 @@ const WordList = ({ id }: { id: string }) => {
                     }}
                 >
                     <STText weight='bold' size='xl'>
-                        {practiceList.title}
+                        {wordList.title}
                     </STText>
                     <View style={{ flexDirection: 'row', gap: 10 }}>
-                        <SVGS.EditIcon width={30} height={30} />
-                        <SVGS.TrashIcon width={30} height={30} />
+                        <TouchableOpacity onPress={onEditPress}>
+                            <SVGS.EditIcon width={30} height={30} />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={onDeletePress}>
+                            <SVGS.TrashIcon width={30} height={30} />
+                        </TouchableOpacity>
                     </View>
                 </View>
 
                 <FlatList
-                    data={practiceList.words}
-                    keyExtractor={(item) => item.id}
+                    data={wordList.words}
+                    keyExtractor={(item) => item.id.toString()}
                     renderItem={({ item, index }) => (
                         <View
                             style={[
@@ -49,7 +54,7 @@ const WordList = ({ id }: { id: string }) => {
                             ]}
                         >
                             <STButton
-                                text={item.text}
+                                text={item.word}
                                 textCentered
                                 listItemType
                             />
@@ -64,6 +69,13 @@ const WordList = ({ id }: { id: string }) => {
                 />
             </ViewContainer>
         )
+    else {
+        return (
+            <View>
+                <Text>Hello, World</Text>
+            </View>
+        )
+    }
 }
 
 export default WordList

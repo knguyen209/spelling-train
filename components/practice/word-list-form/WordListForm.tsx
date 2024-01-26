@@ -3,15 +3,15 @@ import STTextField from '../../commons/st-textfield/STTextField'
 import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native'
 import { COLORS } from '../../../constants'
 import STButton from '../../commons/st-button/STButton'
-import useWordListFormController from '../../../view-controllers/practice-list/useWordListFormController'
+import useWordListFormController from '../../../controllers/practice-list/useWordListFormController'
 
-const WordListForm = () => {
-    const {
-        practiceList,
-        onListTitleChanged,
-        onWordTextChanged,
-        onSaveBtnPress,
-    } = useWordListFormController()
+type Props = {
+    id: number | undefined
+}
+
+const WordListForm = ({ id = undefined }: Props) => {
+    const { wordList, onListTitleChanged, onWordTextChanged, onSaveBtnPress } =
+        useWordListFormController({ id })
 
     return (
         <KeyboardAvoidingView
@@ -29,7 +29,7 @@ const WordListForm = () => {
                     List Name
                 </STText>
                 <STTextField
-                    val={practiceList.title}
+                    val={wordList.title}
                     onChange={onListTitleChanged}
                     placeholder='Enter the list name'
                 />
@@ -37,12 +37,12 @@ const WordListForm = () => {
                     <STText color={COLORS.primary} weight='bold'>
                         Practice Words
                     </STText>
-                    {practiceList &&
-                        practiceList.words.map((word) => (
+                    {wordList &&
+                        wordList.words.map((word) => (
                             <STTextField
                                 key={word.id}
                                 placeholder='Enter a word'
-                                val={word.text}
+                                val={word.word}
                                 onChange={(newVal) => {
                                     onWordTextChanged(word.id, newVal)
                                 }}

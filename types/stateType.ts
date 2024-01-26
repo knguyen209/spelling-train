@@ -1,22 +1,34 @@
-import { PracticeListType } from './genericTypes'
+import { PracticeListType, WordListType, WordType } from './genericTypes'
 
 export type PracticeListStateType = {
     fetchingPracticeLists: boolean
     practiceLists: Array<PracticeListType>
+    wordLists: Array<WordListType>
 
-    creatingPracticeList: boolean
-    creatingPracticeListSuccess: boolean
-    creatingPracticeListError: boolean
+    // creatingPracticeList: boolean
+    // createPracticeListSuccess: boolean
+    // createPracticeListError: boolean
 
-    updatingPracticeList: boolean
-    updatingPracticeListSuccess: boolean
-    updatingPracticeListError: boolean
+    // updatingPracticeList: boolean
+    // updatePracticeListSuccess: boolean
+    // updatePracticeListError: boolean
 
-    deletingPracticeList: boolean
-    deletingPracticeListSuccess: boolean
-    deletingPracticeListError: boolean
+    // deletingPracticeList: boolean
+    // deletePracticeListSuccess: boolean
+    // deletePracticeListError: boolean
+}
+
+export type SpellingTrainStateType = {
+    fetchingWordLists: boolean
+    wordLists: Array<WordListType>
+
+    fetchingWordData: boolean
+    wordData: WordType | undefined
+
+    generatingWordList: boolean
+    generatedWordList: WordListType | undefined
 }
 
 export type StoreType = {
-    practiceList: PracticeListStateType
+    practiceList: SpellingTrainStateType
 }

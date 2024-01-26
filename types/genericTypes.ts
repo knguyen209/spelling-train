@@ -43,3 +43,21 @@ export type PracticeResultType = {
     noHintsUsed: number
     totalTime: number
 }
+
+export type WordListType = {
+    id: number
+    title: string
+    ownerId: number
+    words: Array<WordType>
+}
+
+export type WordType = {
+    id: number
+    word: string
+    definition?: string
+    rootOrigin?: string
+    usage?: string
+    languageOrigin?: string
+    partsOfSpeech?: string
+    alternatePronunciation?: string
+}

@@ -6,9 +6,7 @@ import { useRouter } from 'expo-router'
 const usePracticeListController = () => {
     const router = useRouter()
 
-    const { practiceLists, fetchingPracticeLists } = usePracticeListViewModel()
-
-    useEffect(() => {}, [])
+    const { practiceLists } = usePracticeListViewModel()
 
     const onPracticeListListItemPressed = (listItem: PracticeListType) => {
         // router.replace(`/screens/practice-list-details/${listItem.id}`)
@@ -17,7 +15,6 @@ const usePracticeListController = () => {
 
     return {
         practiceLists,
-        fetchingPracticeLists,
         onPracticeListListItemPressed,
     }
 }

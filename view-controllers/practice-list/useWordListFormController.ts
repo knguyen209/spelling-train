@@ -6,9 +6,12 @@ import { nanoid } from '@reduxjs/toolkit'
 import { useRouter } from 'expo-router'
 
 const useWordListFormController = (id = '') => {
-    const { practiceLists, createPracticeList } = usePracticeListViewModel()
+    const { practiceLists, createPracticeList, updatePracticeList } =
+        usePracticeListViewModel()
 
     const router = useRouter()
+
+    const editMode = id === '' ? false : true
 
     const [practiceList, setPracticeList] = useState<PracticeListType>({
         id: nanoid(),
@@ -20,6 +23,10 @@ const useWordListFormController = (id = '') => {
         if (id) {
             let list = practiceLists.filter((i) => i.id === id)[0]
             if (list) {
+                list = {
+                    ...list,
+                    words: [...list.words, { id: nanoid(), text: '' }],
+                }
                 setPracticeList(list)
             }
         }
@@ -53,7 +60,11 @@ const useWordListFormController = (id = '') => {
     }, [])
 
     const onSaveBtnPress = () => {
-        createPracticeList(practiceList.title, practiceList.words)
+        if (editMode) {
+            updatePracticeList(practiceList)
+        } else {
+            createPracticeList(practiceList.title, practiceList.words)
+        }
         closeModal()
     }
 

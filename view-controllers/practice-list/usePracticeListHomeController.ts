@@ -1,11 +1,20 @@
 import { useRouter } from 'expo-router'
 import { PracticeListType } from '../../types/genericTypes'
 import usePracticeListViewModel from '../../view-models/usePracticeListViewModel'
+import { useAppDispatch } from '../../store'
+import { useEffect } from 'react'
+import { fetchPracticeLists } from '../../store/practiceListSlice'
 
 const usePracticeListHomeController = () => {
     const router = useRouter()
 
-    const { practiceLists } = usePracticeListViewModel()
+    const { practiceLists, fetchingPracticeLists } = usePracticeListViewModel()
+
+    const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        dispatch(fetchPracticeLists())
+    }, [])
 
     const onAddNewListPress = () => {
         router.push('/tabs/practice/word-list-modal')
@@ -22,14 +31,10 @@ const usePracticeListHomeController = () => {
         })
     }
 
-    const onNewWordListPress = () => {
-        /** TODO */
-    }
-
     return {
         practiceLists,
+        fetchingPracticeLists,
         onListItemPress,
-        onNewWordListPress,
         onGenerateNewListPress,
         onAddNewListPress,
     }

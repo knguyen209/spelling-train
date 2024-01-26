@@ -14,6 +14,7 @@ type Props = {
     title?: string
     placeholder?: string
     val?: string
+    disabled?: boolean
     onChange?: (newVal: string) => void
     keyboardType?: KeyboardTypeOptions
     style?: ViewStyle
@@ -56,6 +57,7 @@ const STTextField = ({
     type = 'none',
     placeholder = '',
     keyboardType = 'default',
+    disabled = false,
     val,
     onChange,
     style,
@@ -105,6 +107,7 @@ const STTextField = ({
                     maxLength={maxLength}
                     blurOnSubmit
                     onSubmitEditing={onSubmit}
+                    editable={!disabled}
                 />
                 {type === 'password' && (
                     <SVGS.PasswordShow width={20} height={20} fill='#FFF' />

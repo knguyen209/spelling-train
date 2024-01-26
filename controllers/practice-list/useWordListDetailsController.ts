@@ -1,29 +1,30 @@
 import { useRouter } from 'expo-router'
-import usePracticeListDetailsViewModel from '../../view-models/usePracticeListDetailsViewModel'
 import { useConfirmationModalContext } from '../../providers/modal-dialog/ModalDialogProvider'
+import { useAppSelector } from '../../store'
 
-const usePracticeListDetailsController = (id: string) => {
+const useWordListDetailsController = (id: number) => {
     const router = useRouter()
     const modalContext = useConfirmationModalContext()
 
-    const { practiceLists, deletePracticeList } =
-        usePracticeListDetailsViewModel()
+    const { wordLists, fetchingWordLists } = useAppSelector(
+        (state) => state.practiceList
+    )
 
-    const filteredLists = practiceLists.filter((item) => item.id === id)
-    const practiceList =
-        filteredLists.length >= 1 ? filteredLists[0] : undefined
+    const filteredLists = wordLists.filter((item) => item.id == id)
+
+    const wordList = filteredLists.length == 1 ? filteredLists[0] : undefined
 
     const onStartPracticePress = () => {
         router.push({
             pathname: '/tabs/practice/practice-game',
-            params: { id: practiceList?.id },
+            params: { id: wordList?.id },
         })
     }
 
     const onEditPress = () => {
         router.push({
             pathname: '/tabs/practice/word-list-modal',
-            params: { id: practiceList?.id },
+            params: { id: wordList?.id },
         })
     }
 
@@ -34,18 +35,18 @@ const usePracticeListDetailsController = (id: string) => {
         )
         if (result) {
             setTimeout(() => {
-                deletePracticeList(practiceList?.id || '')
+                // deletePracticeList(wordList?.id || '')
                 router.back()
             }, 300)
         }
     }
 
     return {
-        practiceList,
+        wordList,
         onStartPracticePress,
         onEditPress,
         onDeletePress,
     }
 }
 
-export default usePracticeListDetailsController
+export default useWordListDetailsController

@@ -1,18 +1,21 @@
-import { FlatList, Pressable, View } from 'react-native'
+import { FlatList, Pressable, Text, View } from 'react-native'
 import SBText from '../../commons/sb-text/SBText'
 import STButton from '../../commons/st-button/STButton'
 import { BORDER_RADIUS, COLORS } from '../../../constants'
 
-import { PracticeListType } from '../../../types/genericTypes'
-import usePracticeListHomeController from '../../../view-controllers/practice-list/usePracticeListHomeController'
+import { PracticeListType, WordListType } from '../../../types/genericTypes'
+
+import STText from '../../commons/st-text/STText'
+import useWordListHomeController from '../../../controllers/practice-list/useWordListHomeController'
 
 const PracticeList = () => {
     const {
-        practiceLists,
+        wordLists,
+        fetchingWordLists,
         onListItemPress,
         onAddNewListPress,
         onGenerateNewListPress,
-    } = usePracticeListHomeController()
+    } = useWordListHomeController()
 
     return (
         <View
@@ -35,21 +38,28 @@ const PracticeList = () => {
                     primary={false}
                 />
             </View>
-            <FlatList
-                data={practiceLists}
-                keyExtractor={(item) => item.title}
-                renderItem={({ item }) => (
-                    <ListItem listItem={item} onItemClick={onListItemPress} />
-                )}
-                style={{ paddingHorizontal: 20 }}
-            />
+            {fetchingWordLists ? (
+                <STText>Loading</STText>
+            ) : (
+                <FlatList
+                    data={wordLists}
+                    keyExtractor={(item) => item.title}
+                    renderItem={({ item }) => (
+                        <ListItem
+                            listItem={item}
+                            onItemClick={onListItemPress}
+                        />
+                    )}
+                    style={{ paddingHorizontal: 20 }}
+                />
+            )}
         </View>
     )
 }
 
 type ListItemProps = {
-    listItem: PracticeListType
-    onItemClick: (listItem: PracticeListType) => void
+    listItem: WordListType
+    onItemClick: (listItem: WordListType) => void
 }
 
 const ListItem = ({ listItem, onItemClick }: ListItemProps) => {
@@ -66,7 +76,7 @@ const ListItem = ({ listItem, onItemClick }: ListItemProps) => {
                             width: '100%',
                         }}
                     >
-                        <SBText weight='bold'>German Words</SBText>
+                        <SBText weight='bold'>{listItem.title}</SBText>
                     </View>
                     <View
                         style={{
@@ -74,7 +84,6 @@ const ListItem = ({ listItem, onItemClick }: ListItemProps) => {
                             paddingVertical: 20,
                             paddingHorizontal: 40,
                             borderRadius: BORDER_RADIUS.md,
-
                             width: '100%',
                             position: 'absolute',
                             bottom: pressed ? 0 : 5,

@@ -8,14 +8,15 @@ import {
 import STText from '../../commons/st-text/STText'
 import STButton from '../../commons/st-button/STButton'
 import { BORDER_RADIUS, COLORS, SVGS } from '../../../constants'
-import usePracticeGameController from '../../../view-controllers/practice-list/usePracticeGameController'
+
 import { MessageType } from '../../../types/genericTypes'
 import STTextField from '../../commons/st-textfield/STTextField'
 import { useRef } from 'react'
+import usePracticeGameController from '../../../controllers/practice-list/usePracticeGameController'
 
-const PracticeGame = ({ practiceListId }: { practiceListId: string }) => {
+const PracticeGame = ({ practiceListId }: { practiceListId: number }) => {
     const {
-        isLoading,
+        fetchingWordData,
         wordData,
         playerAnswer,
         setPlayerAnswer,
@@ -24,6 +25,10 @@ const PracticeGame = ({ practiceListId }: { practiceListId: string }) => {
         onDefinitionHintPress,
         onPartOfSpeechHintPress,
         onSynonymHintPress,
+        onUsagePress,
+        onRootOriginPress,
+        onLanguageOriginPress,
+        onAlternatePronunciationPress,
         onShowAnswerPress,
         onAnotherWordPress,
         onSendAnswerPress,
@@ -42,7 +47,10 @@ const PracticeGame = ({ practiceListId }: { practiceListId: string }) => {
                         backgroundColor: COLORS.appBodyBg,
                     }}
                 >
-                    <TouchableOpacity onPress={speakCurrentWord}>
+                    <TouchableOpacity
+                        onPress={speakCurrentWord}
+                        disabled={fetchingWordData}
+                    >
                         <SVGS.GenieSpeaker width={150} height={150} />
                     </TouchableOpacity>
                     <ScrollView
@@ -83,6 +91,7 @@ const PracticeGame = ({ practiceListId }: { practiceListId: string }) => {
                         <TouchableOpacity
                             style={{ alignItems: 'center' }}
                             onPress={onSendAnswerPress}
+                            disabled={fetchingWordData}
                         >
                             <SVGS.SendIcon
                                 width={30}
@@ -108,6 +117,39 @@ const PracticeGame = ({ practiceListId }: { practiceListId: string }) => {
                             text='Definition'
                             textSize='xs'
                             onPress={onDefinitionHintPress}
+                            disabled={
+                                wordData.definition.length == 0 ||
+                                fetchingWordData
+                            }
+                        />
+                        <STButton
+                            listItemType
+                            text='Root Origin'
+                            textSize='xs'
+                            onPress={onRootOriginPress}
+                            disabled={
+                                wordData.rootOrigin.length == 0 ||
+                                fetchingWordData
+                            }
+                        />
+                        <STButton
+                            listItemType
+                            text='Usage'
+                            textSize='xs'
+                            onPress={onUsagePress}
+                            disabled={
+                                wordData.usage.length == 0 || fetchingWordData
+                            }
+                        />
+                        <STButton
+                            listItemType
+                            text='Language Origin'
+                            textSize='xs'
+                            onPress={onLanguageOriginPress}
+                            disabled={
+                                wordData.languageOrigin.length == 0 ||
+                                fetchingWordData
+                            }
                         />
                         <STButton
                             listItemType
@@ -115,31 +157,41 @@ const PracticeGame = ({ practiceListId }: { practiceListId: string }) => {
                             textTransformType='none'
                             textSize='xs'
                             onPress={onPartOfSpeechHintPress}
+                            disabled={
+                                wordData.partsOfSpeech.length == 0 ||
+                                fetchingWordData
+                            }
                         />
                         <STButton
                             listItemType
-                            text='Synonyms'
+                            text='Alternate Pronunciation'
                             textSize='xs'
-                            onPress={onSynonymHintPress}
-                            disabled={wordData?.meaning.synonyms.length == 0}
+                            onPress={onAlternatePronunciationPress}
+                            disabled={
+                                wordData.alternatePronunciation.length == 0 ||
+                                fetchingWordData
+                            }
                         />
                         <STButton
                             listItemType
                             text='Another word'
                             textSize='xs'
                             onPress={onAnotherWordPress}
+                            disabled={fetchingWordData}
                         />
                         <STButton
                             listItemType
                             text='Show answer'
                             textSize='xs'
                             onPress={onShowAnswerPress}
+                            disabled={fetchingWordData}
                         />
                         <STButton
                             listItemType
-                            text='End'
+                            text='End Practice'
                             textSize='xs'
                             onPress={onEndPracicePress}
+                            disabled={fetchingWordData}
                         />
                     </View>
                 </View>
