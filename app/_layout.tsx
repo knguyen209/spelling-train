@@ -1,6 +1,7 @@
 import { Stack } from 'expo-router'
 import { useFonts } from 'expo-font'
 import { COLORS } from '../constants'
+import ConfirmationModalContextProvider from '../providers/modal-dialog/ModalDialogProvider'
 
 const PageLayout = () => {
     const [fontsLoaded] = useFonts({
@@ -16,36 +17,38 @@ const PageLayout = () => {
     }
 
     return (
-        <Stack initialRouteName='index'>
-            <Stack.Screen
-                name='welcome'
-                options={{
-                    headerShown: false,
-                }}
-            />
-            <Stack.Screen
-                name='get-started'
-                options={{
-                    headerShown: false,
-                }}
-            />
-            <Stack.Screen
-                name='create-profile'
-                options={{
-                    headerShown: false,
-                }}
-            />
-            <Stack.Screen
-                name='login'
-                options={{
-                    headerTitle: 'Login',
-                    headerStyle: { backgroundColor: COLORS.appBarBg },
-                    headerTitleStyle: { color: COLORS.primary },
-                    headerTintColor: COLORS.primary,
-                }}
-            />
-            <Stack.Screen name='tabs' options={{ headerShown: false }} />
-        </Stack>
+        <ConfirmationModalContextProvider>
+            <Stack initialRouteName='index'>
+                <Stack.Screen
+                    name='welcome'
+                    options={{
+                        headerShown: false,
+                    }}
+                />
+                <Stack.Screen
+                    name='get-started'
+                    options={{
+                        headerShown: false,
+                    }}
+                />
+                <Stack.Screen
+                    name='create-profile'
+                    options={{
+                        headerShown: false,
+                    }}
+                />
+                <Stack.Screen
+                    name='login'
+                    options={{
+                        headerTitle: 'Login',
+                        headerStyle: { backgroundColor: COLORS.appBarBg },
+                        headerTitleStyle: { color: COLORS.primary },
+                        headerTintColor: COLORS.primary,
+                    }}
+                />
+                <Stack.Screen name='tabs' options={{ headerShown: false }} />
+            </Stack>
+        </ConfirmationModalContextProvider>
     )
 }
 

@@ -13,14 +13,19 @@ import { COLORS, SVGS } from '../../../constants'
 import STTextField from '../../commons/st-textfield/STTextField'
 import STButton from '../../commons/st-button/STButton'
 import ForgotPasswordModalContainer from '../forgot-password-modal-container/ForgotPasswordModalContainer'
-import { useRouter } from 'expo-router'
+
+import useLoginFormController from '../../../controllers/accounts/useLoginFormController'
 
 const SignInView = () => {
-    const [showModal, toggleShowModal] = useReducer((s) => !s, false)
-    const router = useRouter()
-    const onLoginButtonPressed = () => {
-        router.push('/tabs/journey')
-    }
+    const {
+        userCredential,
+        showModal,
+        toggleShowModal,
+        onTextFieldChanged,
+        onForgotPasswordPress,
+        onLoginButtonPress,
+    } = useLoginFormController()
+
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -59,13 +64,23 @@ const SignInView = () => {
                         }}
                     >
                         <STTextField
-                            title='Email / Username'
+                            title='Email'
                             placeholder='Enter here'
+                            type='emailAddress'
+                            keyboardType='email-address'
+                            val={userCredential.emailAddress}
+                            onChange={(newVal) =>
+                                onTextFieldChanged('emailAddress', newVal)
+                            }
                         />
                         <STTextField
                             title='Password'
                             placeholder='Enter here'
                             type='password'
+                            val={userCredential.password}
+                            onChange={(newVal) =>
+                                onTextFieldChanged('password', newVal)
+                            }
                         />
                         <View style={{ alignItems: 'flex-end' }}>
                             <TouchableOpacity onPress={toggleShowModal}>
@@ -77,7 +92,7 @@ const SignInView = () => {
                         <STButton
                             text='Login'
                             textCentered
-                            onPress={onLoginButtonPressed}
+                            onPress={onLoginButtonPress}
                         />
                         <View
                             style={{

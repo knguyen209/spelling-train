@@ -3,5 +3,5 @@ import WordListForm from '../../../components/practice/word-list-form/WordListFo
 
 export default function Page() {
     const { id } = useLocalSearchParams()
-    return <WordListForm id={id?.toString()} />
+    return <WordListForm id={parseInt(id?.toString()!)} />
 }

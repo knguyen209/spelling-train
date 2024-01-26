@@ -22,7 +22,13 @@ const useModalShow = (): UseModalShowReturnType => {
 }
 
 type ModalContextType = {
-    showConfirmation: (title: string, message: string) => Promise<boolean>
+    showConfirmation: (
+        title: string,
+        message: string,
+        alertOnly?: boolean,
+        confirmText?: string,
+        cancelText?: string
+    ) => Promise<boolean>
 }
 
 type ConfirmationModalContextProviderProps = { children: React.ReactNode }
@@ -39,13 +45,23 @@ const ConfirmationModalContextProvider: React.FC<
     const [content, setContent] = useState<{
         title: string
         message: string
+        alertOnly?: boolean
+        confirmText?: string
+        cancelText?: string
     } | null>()
 
     const resolver = useRef<Function>()
 
-    const handleShow = (title: string, message: string): Promise<boolean> => {
-        setContent({ title, message })
+    const handleShow = (
+        title: string,
+        message: string,
+        alertOnly?: boolean,
+        confirmText?: string,
+        cancelText?: string
+    ): Promise<boolean> => {
+        setContent({ title, message, alertOnly, confirmText, cancelText })
         setShow(true)
+
         return new Promise(function (resolve) {
             resolver.current = resolve
         })
@@ -69,61 +85,98 @@ const ConfirmationModalContextProvider: React.FC<
             {content && (
                 <AnimatePresence>
                     {show && (
-                        <MotiView
-                            from={{ translateY: 500 }}
-                            animate={{ translateY: 0 }}
-                            transition={{
-                                translateY: {
-                                    type: 'timing',
-                                    duration: 300,
-                                },
-                            }}
-                            exit={{ translateY: 500 }}
-                            exitTransition={{
-                                translateY: { type: 'timing', duration: 300 },
-                            }}
-                            style={{
-                                zIndex: 0,
-                                position: 'absolute',
-                                bottom: 0,
-                                left: 0,
-                                right: 0,
-                                minHeight: 200,
-                            }}
-                        >
-                            <View style={styles.centeredView}>
-                                <View style={styles.modalView}>
-                                    <STText size='lg' weight='bold'>
-                                        {content.title}
-                                    </STText>
-                                    <STText>{content.message}</STText>
-                                    <View
-                                        style={{
-                                            width: '100%',
-                                            margin: 20,
-                                            gap: 20,
-                                            alignItems: 'center',
-                                        }}
-                                    >
-                                        <View style={{ width: '100%' }}>
-                                            <STButton
-                                                text='Yes'
-                                                textTransformType='uppercase'
-                                                textCentered
-                                                onPress={handleOk}
-                                            />
-                                        </View>
-                                        <TouchableOpacity
-                                            onPress={handleCancel}
+                        <>
+                            <MotiView
+                                from={{ opacity: 0 }}
+                                animate={{ opacity: 0.5 }}
+                                transition={{
+                                    translateY: {
+                                        type: 'timing',
+                                        duration: 300,
+                                    },
+                                }}
+                                exit={{ opacity: 0 }}
+                                exitTransition={{
+                                    opacity: {
+                                        type: 'timing',
+                                        duration: 300,
+                                    },
+                                }}
+                                style={{
+                                    zIndex: 0,
+                                    backgroundColor: '#000',
+                                    top: 0,
+                                    left: 0,
+                                    width: '100%',
+                                    height: '100%',
+                                    position: 'absolute',
+                                }}
+                            ></MotiView>
+                            <MotiView
+                                from={{ translateY: 500 }}
+                                animate={{ translateY: 0 }}
+                                transition={{
+                                    translateY: {
+                                        type: 'timing',
+                                        duration: 300,
+                                    },
+                                }}
+                                exit={{ translateY: 500 }}
+                                exitTransition={{
+                                    translateY: {
+                                        type: 'timing',
+                                        duration: 300,
+                                    },
+                                }}
+                                style={{
+                                    zIndex: 0,
+                                    position: 'absolute',
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    minHeight: 200,
+                                }}
+                            >
+                                <View style={styles.centeredView}>
+                                    <View style={styles.modalView}>
+                                        <STText size='lg' weight='bold'>
+                                            {content.title}
+                                        </STText>
+                                        <STText>{content.message}</STText>
+                                        <View
+                                            style={{
+                                                width: '100%',
+                                                margin: 20,
+                                                gap: 20,
+                                                alignItems: 'center',
+                                            }}
                                         >
-                                            <STText weight='semibold'>
-                                                CANCEL
-                                            </STText>
-                                        </TouchableOpacity>
+                                            <View style={{ width: '100%' }}>
+                                                <STButton
+                                                    text={
+                                                        content.confirmText ||
+                                                        'Yes'
+                                                    }
+                                                    textTransformType='uppercase'
+                                                    textCentered
+                                                    onPress={handleOk}
+                                                />
+                                            </View>
+                                            {!content.alertOnly && (
+                                                <TouchableOpacity
+                                                    onPress={handleCancel}
+                                                >
+                                                    <STText weight='semibold'>
+                                                        {content.cancelText ||
+                                                            'Cancel'}
+                                                    </STText>
+                                                </TouchableOpacity>
+                                            )}
+                                        </View>
                                     </View>
                                 </View>
-                            </View>
-                        </MotiView>
+                            </MotiView>
+                        </>
                     )}
                 </AnimatePresence>
             )}

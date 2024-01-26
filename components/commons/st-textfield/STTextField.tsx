@@ -101,7 +101,7 @@ const STTextField = ({
                         fontFamily: FONT.medium,
                         color: COLORS.white,
                         fontSize: SIZES.md,
-                        width: '100%',
+                        // width: '100%',
                     }}
                     secureTextEntry={type === 'password'}
                     maxLength={maxLength}
