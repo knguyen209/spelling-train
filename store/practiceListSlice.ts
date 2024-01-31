@@ -86,14 +86,16 @@ export const practiceListSlice = createSlice({
         // Generate word list by Generative AI
         builder.addCase(generateWordList.pending, (state) => {
             state.generatingWordList = true
+            state.generatedWordList = undefined
         })
         builder.addCase(generateWordList.fulfilled, (state, action) => {
             state.generatingWordList = false
-            console.log(action.payload)
             state.generatedWordList = action.payload
+            state.wordLists.push(action.payload)
         })
         builder.addCase(generateWordList.rejected, (state) => {
             state.generatingWordList = false
+            state.generatedWordList = undefined
         })
     },
 })

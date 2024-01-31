@@ -3,7 +3,6 @@ import {
     FlatList,
     KeyboardAvoidingView,
     Platform,
-    ScrollView,
     View,
 } from 'react-native'
 import { COLORS } from '../../../constants'
@@ -11,14 +10,14 @@ import STText from '../../commons/st-text/STText'
 import STTextField from '../../commons/st-textfield/STTextField'
 import STButton from '../../commons/st-button/STButton'
 import useAIWordListFormController from '../../../controllers/practice-list/useAIWordListFormController'
-import AnimatedLottieView from 'lottie-react-native'
-import { AnimatePresence, MotiView } from 'moti'
+
+import { MotiView } from 'moti'
 
 const AIWordListForm = () => {
     const {
-        isLoading,
+        isRequestMade,
         generatingWordList,
-        wordList,
+        generatedWordList,
         topicName,
         onTopicNameChanged,
         onGenerateBtnPress,
@@ -42,29 +41,37 @@ const AIWordListForm = () => {
                     placeholder='Enter a topic'
                     val={topicName}
                     onChange={onTopicNameChanged}
-                    disabled={isLoading}
+                    disabled={generatingWordList}
                 />
+                {isRequestMade && topicName.length === 0 && (
+                    <STText>Please enter a topic name</STText>
+                )}
                 <STButton
                     text='Generate'
                     textCentered
                     onPress={onGenerateBtnPress}
-                    disabled={isLoading}
+                    disabled={generatingWordList}
                 />
 
-                {isLoading ? (
-                    <View
-                        style={{
-                            flexGrow: 1,
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <ActivityIndicator size='large' />
-                    </View>
-                ) : (
-                    <>
+                {isRequestMade &&
+                    generatingWordList &&
+                    topicName.length > 0 && (
+                        <View
+                            style={{
+                                flexGrow: 1,
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <ActivityIndicator size='large' />
+                        </View>
+                    )}
+
+                {isRequestMade &&
+                    !generatingWordList &&
+                    topicName.length > 0 && (
                         <FlatList
-                            data={wordList?.words}
+                            data={generatedWordList?.words}
                             renderItem={({ item, index }) => (
                                 <MotiView
                                     from={{ translateX: 800 }}
@@ -80,8 +87,7 @@ const AIWordListForm = () => {
                                 </MotiView>
                             )}
                         />
-                    </>
-                )}
+                    )}
             </View>
         </KeyboardAvoidingView>
     )

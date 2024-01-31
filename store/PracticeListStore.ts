@@ -11,7 +11,7 @@ const PracticeListStore: SpellingTrainStateType = {
     fetchingWordData: false,
     wordData: undefined,
 
-    generatingWordList: true,
+    generatingWordList: false,
     generatedWordList: undefined,
 }
 
