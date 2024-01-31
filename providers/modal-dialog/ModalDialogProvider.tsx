@@ -139,10 +139,20 @@ const ConfirmationModalContextProvider: React.FC<
                             >
                                 <View style={styles.centeredView}>
                                     <View style={styles.modalView}>
-                                        <STText size='lg' weight='bold'>
-                                            {content.title}
-                                        </STText>
-                                        <STText>{content.message}</STText>
+                                        <View
+                                            style={{
+                                                alignItems: 'flex-start',
+                                                width: '100%',
+                                                paddingLeft: 10,
+                                                gap: 20,
+                                            }}
+                                        >
+                                            <STText size='lg' weight='bold'>
+                                                {content.title}
+                                            </STText>
+                                            <STText>{content.message}</STText>
+                                        </View>
+
                                         <View
                                             style={{
                                                 width: '100%',

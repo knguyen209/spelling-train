@@ -1,6 +1,6 @@
 import { MotiView } from 'moti'
 
-import { SVGS } from '../../../constants'
+import { COLORS, SVGS } from '../../../constants'
 import {
     Keyboard,
     KeyboardAvoidingView,
@@ -90,7 +90,11 @@ const ForgotPasswordModalContainer = ({
                     >
                         <View style={{ alignItems: 'flex-end' }}>
                             <TouchableOpacity onPress={closeModal}>
-                                <SVGS.CloseIcon width={20} height={20} />
+                                <SVGS.CloseIcon
+                                    width={20}
+                                    height={20}
+                                    fill={COLORS.primary}
+                                />
                             </TouchableOpacity>
                         </View>
                         <CurrentView />

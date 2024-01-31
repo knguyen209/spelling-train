@@ -25,7 +25,7 @@ const useLoginFormController = () => {
         } else {
             modalContext.showConfirmation(
                 'Alert',
-                'Please fill in required fields.',
+                'Please fill in Email & Password',
                 true,
                 'OK'
             )
