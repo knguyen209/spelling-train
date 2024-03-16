@@ -11,6 +11,7 @@ export default function TabLayout() {
         '/tabs/practice/word-list',
         '/tabs/practice/practice-game',
         '/tabs/practice/practice-result',
+        '/tabs/journey/journey-game',
     ]
     return (
         <Provider store={store}>
@@ -79,6 +80,7 @@ export default function TabLayout() {
                 <Tabs.Screen
                     name='daily-challenge'
                     options={{
+                        href: null,
                         tabBarLabel: 'Daily Challenge',
                         title: 'Daily Challenge',
                         tabBarIcon: ({ focused, size }) => (
@@ -92,6 +94,7 @@ export default function TabLayout() {
                 <Tabs.Screen
                     name='feed'
                     options={{
+                        href: null,
                         tabBarLabel: 'Feed',
                         title: 'Feed',
                         tabBarIcon: ({ focused, size }) => (

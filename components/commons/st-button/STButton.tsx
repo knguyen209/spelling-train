@@ -99,7 +99,13 @@ const STButton = ({
                     >
                         <SBText
                             weight='bold'
-                            color={listItemType ? COLORS.white : COLORS.black}
+                            color={
+                                listItemType
+                                    ? disabled
+                                        ? COLORS.black
+                                        : COLORS.white
+                                    : COLORS.black
+                            }
                             style={{
                                 textTransform: textTransformType,
                                 zIndex: 1,

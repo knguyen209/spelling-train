@@ -1,10 +1,8 @@
-import { Audio } from 'expo-av'
 import * as Speech from 'expo-speech'
 import { useEffect, useState } from 'react'
 import {
     MessageType,
     PracticeResultType,
-    PracticeWordMetaDataType,
     WordType,
 } from '../../types/genericTypes'
 import { useRouter } from 'expo-router'

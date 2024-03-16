@@ -40,6 +40,10 @@ import AchievementDiamondIcon from '../assets/svgs/achievement-diamond-icon.svg'
 import EditIcon from '../assets/svgs/edit.svg'
 import TrashIcon from '../assets/svgs/trash.svg'
 
+import IncompleteLevelBackground from '../assets/svgs/incomplete-level-bg.svg'
+import IncompleteLevelStripes from '../assets/svgs/incomplete-level-stripes.svg'
+import IncompleteLevelLightReflect from '../assets/svgs/incomplete-level-light-reflect.svg'
+
 const AchievementIcons = {
     star: AchievementStarIcon,
     diamond: AchievementDiamondIcon,
@@ -86,4 +90,8 @@ export default {
     AchievementIcons,
     EditIcon,
     TrashIcon,
+
+    IncompleteLevelBackground,
+    IncompleteLevelLightReflect,
+    IncompleteLevelStripes,
 }

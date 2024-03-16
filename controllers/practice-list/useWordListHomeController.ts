@@ -33,8 +33,6 @@ const useWordListHomeController = () => {
     )
 
     return {
-        // practiceLists,
-        // fetchingPracticeLists,
         wordLists,
         fetchingWordLists,
         onListItemPress,

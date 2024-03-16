@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native'
 const styles = StyleSheet.create({
     centeredView: {
         flex: 1,
-        justifyContent: 'flex-end',
+        justifyContent: 'flex-start',
     },
     modalView: {
         backgroundColor: '#2B3539',

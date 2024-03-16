@@ -1,15 +1,16 @@
-import { Link } from 'expo-router'
 import { View, Text, Image, ImageBackground, ScrollView } from 'react-native'
 import backgroundImage from '../../../assets/images/journey-bg-1.png'
-import ViewContainer from '../../../components/commons/view-container/ViewContainer'
-import STText from '../../../components/commons/st-text/STText'
+import { COLORS } from '../../../constants'
+import JourneyListView from '../../../components/journey/journey-list-view/JourneyListView'
 
 export default function JourneyTab() {
     return (
-        <ImageBackground source={backgroundImage}>
-            <ScrollView style={{ height: '100%' }}>
-                <STText>Index of Journey Tab</STText>
-            </ScrollView>
-        </ImageBackground>
+        // <ImageBackground source={backgroundImage}>
+        // <ScrollView
+        //     style={{ height: '100%', backgroundColor: COLORS.appBodyBg }}
+        // >
+        <JourneyListView />
+        // </ScrollView>
+        // </ImageBackground>
     )
 }

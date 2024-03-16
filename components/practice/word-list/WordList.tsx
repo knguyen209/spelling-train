@@ -1,8 +1,7 @@
 import { FlatList, Text, TouchableOpacity, View } from 'react-native'
-import ViewContainer from '../../commons/view-container/ViewContainer'
 import STText from '../../commons/st-text/STText'
 import STButton from '../../commons/st-button/STButton'
-import { SVGS } from '../../../constants'
+import { COLORS, SVGS } from '../../../constants'
 import useWordListDetailsController from '../../../controllers/practice-list/useWordListDetailsController'
 
 const WordList = ({ id }: { id: number }) => {
@@ -11,10 +10,10 @@ const WordList = ({ id }: { id: number }) => {
 
     if (wordList)
         return (
-            <ViewContainer>
+            <View style={{ backgroundColor: COLORS.appBodyBg, height: '100%' }}>
                 <View
                     style={{
-                        paddingBottom: 20,
+                        padding: 20,
                         flexDirection: 'row',
                         justifyContent: 'space-between',
                         alignItems: 'center',
@@ -61,13 +60,23 @@ const WordList = ({ id }: { id: number }) => {
                         </View>
                     )}
                     numColumns={2}
+                    style={{ paddingHorizontal: 20, paddingBottom: 20 }}
                 />
-                <STButton
-                    text='Start'
-                    textCentered
-                    onPress={onStartPracticePress}
-                />
-            </ViewContainer>
+                <View
+                    style={{
+                        paddingHorizontal: 20,
+                        paddingBottom: 40,
+                        paddingTop: 20,
+                        zIndex: 10,
+                    }}
+                >
+                    <STButton
+                        text='Start'
+                        textCentered
+                        onPress={onStartPracticePress}
+                    />
+                </View>
+            </View>
         )
     else {
         return (

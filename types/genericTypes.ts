@@ -61,3 +61,73 @@ export type WordType = {
     partsOfSpeech?: string
     alternatePronunciation?: string
 }
+
+export type JourneyType = {
+    id: string
+    title: string
+    levels: Array<JourneyLevelType>
+}
+
+export type JourneyLevelType = {
+    id: string
+    level: number
+    games: Array<IJourneyGame>
+    isCompleted: boolean
+}
+
+export interface IJourneyGame {
+    id: string
+    gameType:
+        | 'spell-word'
+        | 'quiz'
+        | 'right-usage'
+        | 'match-origin-pair'
+        | 'choose-spoken-word'
+        | 'find-missing-letter'
+}
+
+export interface ISpellWordGame extends IJourneyGame {
+    words: Array<string>
+}
+
+export interface IQuizGame extends IJourneyGame {
+    question: string
+    options: Array<string>
+    correctOption: string
+}
+
+export interface IMatchOriginGame extends IJourneyGame {
+    pairs: Map<string, string>
+}
+
+export interface IRightUsageGame extends IJourneyGame {
+    sentences: Array<SentenceType>
+}
+
+export interface IMissingLetterGame extends IJourneyGame {
+    words: Array<string>
+}
+
+export interface ISpokenWordGame extends IJourneyGame {
+    words: Array<string>
+}
+
+export type SentenceType = {
+    firstSentence: string
+    middleSentence: string
+    lastSentence: string
+}
+
+export type GameContainerControlHandle = {
+    onNextClick: () => void
+}
+
+interface IWithTabsProps {
+    title: string
+    icon?: string
+    tabs: string[]
+    activeTab: string
+    onSelectTab: (tab: string) => void
+}
+
+interface IWithOutTabsProps extends Pick<IWithTabsProps, 'title' | 'icon'> {}

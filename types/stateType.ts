@@ -1,4 +1,10 @@
-import { PracticeListType, WordListType, WordType } from './genericTypes'
+import {
+    JourneyLevelType,
+    JourneyType,
+    PracticeListType,
+    WordListType,
+    WordType,
+} from './genericTypes'
 
 export type PracticeListStateType = {
     fetchingPracticeLists: boolean
@@ -16,6 +22,11 @@ export type PracticeListStateType = {
     // deletingPracticeList: boolean
     // deletePracticeListSuccess: boolean
     // deletePracticeListError: boolean
+}
+
+export type JourneyListStateType = {
+    journeys: Array<JourneyType>
+    selectedLevel: JourneyLevelType | undefined
 }
 
 export type SpellingTrainStateType = {
