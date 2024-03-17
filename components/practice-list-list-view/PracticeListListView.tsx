@@ -1,16 +1,9 @@
-import {
-    FlatList,
-    View,
-    Text,
-    ScrollView,
-    TouchableOpacity,
-    Image,
-} from 'react-native'
+import { FlatList, View } from 'react-native'
 import { PracticeListType } from '../../types/genericTypes'
-import PracticeListListViewItem from '../practice-list-list-item/PracticeListListViewItem'
 
 import styles from './practice-list-list-view.style'
 import SBText from '../commons/sb-text/SBText'
+import PracticeListListItemView from '../practice-list-list-item/PracticeListListViewItem'
 
 type Props = {
     data: Array<PracticeListType>
@@ -33,7 +26,7 @@ const PracticeListListView = ({
                 data={data}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
-                    <PracticeListListViewItem
+                    <PracticeListListItemView
                         item={item}
                         onItemPressed={onListItemPressed}
                     />

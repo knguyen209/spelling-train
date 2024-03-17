@@ -8,7 +8,7 @@ type Props = {
     onItemPressed: (item: PracticeListType) => void
 }
 
-const PracticeListListViewItem = ({ item, onItemPressed }: Props) => {
+const PracticeListListItemView = ({ item, onItemPressed }: Props) => {
     const style = styles()
     return (
         <TouchableOpacity
@@ -20,4 +20,4 @@ const PracticeListListViewItem = ({ item, onItemPressed }: Props) => {
     )
 }
 
-export default PracticeListListViewItem
+export default PracticeListListItemView

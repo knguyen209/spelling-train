@@ -5,12 +5,23 @@ import { COLORS, SVGS } from '../../../constants'
 import useWordListDetailsController from '../../../controllers/practice-list/useWordListDetailsController'
 
 const WordList = ({ id }: { id: number }) => {
-    const { wordList, onStartPracticePress, onEditPress, onDeletePress } =
-        useWordListDetailsController(id)
+    const {
+        wordList,
+        onStartPracticePress,
+        onEditPress,
+        onDeletePress,
+        onWordItemPress,
+        fetchingWordData,
+    } = useWordListDetailsController(id)
 
     if (wordList)
         return (
-            <View style={{ backgroundColor: COLORS.appBodyBg, height: '100%' }}>
+            <View
+                style={{
+                    backgroundColor: COLORS.appBodyBg,
+                    height: '100%',
+                }}
+            >
                 <View
                     style={{
                         padding: 20,
@@ -56,6 +67,9 @@ const WordList = ({ id }: { id: number }) => {
                                 text={item.word}
                                 textCentered
                                 listItemType
+                                onPress={() => {
+                                    onWordItemPress(item.id)
+                                }}
                             />
                         </View>
                     )}

@@ -4,9 +4,10 @@ import { useAppSelector } from '../../store'
 
 const useWordListDetailsController = (id: number) => {
     const router = useRouter()
-    const modalContext = useConfirmationModalContext()
 
-    const { wordLists, fetchingWordLists } = useAppSelector(
+    const confirmModalContext = useConfirmationModalContext()
+
+    const { wordLists, fetchingWordData } = useAppSelector(
         (state) => state.practiceList
     )
 
@@ -29,7 +30,7 @@ const useWordListDetailsController = (id: number) => {
     }
 
     const onDeletePress = async () => {
-        const result = await modalContext.showConfirmation(
+        const result = await confirmModalContext.showConfirmation(
             'Confirm Action',
             'Do you want to delete this word list?'
         )
@@ -41,11 +42,20 @@ const useWordListDetailsController = (id: number) => {
         }
     }
 
+    const onWordItemPress = (id: number) => {
+        router.push({
+            pathname: '/tabs/practice/word-detail-modal',
+            params: { id: id },
+        })
+    }
+
     return {
         wordList,
         onStartPracticePress,
         onEditPress,
         onDeletePress,
+        onWordItemPress,
+        fetchingWordData,
     }
 }
 
