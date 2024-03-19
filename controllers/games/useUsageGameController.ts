@@ -1,19 +1,20 @@
 import { useEffect, useState } from 'react'
-import { IJourneyGame, WordType } from '../../types/genericTypes'
-import * as Speech from 'expo-speech'
-import { Audio } from 'expo-av'
+// import { IMissingLetterGame } from '../../types/genericTypes'
 import { nanoid } from '@reduxjs/toolkit'
-import { playCorrectSound, playIncorrectSound } from '../../utils'
 import { useConfirmationModalContext } from '../../providers/modal-dialog/ModalDialogProvider'
+import { playCorrectSound, playIncorrectSound } from '../../utils'
+import { IJourneyGame, WordType } from '../../types/genericTypes'
 import { fetchWordData } from '../../store/practiceListSlice'
 
-const useSpokenWordGameController = (gameData: IJourneyGame) => {
+const useUsageGameController = (gameData: IJourneyGame) => {
     const { words } = gameData
-
+    const [wordList, setWordList] = useState<Array<WordType>>([])
     const [quiz, setQuiz] = useState<QuizData | undefined>(undefined)
-    const [isSpeaking, setIsSpeaking] = useState(true)
     const [options, setOptions] = useState<Array<QuizOption>>([])
+    const [answers, setAnswers] = useState<Array<QuizAnswer | undefined>>([])
     const [loading, setLoading] = useState(true)
+
+    const confirm = useConfirmationModalContext()
 
     useEffect(() => {
         initialize()
@@ -22,52 +23,29 @@ const useSpokenWordGameController = (gameData: IJourneyGame) => {
     const initialize = async () => {
         const data: Array<WordType> = await Promise.all(
             words.map((word) =>
-                word.definition!.length > 0 ? word : fetchWordData(word.id)
+                word.usage!.length > 0 ? word : fetchWordData(word.id)
             )
         )
 
-        let quiz: QuizData = generateQuestion(data)
+        setWordList(data)
+        const quizData = generateQuestion(data)
+        setQuiz(quizData)
 
-        setQuiz(quiz)
+        let tOptions = data.map((w) => {
+            let option: QuizOption = {
+                id: nanoid(),
+                text: w.word,
+                selected: false,
+                isCorrect: false,
+            }
+            return option
+        })
 
-        speak(quiz.id)
-
-        let quizOptions = data.map((i) => ({
-            id: nanoid(),
-            text: i.word,
-            isCorrect: false,
-            selected: false,
-        }))
-
-        setOptions(quizOptions)
+        setOptions(tOptions)
         setLoading(false)
     }
 
-    const confirm = useConfirmationModalContext()
-
-    const speak = async (id: number) => {
-        setIsSpeaking(true)
-        const data = await fetchWordData(id)
-        if (data.url) {
-            const { sound } = await Audio.Sound.createAsync(
-                { uri: data.url },
-                { shouldPlay: true }
-            )
-            let res = await sound.playAsync()
-            if (res) {
-                setIsSpeaking(false)
-            }
-        } else {
-            Speech.speak(data.word)
-            setIsSpeaking(false)
-        }
-    }
-
-    const speakCurrentWord = async () => {
-        if (quiz) await speak(quiz.id)
-    }
-
-    const onQuizOpenSelected = (id: string) => {
+    const onAnswerOptionSelected = (id: string) => {
         let selectedOption = options.find((o) => o.id === id)
         if (selectedOption) {
             let isCorrect = selectedOption.text === quiz?.correctAnswer
@@ -101,39 +79,42 @@ const useSpokenWordGameController = (gameData: IJourneyGame) => {
     }
 
     return {
+        loading,
         quiz,
         options,
-        speak,
-        speakCurrentWord,
-        isSpeaking,
-        onQuizOpenSelected,
+        answers,
+        onAnswerOptionSelected,
         validateAnswers,
-        loading,
     }
 }
 
 const generateQuestion = (words: Array<WordType>) => {
     let randomIndex = Math.floor(Math.random() * words.length)
     let randomWord = words[randomIndex]
+    let sentence = (randomWord.usage || '').replace(randomWord.word, '________')
     let quiz = {
-        id: randomWord.id,
+        sentence: sentence,
         correctAnswer: randomWord.word,
-        audioUrl: randomWord.url || '',
     }
     return quiz
 }
 
 type QuizData = {
-    id: number
+    sentence: string
     correctAnswer: string
-    audioUrl: string
 }
 
 type QuizOption = {
     id: string
     text: string
-    isCorrect: boolean
     selected: boolean
+    isCorrect: boolean
 }
 
-export default useSpokenWordGameController
+type QuizAnswer = {
+    id: string
+    text: string
+    isCorrect: boolean
+}
+
+export default useUsageGameController

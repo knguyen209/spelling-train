@@ -60,6 +60,7 @@ export type WordType = {
     languageOrigin?: string
     partsOfSpeech?: string
     alternatePronunciation?: string
+    url?: string
 }
 
 export type JourneyType = {
@@ -84,33 +85,40 @@ export interface IJourneyGame {
         | 'match-origin-pair'
         | 'choose-spoken-word'
         | 'find-missing-letter'
+    words: Array<WordType>
 }
 
-export interface ISpellWordGame extends IJourneyGame {
-    words: Array<string>
-}
+export type GameTypes = IJourneyGame['gameType']
 
-export interface IQuizGame extends IJourneyGame {
-    question: string
-    options: Array<string>
-    correctOption: string
-}
+// export interface ISpellWordGame extends IJourneyGame {
+//     words: Array<string>
+// }
 
-export interface IMatchOriginGame extends IJourneyGame {
-    pairs: Map<string, string>
-}
+// export interface IQuizGame extends IJourneyGame {
+//     question: string
+//     options: Array<string>
+//     correctOption: string
+// }
 
-export interface IRightUsageGame extends IJourneyGame {
-    sentences: Array<SentenceType>
-}
+// export interface IMatchPronunciationGame extends IJourneyGame {
+//     pairs: Map<string, string>
+// }
 
-export interface IMissingLetterGame extends IJourneyGame {
-    words: Array<string>
-}
+// export interface IMatchOriginGame extends IJourneyGame {
+//     pairs: Map<string, string>
+// }
 
-export interface ISpokenWordGame extends IJourneyGame {
-    words: Array<string>
-}
+// export interface IRightUsageGame extends IJourneyGame {
+//     words: Array<string>
+// }
+
+// export interface IMissingLetterGame extends IJourneyGame {
+//     words: Array<string>
+// }
+
+// export interface ISpokenWordGame extends IJourneyGame {
+//     words: Array<string>
+// }
 
 export type SentenceType = {
     firstSentence: string

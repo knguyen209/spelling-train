@@ -3,6 +3,7 @@ import BackIcon from '../assets/svgs/back.svg'
 import SpellTrainLogo from '../assets/svgs/spell-train-logo.svg'
 import GenieFemale from '../assets/svgs/genie-female.svg'
 import GenieMale from '../assets/svgs/genie-male.svg'
+import SpeakerIcon from '../assets/svgs/speaker-icon.svg'
 
 import HomeTabIcon from '../assets/svgs/home_tab_icon.svg'
 import ProfileTabIcon from '../assets/svgs/profile_tab_icon.svg'
@@ -44,6 +45,9 @@ import IncompleteLevelBackground from '../assets/svgs/incomplete-level-bg.svg'
 import IncompleteLevelStripes from '../assets/svgs/incomplete-level-stripes.svg'
 import IncompleteLevelLightReflect from '../assets/svgs/incomplete-level-light-reflect.svg'
 
+import CompleteLevelStripes from '../assets/svgs/complete-level-stripes.svg'
+import CompleleLevelStars from '../assets/svgs/complete-level-stars.svg'
+
 const AchievementIcons = {
     star: AchievementStarIcon,
     diamond: AchievementDiamondIcon,
@@ -55,6 +59,7 @@ export default {
     SpellTrainLogo,
     GenieFemale,
     GenieMale,
+    SpeakerIcon,
 
     HomeTabIcon,
     ProfileTabIcon,
@@ -94,4 +99,7 @@ export default {
     IncompleteLevelBackground,
     IncompleteLevelLightReflect,
     IncompleteLevelStripes,
+
+    CompleteLevelStripes,
+    CompleleLevelStars,
 }

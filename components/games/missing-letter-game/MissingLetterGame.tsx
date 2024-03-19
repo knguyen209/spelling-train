@@ -3,7 +3,7 @@ import STText from '../../commons/st-text/STText'
 import { SVGS } from '../../../constants'
 import {
     GameContainerControlHandle,
-    IMissingLetterGame,
+    IJourneyGame,
 } from '../../../types/genericTypes'
 import useMissingGameController from '../../../controllers/games/useMissingGameController'
 import STButton from '../../commons/st-button/STButton'
@@ -11,7 +11,7 @@ import { forwardRef, useImperativeHandle } from 'react'
 import { MotiView } from 'moti'
 
 type MissingLetterGameProps = {
-    gameData: IMissingLetterGame
+    gameData: IJourneyGame
 }
 
 const MissingLetterGame = forwardRef<

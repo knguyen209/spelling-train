@@ -1,4 +1,10 @@
-import { FlatList, Pressable, Text, View } from 'react-native'
+import {
+    ActivityIndicator,
+    FlatList,
+    Pressable,
+    Text,
+    View,
+} from 'react-native'
 import SBText from '../../commons/sb-text/SBText'
 import STButton from '../../commons/st-button/STButton'
 import { BORDER_RADIUS, COLORS } from '../../../constants'
@@ -39,11 +45,19 @@ const PracticeList = () => {
                 />
             </View>
             {fetchingWordLists ? (
-                <STText>Loading</STText>
+                <View
+                    style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                >
+                    <ActivityIndicator />
+                </View>
             ) : (
                 <FlatList
                     data={wordLists}
-                    keyExtractor={(item) => item.title}
+                    keyExtractor={(item) => item.id.toString()}
                     renderItem={({ item }) => (
                         <ListItem
                             listItem={item}

@@ -1,25 +1,39 @@
 import { forwardRef, useImperativeHandle } from 'react'
 import {
     GameContainerControlHandle,
-    ISpokenWordGame,
+    IJourneyGame,
 } from '../../../types/genericTypes'
-import { FlatList, TouchableOpacity, View } from 'react-native'
-import { SVGS } from '../../../constants'
+import {
+    ActivityIndicator,
+    FlatList,
+    TouchableOpacity,
+    View,
+} from 'react-native'
+import { BORDER_RADIUS, COLORS, SVGS } from '../../../constants'
 import STText from '../../commons/st-text/STText'
 import STButton from '../../commons/st-button/STButton'
-import useSpokenWordGameController from '../../../controllers/games/useSpokenWordGameController'
+
 import { MotiView } from 'moti'
+import useSpokenWordGameController from '../../../controllers/games/useSpokenWordGameController'
+import { MotiPressable } from 'moti/interactions'
 
 type SpokenWordGameProps = {
-    gameData: ISpokenWordGame
+    gameData: IJourneyGame
 }
 
 const SpokenWordGame = forwardRef<
     GameContainerControlHandle,
     SpokenWordGameProps
 >((props, ref) => {
-    const { options, speakCurrentWord, onQuizOpenSelected, validateAnswers } =
-        useSpokenWordGameController(props.gameData)
+    const {
+        quiz,
+        options,
+        isSpeaking,
+        speakCurrentWord,
+        onQuizOpenSelected,
+        validateAnswers,
+        loading,
+    } = useSpokenWordGameController(props.gameData)
 
     useImperativeHandle(ref, () => ({
         onNextClick() {
@@ -46,12 +60,48 @@ const SpokenWordGame = forwardRef<
                     Choose the spoken word
                 </STText>
             </View>
-            <View style={{ alignItems: 'center' }}>
-                <TouchableOpacity onPress={speakCurrentWord}>
-                    <SVGS.GenieSpeaker width={160} height={160} />
-                </TouchableOpacity>
-            </View>
-            <View>
+
+            {loading ? (
+                <ActivityIndicator />
+            ) : (
+                <>
+                    <View style={{ alignItems: 'center' }}>
+                        <TouchableOpacity onPress={speakCurrentWord}>
+                            <SVGS.GenieSpeaker width={160} height={160} />
+                        </TouchableOpacity>
+                        <STText>{quiz?.correctAnswer || '___'}</STText>
+                    </View>
+                    <View
+                        style={{
+                            flexDirection: 'column',
+                            gap: 20,
+                            justifyContent: 'center',
+                        }}
+                    >
+                        {options.map((option) => (
+                            <MotiPressable
+                                onPress={() => onQuizOpenSelected(option.id)}
+                                animate={{
+                                    backgroundColor: option.selected
+                                        ? option.isCorrect
+                                            ? COLORS.correctAnswer
+                                            : COLORS.incorrectAnswer
+                                        : COLORS.black,
+                                }}
+                                style={{
+                                    paddingHorizontal: 20,
+                                    paddingVertical: 16,
+                                    borderRadius: BORDER_RADIUS.md,
+                                }}
+                                key={option.id}
+                            >
+                                <STText weight='semibold'>{option.text}</STText>
+                            </MotiPressable>
+                        ))}
+                    </View>
+                </>
+            )}
+            {/* <View>
                 <FlatList
                     data={options}
                     keyExtractor={(item) => item.id}
@@ -61,13 +111,15 @@ const SpokenWordGame = forwardRef<
                             word={item.text}
                             index={index}
                             isCorrect={item.isCorrect}
-                            disabled={item.isCorrect && item.answered}
+                            disabled={
+                                isSpeaking || (item.isCorrect && item.answered)
+                            }
                             onItemPressed={onQuizOpenSelected}
                         />
                     )}
                     numColumns={2}
                 />
-            </View>
+            </View> */}
         </MotiView>
     )
 })

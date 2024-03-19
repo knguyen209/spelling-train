@@ -13,6 +13,8 @@ import { MessageType } from '../../../types/genericTypes'
 import STTextField from '../../commons/st-textfield/STTextField'
 import { useRef } from 'react'
 import usePracticeGameController from '../../../controllers/practice-list/usePracticeGameController'
+import { AnimatePresence, MotiView } from 'moti'
+import { MotiPressable } from 'moti/interactions'
 
 const PracticeGame = ({ practiceListId }: { practiceListId: number }) => {
     const {
@@ -47,12 +49,17 @@ const PracticeGame = ({ practiceListId }: { practiceListId: number }) => {
                         backgroundColor: COLORS.appBodyBg,
                     }}
                 >
-                    <TouchableOpacity
+                    <MotiPressable
                         onPress={speakCurrentWord}
-                        disabled={fetchingWordData}
+                        animate={({ hovered, pressed }) => {
+                            'worklet'
+                            return {
+                                scale: hovered || pressed ? 1.1 : 1,
+                            }
+                        }}
                     >
                         <SVGS.GenieSpeaker width={150} height={150} />
-                    </TouchableOpacity>
+                    </MotiPressable>
                     <ScrollView
                         ref={scrollViewRef}
                         style={{ paddingHorizontal: 20 }}
@@ -118,7 +125,7 @@ const PracticeGame = ({ practiceListId }: { practiceListId: number }) => {
                             textSize='xs'
                             onPress={onDefinitionHintPress}
                             disabled={
-                                wordData.definition.length == 0 ||
+                                wordData.definition?.length == 0 ||
                                 fetchingWordData
                             }
                         />
@@ -128,7 +135,7 @@ const PracticeGame = ({ practiceListId }: { practiceListId: number }) => {
                             textSize='xs'
                             onPress={onRootOriginPress}
                             disabled={
-                                wordData.rootOrigin.length == 0 ||
+                                wordData.rootOrigin?.length == 0 ||
                                 fetchingWordData
                             }
                         />
@@ -138,7 +145,7 @@ const PracticeGame = ({ practiceListId }: { practiceListId: number }) => {
                             textSize='xs'
                             onPress={onUsagePress}
                             disabled={
-                                wordData.usage.length == 0 || fetchingWordData
+                                wordData.usage?.length == 0 || fetchingWordData
                             }
                         />
                         <STButton
@@ -147,7 +154,7 @@ const PracticeGame = ({ practiceListId }: { practiceListId: number }) => {
                             textSize='xs'
                             onPress={onLanguageOriginPress}
                             disabled={
-                                wordData.languageOrigin.length == 0 ||
+                                wordData.languageOrigin?.length == 0 ||
                                 fetchingWordData
                             }
                         />
@@ -158,7 +165,7 @@ const PracticeGame = ({ practiceListId }: { practiceListId: number }) => {
                             textSize='xs'
                             onPress={onPartOfSpeechHintPress}
                             disabled={
-                                wordData.partsOfSpeech.length == 0 ||
+                                wordData.partsOfSpeech?.length == 0 ||
                                 fetchingWordData
                             }
                         />
@@ -168,7 +175,7 @@ const PracticeGame = ({ practiceListId }: { practiceListId: number }) => {
                             textSize='xs'
                             onPress={onAlternatePronunciationPress}
                             disabled={
-                                wordData.alternatePronunciation.length == 0 ||
+                                wordData.alternatePronunciation?.length == 0 ||
                                 fetchingWordData
                             }
                         />

@@ -1,17 +1,14 @@
-import { View } from 'react-native'
+import { ActivityIndicator, View } from 'react-native'
 import STButton from '../../commons/st-button/STButton'
 import MissingLetterGame from '../../games/missing-letter-game/MissingLetterGame'
-import {
-    IMissingLetterGame,
-    ISpokenWordGame,
-} from '../../../types/genericTypes'
-
 import useJourneyGameContainerController from '../../../controllers/journey/useJourneyGameContainerController'
 import SpokenWordGame from '../../games/spoken-word-game/SpokenWordGame'
+import UsageGame from '../../games/usage-game/UsageGame'
 
 const JourneyGameContainer = ({ id }: { id: string }) => {
     const {
-        missingGameRef,
+        loading,
+        gameRef,
         currentGame,
         handleNextButtonPress,
         handleRetryButtonPress,
@@ -25,20 +22,26 @@ const JourneyGameContainer = ({ id }: { id: string }) => {
                 height: '100%',
             }}
         >
-            <View>
-                {currentGame?.gameType === 'find-missing-letter' && (
-                    <MissingLetterGame
-                        gameData={currentGame as IMissingLetterGame}
-                        ref={missingGameRef}
-                    />
-                )}
-                {currentGame?.gameType === 'choose-spoken-word' && (
-                    <SpokenWordGame
-                        gameData={currentGame as ISpokenWordGame}
-                        ref={missingGameRef}
-                    />
-                )}
-            </View>
+            {loading ? (
+                <View style={{ flex: 1, justifyContent: 'center' }}>
+                    <ActivityIndicator />
+                </View>
+            ) : (
+                <View>
+                    {currentGame?.gameType === 'find-missing-letter' && (
+                        <MissingLetterGame
+                            gameData={currentGame}
+                            ref={gameRef}
+                        />
+                    )}
+                    {currentGame?.gameType === 'choose-spoken-word' && (
+                        <SpokenWordGame gameData={currentGame} ref={gameRef} />
+                    )}
+                    {currentGame?.gameType === 'right-usage' && (
+                        <UsageGame gameData={currentGame} ref={gameRef} />
+                    )}
+                </View>
+            )}
             <View
                 style={{
                     flexDirection: 'row',

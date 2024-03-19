@@ -1,4 +1,5 @@
 import * as Speech from 'expo-speech'
+import { Audio } from 'expo-av'
 import { useEffect, useState } from 'react'
 import {
     MessageType,
@@ -6,18 +7,17 @@ import {
     WordType,
 } from '../../types/genericTypes'
 import { useRouter } from 'expo-router'
-import { fetchWordData, fetchWordList } from '../../store/practiceListSlice'
+import { fetchWordData } from '../../store/practiceListSlice'
 import { useAppDispatch, useAppSelector } from '../../store'
 import { playCorrectSound, playIncorrectSound } from '../../utils'
 
 const usePracticeGameController = (wordListId: number) => {
     const router = useRouter()
-    const dispatch = useAppDispatch()
 
-    const { wordLists, wordData, fetchingWordData } = useAppSelector(
-        (state) => state.practiceList
-    )
+    const { wordLists } = useAppSelector((state) => state.practiceList)
 
+    const [wordData, setWordData] = useState<WordType | undefined>(undefined)
+    const [fetchingWordData, setFetchingWordData] = useState(true)
     const [messages, setMessages] = useState<Array<MessageType>>([])
 
     const [playerAnswer, setPlayerAnswer] = useState('')
@@ -38,13 +38,21 @@ const usePracticeGameController = (wordListId: number) => {
         speak(wordData)
     }, [wordData])
 
-    const fetchAnotherWord = () => {
+    const fetchAnotherWord = async () => {
         let wordList = wordLists.filter((item) => item.id == wordListId)[0]
+        setFetchingWordData(true)
         if (wordList) {
             // randomly select a word in the list
             let index = Math.floor(Math.random() * wordList.words.length)
             let word = wordList.words[index]
-            dispatch(fetchWordData(word.id))
+            try {
+                let data = await fetchWordData(word.id)
+                setWordData(data)
+            } catch (e) {
+                console.log(e)
+            } finally {
+                setFetchingWordData(false)
+            }
         }
     }
 
@@ -244,7 +252,15 @@ const usePracticeGameController = (wordListId: number) => {
 
     const speak = async (data: WordType | null | undefined) => {
         if (data) {
-            Speech.speak(data.word)
+            if (data.url) {
+                const { sound } = await Audio.Sound.createAsync(
+                    { uri: data.url },
+                    { shouldPlay: true }
+                )
+                await sound.playAsync()
+            } else {
+                Speech.speak(data.word)
+            }
         }
     }
 

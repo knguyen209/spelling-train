@@ -26,7 +26,9 @@ export type PracticeListStateType = {
 
 export type JourneyListStateType = {
     journeys: Array<JourneyType>
+    selectedJourneyId: string | undefined
     selectedLevel: JourneyLevelType | undefined
+    generatingJourney: boolean
 }
 
 export type SpellingTrainStateType = {

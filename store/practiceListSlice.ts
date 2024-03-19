@@ -71,18 +71,6 @@ export const practiceListSlice = createSlice({
             state.fetchingWordLists = false
         })
 
-        // Fetch word data
-        builder.addCase(fetchWordData.pending, (state) => {
-            state.fetchingWordData = true
-        })
-        builder.addCase(fetchWordData.fulfilled, (state, action) => {
-            state.fetchingWordData = false
-            state.wordData = action.payload
-        })
-        builder.addCase(fetchWordData.rejected, (state) => {
-            state.fetchingWordData = false
-        })
-
         // Generate word list by Generative AI
         builder.addCase(generateWordList.pending, (state) => {
             state.generatingWordList = true
@@ -91,7 +79,12 @@ export const practiceListSlice = createSlice({
         builder.addCase(generateWordList.fulfilled, (state, action) => {
             state.generatingWordList = false
             state.generatedWordList = action.payload
-            state.wordLists.push(action.payload)
+            if (
+                state.wordLists.find((i) => i.id === action.payload.id) ===
+                undefined
+            ) {
+                state.wordLists.push(action.payload)
+            }
         })
         builder.addCase(generateWordList.rejected, (state) => {
             state.generatingWordList = false
@@ -125,15 +118,35 @@ export const fetchWordLists = createAsyncThunk(
 /**
  * Asynchronous function to fetch the metadata of a word
  */
-export const fetchWordData = createAsyncThunk(
-    'get/word-data',
-    async (id: number): Promise<WordType> => {
-        const response = await fetch(
-            'http://127.0.0.1:8000/word-lists/words/' + id
-        )
-        return await response.json()
+export const fetchWordData = async (id: number) => {
+    const response = await fetch('http://127.0.0.1:8000/word-lists/words/' + id)
+    const wordData = await response.json()
+    console.log(wordData)
+    const key = process.env.EXPO_PUBLIC_DICTIONARY_API_KEY
+    const dictResponse = await fetch(
+        `https://dictionaryapi.com/api/v3/references/collegiate/json/${wordData.word}?key=${key}`
+    )
+    const dictData = await dictResponse.json()
+    let fileName = ''
+    try {
+        fileName = dictData[0]['hwi']['prs'][0]['sound']['audio']
+    } catch (e) {}
+
+    let subDirectory = fileName[0]
+
+    if (fileName.substring(0, 3) === 'bix') {
+        subDirectory = 'bix'
     }
-)
+
+    if (fileName.substring(0, 2) === 'gg') {
+        subDirectory = 'gg'
+    }
+    const audioFileUrl = fileName
+        ? `https://media.merriam-webster.com/audio/prons/en/us/mp3/${subDirectory}/${fileName}.mp3`
+        : ''
+    console.log('AudioURL: ', audioFileUrl)
+    return { ...wordData, url: audioFileUrl }
+}
 
 /**
  * Asynchronous function to fetch a word list by the list id
@@ -152,9 +165,13 @@ export const fetchWordList = createAsyncThunk(
 export const generateWordList = createAsyncThunk(
     'get/generate-word-list',
     async (topicName: string): Promise<WordListType> => {
-        const response = await fetch(
-            'http://127.0.0.1:8000/word-lists/?topic=' + topicName
-        )
-        return await response.json()
+        return await createWordList(topicName)
     }
 )
+
+export const createWordList = async (topicName: string) => {
+    const response = await fetch(
+        'http://127.0.0.1:8000/word-lists/?topic=' + topicName
+    )
+    return await response.json()
+}

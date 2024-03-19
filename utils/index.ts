@@ -23,14 +23,18 @@ export const newShade = (hexColor: string, magnitude: number) => {
     }
 }
 
-export const shuffleArray = (array: Array<string>) => {
+export const shuffleArray = (array: Array<any>) => {
     for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-        const temp = array[i]
+        let j = Math.floor(Math.random() * (i + 1))
+        let temp = array[i]
         array[i] = array[j]
         array[j] = temp
     }
     return array
+}
+
+export const randomInRange = (length: number) => {
+    return Math.floor(Math.random() * length)
 }
 
 export const playCorrectSound = async () => {

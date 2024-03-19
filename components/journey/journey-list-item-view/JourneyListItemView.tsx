@@ -6,20 +6,28 @@ import { JourneyLevelType } from '../../../types/genericTypes'
 import { useRouter } from 'expo-router'
 import useJourneyListItemController from '../../../controllers/journey/useJourneyListItemController'
 
-const JourneyListItemView = ({ item }: { item: JourneyLevelType }) => {
+const JourneyListItemView = ({
+    journeyId,
+    item,
+}: {
+    journeyId: string
+    item: JourneyLevelType
+}) => {
     let position: FlexAlignType = 'center'
 
-    const { handleItemPressed } = useJourneyListItemController(item)
+    const { handleItemPressed } = useJourneyListItemController(journeyId, item)
 
     return (
-        <View style={{ alignItems: position, padding: 10 }}>
+        <View style={{ alignItems: position, padding: 24 }}>
             <Pressable onPress={handleItemPressed}>
                 {({ pressed }) => (
                     <View>
                         <View
                             style={{
                                 ...styles.buttonContainer,
-                                backgroundColor: COLORS.disabledBtnShadowColor,
+                                backgroundColor: item.isCompleted
+                                    ? COLORS.primaryBtnShadowColor
+                                    : COLORS.disabledBtnShadowColor,
                             }}
                         >
                             <STText color='#000' weight='bold' size='lg'>
@@ -29,16 +37,37 @@ const JourneyListItemView = ({ item }: { item: JourneyLevelType }) => {
                         <View
                             style={{
                                 ...styles.buttonContainer,
-                                backgroundColor: COLORS.disabledBtnColor,
+                                backgroundColor: item.isCompleted
+                                    ? COLORS.primaryBtnColor
+                                    : COLORS.disabledBtnColor,
                                 position: 'absolute',
                                 bottom: pressed ? 0 : 5,
                             }}
                         >
-                            <SVGS.IncompleteLevelStripes
-                                width='90%'
-                                height='90%'
-                                style={{ position: 'absolute' }}
-                            />
+                            {item.isCompleted ? (
+                                <>
+                                    <SVGS.CompleteLevelStripes
+                                        width='90%'
+                                        height='90%'
+                                        style={{ position: 'absolute' }}
+                                    />
+                                    <SVGS.CompleleLevelStars
+                                        width={80}
+                                        height={80}
+                                        style={{
+                                            position: 'absolute',
+                                            top: -50,
+                                        }}
+                                    />
+                                </>
+                            ) : (
+                                <SVGS.IncompleteLevelStripes
+                                    width='90%'
+                                    height='90%'
+                                    style={{ position: 'absolute' }}
+                                />
+                            )}
+
                             <STText color='#000' weight='bold' size='lg'>
                                 {item.level.toString()}
                             </STText>

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { IMissingLetterGame } from '../../types/genericTypes'
 import { nanoid } from '@reduxjs/toolkit'
 import { useConfirmationModalContext } from '../../providers/modal-dialog/ModalDialogProvider'
-import { playCorrectSound, playIncorrectSound } from '../../utils'
+import { playCorrectSound, playIncorrectSound, shuffleArray } from '../../utils'
+import { IJourneyGame, WordType } from '../../types/genericTypes'
 
-const useMissingGameController = (gameData: IMissingLetterGame) => {
+const useMissingGameController = (gameData: IJourneyGame) => {
     const { words } = gameData
     const [quizzes, setQuizzes] = useState<Array<QuizData>>([])
     const [options, setOptions] = useState<Array<QuizOption>>([])
@@ -13,17 +13,23 @@ const useMissingGameController = (gameData: IMissingLetterGame) => {
     const confirm = useConfirmationModalContext()
 
     useEffect(() => {
+        initialize()
+    }, [])
+
+    const initialize = () => {
         const quizData = generateQuizzes(words)
         setQuizzes(quizData)
-        let tOptions = quizData.map((q) => ({
+        let missingLetters = shuffleArray(quizData.map((q) => q.missingLetter))
+        let tOptions = missingLetters.map((i) => ({
             id: nanoid(),
-            text: q.missingLetter,
+            text: i,
             selected: false,
         }))
+
         setOptions(tOptions)
 
         setAnswers(Array(tOptions.length).fill(undefined))
-    }, [])
+    }
 
     const onAnswerOptionSelected = (id: string) => {
         let selectedOption = options.find((o) => o.id === id)
@@ -102,10 +108,11 @@ const extractLetterIndex = (word: string) => {
     return Math.floor(Math.random() * word.length)
 }
 
-const generateQuizzes = (words: string[]) => {
+const generateQuizzes = (words: Array<WordType>) => {
     let quizzes = []
 
-    for (const word of words) {
+    for (const item of words) {
+        let word = item.word
         let missingIndex = extractLetterIndex(word)
         quizzes.push({
             quizWord:
