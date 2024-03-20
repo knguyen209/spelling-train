@@ -1,38 +1,47 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { IJourneyGame, WordType } from '../../types/genericTypes'
 import * as Speech from 'expo-speech'
 import { Audio } from 'expo-av'
 import { nanoid } from '@reduxjs/toolkit'
 import { playCorrectSound, playIncorrectSound } from '../../utils'
 import { useConfirmationModalContext } from '../../providers/modal-dialog/ModalDialogProvider'
-import { fetchWordData } from '../../store/practiceListSlice'
+import { fetchWordData } from '../../store/spellTrainSlice'
+import { AuthenticationContext } from '../../providers/authentication-provider/AuthenticationProvider'
 
 const useSpokenWordGameController = (gameData: IJourneyGame) => {
     const { words } = gameData
 
     const [quiz, setQuiz] = useState<QuizData | undefined>(undefined)
+    const [data, setData] = useState<Array<WordType>>([])
     const [isSpeaking, setIsSpeaking] = useState(true)
     const [options, setOptions] = useState<Array<QuizOption>>([])
     const [loading, setLoading] = useState(true)
-
+    const authContext = useContext(AuthenticationContext)
     useEffect(() => {
         initialize()
     }, [])
 
     const initialize = async () => {
-        const data: Array<WordType> = await Promise.all(
+        const tData: Array<WordType> = await Promise.all(
             words.map((word) =>
-                word.definition!.length > 0 ? word : fetchWordData(word.id)
+                word.definition!.length > 0
+                    ? word
+                    : fetchWordData(
+                          word.id,
+                          authContext?.userProfile?.accessToken || ''
+                      )
             )
         )
 
-        let quiz: QuizData = generateQuestion(data)
+        setData(tData)
+
+        let quiz: QuizData = generateQuestion(tData)
 
         setQuiz(quiz)
 
-        speak(quiz.id)
+        speak(quiz)
 
-        let quizOptions = data.map((i) => ({
+        let quizOptions = tData.map((i) => ({
             id: nanoid(),
             text: i.word,
             isCorrect: false,
@@ -45,26 +54,24 @@ const useSpokenWordGameController = (gameData: IJourneyGame) => {
 
     const confirm = useConfirmationModalContext()
 
-    const speak = async (id: number) => {
-        setIsSpeaking(true)
-        const data = await fetchWordData(id)
-        if (data.url) {
+    const speak = async (data: QuizData) => {
+        // setIsSpeaking(true)
+
+        if (data) {
             const { sound } = await Audio.Sound.createAsync(
-                { uri: data.url },
+                { uri: `http://localhost:8000/${data.audioUrl}` || '' },
                 { shouldPlay: true }
             )
             let res = await sound.playAsync()
             if (res) {
-                setIsSpeaking(false)
+                // setIsSpeaking(false)
             }
-        } else {
-            Speech.speak(data.word)
-            setIsSpeaking(false)
         }
-    }
-
-    const speakCurrentWord = async () => {
-        if (quiz) await speak(quiz.id)
+        // setIsSpeaking(false)
+        // else {
+        //     Speech.speak(word.word)
+        //     setIsSpeaking(false)
+        // }
     }
 
     const onQuizOpenSelected = (id: string) => {
@@ -104,7 +111,6 @@ const useSpokenWordGameController = (gameData: IJourneyGame) => {
         quiz,
         options,
         speak,
-        speakCurrentWord,
         isSpeaking,
         onQuizOpenSelected,
         validateAnswers,
@@ -118,7 +124,7 @@ const generateQuestion = (words: Array<WordType>) => {
     let quiz = {
         id: randomWord.id,
         correctAnswer: randomWord.word,
-        audioUrl: randomWord.url || '',
+        audioUrl: randomWord.audioUrl || '',
     }
     return quiz
 }

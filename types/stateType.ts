@@ -2,6 +2,7 @@ import {
     JourneyLevelType,
     JourneyType,
     PracticeListType,
+    UserType,
     WordListType,
     WordType,
 } from './genericTypes'
@@ -42,6 +43,34 @@ export type SpellingTrainStateType = {
     generatedWordList: WordListType | undefined
 }
 
+export type AccountStateType = {
+    user: UserType | undefined
+    userSigningIn: boolean
+    userSignInSuccess: boolean
+    userSignInError: boolean
+}
+
 export type StoreType = {
     practiceList: SpellingTrainStateType
+}
+
+export type SpellTrainStateType = {
+    user: UserType | undefined
+    userSigningIn: boolean
+    userSignInSuccess: boolean
+    userSignInError: boolean
+
+    journeys: Array<JourneyType>
+    selectedJourneyId: string | undefined
+    selectedLevel: JourneyLevelType | undefined
+    generatingJourney: boolean
+
+    fetchingWordLists: boolean
+    wordLists: Array<WordListType>
+
+    fetchingWordData: boolean
+    wordData: WordType | undefined
+
+    generatingWordList: boolean
+    generatedWordList: WordListType | undefined
 }

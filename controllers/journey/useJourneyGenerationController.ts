@@ -1,19 +1,29 @@
-import { useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../store'
 import {
+    fetchWordLists,
     generateJourney,
     generateJourneyByWordList,
-} from '../../store/journeyListSlice'
+} from '../../store/spellTrainSlice'
 import { WordListType } from '../../types/genericTypes'
-import { shuffleArray } from '../../utils'
+import { AuthenticationContext } from '../../providers/authentication-provider/AuthenticationProvider'
 
 const useJourneyGenerationController = () => {
     const dispatch = useAppDispatch()
     const [topicName, setTopicName] = useState('')
-    const { generatingJourney } = useAppSelector((state) => state.journeyList)
-    const { wordLists, fetchingWordLists } = useAppSelector(
-        (state) => state.practiceList
+    const { generatingJourney, wordLists, fetchingWordLists } = useAppSelector(
+        (state) => state.spellTrain
     )
+    const authContext = useContext(AuthenticationContext)
+
+    useEffect(() => {
+        dispatch(
+            fetchWordLists({
+                token: authContext?.userProfile?.accessToken || '',
+            })
+        )
+    }, [])
+
     const onTopicNameChanged = (newValue: string) => {
         setTopicName(newValue)
     }

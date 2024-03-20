@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
 import { useConfirmationModalContext } from '../../providers/modal-dialog/ModalDialogProvider'
+import { createAccount } from '../../store/spellTrainSlice'
 
 type CreateAccountProfileType = {
     name: string
@@ -17,11 +18,11 @@ const useCreateAccountFormController = () => {
     const router = useRouter()
     const [currentIndex, setCurrentIndex] = useState<number>(0)
     const [profile, setProfile] = useState<CreateAccountProfileType>({
-        name: '',
-        phone: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
+        name: 'John Doe',
+        phone: '4083241234',
+        email: 'john@sjsu.edu',
+        password: 'Password@123',
+        confirmPassword: 'Password@123',
         source: '',
         learningGoal: '',
     })
@@ -65,15 +66,28 @@ const useCreateAccountFormController = () => {
         }
 
         if (currentIndex === 3 && isValidLearningGoalStage()) {
+            let res = await registerAccount()
+            const { isSuccess, message } = res
+
             let result = await confirm.showConfirmation(
                 'Information',
-                'Account created successfully!',
+                message,
                 true
             )
-            if (result) {
+            if (result && isSuccess) {
                 router.push('login')
             }
         }
+    }
+
+    const registerAccount = async () => {
+        const res = await createAccount(
+            profile.name,
+            profile.email,
+            profile.phone,
+            profile.password
+        )
+        return res
     }
 
     const handleSourceSelected = (source: string) => {

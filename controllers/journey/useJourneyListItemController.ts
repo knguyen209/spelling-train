@@ -1,8 +1,8 @@
 import { useRouter } from 'expo-router'
 
-import { JourneyListAction } from '../../store/journeyListSlice'
 import { JourneyLevelType } from '../../types/genericTypes'
 import { useDispatch } from 'react-redux'
+import { SpellTrainAction } from '../../store/spellTrainSlice'
 
 const useJourneyListItemController = (
     journeyId: string,
@@ -10,7 +10,7 @@ const useJourneyListItemController = (
 ) => {
     const router = useRouter()
     const dispatch = useDispatch()
-    const { setSelectedJourneyLevel } = JourneyListAction
+    const { setSelectedJourneyLevel } = SpellTrainAction
 
     const handleItemPressed = () => {
         dispatch(

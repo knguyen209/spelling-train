@@ -3,7 +3,7 @@ import { useAppSelector } from '../../store'
 
 const useJourneyListController = () => {
     const router = useRouter()
-    const { journeys } = useAppSelector((state) => state.journeyList)
+    const { journeys } = useAppSelector((state) => state.spellTrain)
 
     const onGenerateButtonPress = () => {
         router.push('/tabs/journey/generate-journey-games-modal')

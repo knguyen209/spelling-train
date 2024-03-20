@@ -29,7 +29,7 @@ const SpokenWordGame = forwardRef<
         quiz,
         options,
         isSpeaking,
-        speakCurrentWord,
+        speak,
         onQuizOpenSelected,
         validateAnswers,
         loading,
@@ -45,7 +45,7 @@ const SpokenWordGame = forwardRef<
         <MotiView
             animate={{ translateX: 0 }}
             from={{ translateX: 200 }}
-            transition={{ type: 'spring', duration: 1000 }}
+            transition={{ type: 'timing', duration: 500 }}
             style={{ gap: 40 }}
         >
             <View
@@ -66,10 +66,9 @@ const SpokenWordGame = forwardRef<
             ) : (
                 <>
                     <View style={{ alignItems: 'center' }}>
-                        <TouchableOpacity onPress={speakCurrentWord}>
+                        <TouchableOpacity onPress={() => quiz && speak(quiz)}>
                             <SVGS.GenieSpeaker width={160} height={160} />
                         </TouchableOpacity>
-                        <STText>{quiz?.correctAnswer || '___'}</STText>
                     </View>
                     <View
                         style={{

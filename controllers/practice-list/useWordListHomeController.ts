@@ -1,11 +1,18 @@
 import { useRouter } from 'expo-router'
 import { WordListType } from '../../types/genericTypes'
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '../../store'
-import { fetchWordLists } from '../../store/practiceListSlice'
+import { fetchWordLists } from '../../store/spellTrainSlice'
+import { AuthenticationContext } from '../../providers/authentication-provider/AuthenticationProvider'
 
 const useWordListHomeController = () => {
     const router = useRouter()
+
+    const { wordLists, fetchingWordLists } = useAppSelector(
+        (state) => state.spellTrain
+    )
+
+    const authContext = useContext(AuthenticationContext)
 
     const onAddNewListPress = () => {
         router.push('/tabs/practice/word-list-modal')
@@ -25,12 +32,12 @@ const useWordListHomeController = () => {
     const dispatch = useAppDispatch()
 
     useEffect(() => {
-        dispatch(fetchWordLists())
+        dispatch(
+            fetchWordLists({
+                token: authContext?.userProfile?.accessToken || '',
+            })
+        )
     }, [])
-
-    const { wordLists, fetchingWordLists } = useAppSelector(
-        (state) => state.practiceList
-    )
 
     return {
         wordLists,

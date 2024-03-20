@@ -18,7 +18,7 @@ const JourneyListView = () => {
             }}
         >
             <View style={{ flex: 1 }}>
-                {journeys.length > 0 && (
+                {journeys.length > 0 && journeys[0] !== undefined && (
                     <FlatList
                         data={journeys[0].levels}
                         keyExtractor={(item, idx) => item.id.toString()}

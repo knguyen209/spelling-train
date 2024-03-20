@@ -7,14 +7,15 @@ import {
     WordType,
 } from '../../types/genericTypes'
 import { useRouter } from 'expo-router'
-import { fetchWordData } from '../../store/practiceListSlice'
-import { useAppDispatch, useAppSelector } from '../../store'
+
+import { useAppSelector } from '../../store'
 import { playCorrectSound, playIncorrectSound } from '../../utils'
+import { fetchWordData } from '../../store/spellTrainSlice'
 
 const usePracticeGameController = (wordListId: number) => {
     const router = useRouter()
 
-    const { wordLists } = useAppSelector((state) => state.practiceList)
+    const { user, wordLists } = useAppSelector((state) => state.spellTrain)
 
     const [wordData, setWordData] = useState<WordType | undefined>(undefined)
     const [fetchingWordData, setFetchingWordData] = useState(true)
@@ -35,7 +36,9 @@ const usePracticeGameController = (wordListId: number) => {
     }, [])
 
     useEffect(() => {
-        speak(wordData)
+        setTimeout(() => {
+            speak(wordData)
+        }, 100)
     }, [wordData])
 
     const fetchAnotherWord = async () => {
@@ -46,7 +49,7 @@ const usePracticeGameController = (wordListId: number) => {
             let index = Math.floor(Math.random() * wordList.words.length)
             let word = wordList.words[index]
             try {
-                let data = await fetchWordData(word.id)
+                let data = await fetchWordData(word.id, user?.accessToken || '')
                 setWordData(data)
             } catch (e) {
                 console.log(e)
@@ -252,9 +255,9 @@ const usePracticeGameController = (wordListId: number) => {
 
     const speak = async (data: WordType | null | undefined) => {
         if (data) {
-            if (data.url) {
+            if (data.audioUrl) {
                 const { sound } = await Audio.Sound.createAsync(
-                    { uri: data.url },
+                    { uri: `http://localhost:8000/${data.audioUrl}` },
                     { shouldPlay: true }
                 )
                 await sound.playAsync()

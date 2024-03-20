@@ -8,7 +8,7 @@ const useWordListDetailsController = (id: number) => {
     const confirmModalContext = useConfirmationModalContext()
 
     const { wordLists, fetchingWordData } = useAppSelector(
-        (state) => state.practiceList
+        (state) => state.spellTrain
     )
 
     const filteredLists = wordLists.filter((item) => item.id == id)

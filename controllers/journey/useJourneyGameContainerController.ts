@@ -7,10 +7,10 @@ import {
 import { useResultModalContext } from '../../providers/result-dialog/ResultDialogProvider'
 import { useRouter } from 'expo-router'
 import { useDispatch } from 'react-redux'
-import { JourneyListAction } from '../../store/journeyListSlice'
+import { SpellTrainAction } from '../../store/spellTrainSlice'
 
 const useJourneyGameContainerController = (id: string) => {
-    const { selectedLevel } = useAppSelector((state) => state.journeyList)
+    const { selectedLevel } = useAppSelector((state) => state.spellTrain)
 
     const [currentGameIndex, setCurrentGameIndex] = useState(0)
     const [currentGame, setCurrentGame] = useState<IJourneyGame | undefined>(
@@ -21,7 +21,7 @@ const useJourneyGameContainerController = (id: string) => {
     const router = useRouter()
     const dispatch = useDispatch()
 
-    const { completeJourneyLevel } = JourneyListAction
+    const { completeJourneyLevel } = SpellTrainAction
 
     const gameRef = useRef<GameContainerControlHandle>(null)
 
@@ -31,6 +31,7 @@ const useJourneyGameContainerController = (id: string) => {
 
     useEffect(() => {
         if (games.length > 0) {
+            console.log(games.map((g) => g.gameType))
             setCurrentGame(games[0])
             setLoading(false)
         }

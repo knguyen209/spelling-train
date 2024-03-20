@@ -18,6 +18,7 @@ import useLoginFormController from '../../../controllers/accounts/useLoginFormCo
 
 const SignInView = () => {
     const {
+        userSigningIn,
         userCredential,
         showModal,
         toggleShowModal,
@@ -72,6 +73,7 @@ const SignInView = () => {
                             onChange={(newVal) =>
                                 onTextFieldChanged('emailAddress', newVal)
                             }
+                            disabled={userSigningIn}
                         />
                         <STTextField
                             title='Password'
@@ -81,9 +83,13 @@ const SignInView = () => {
                             onChange={(newVal) =>
                                 onTextFieldChanged('password', newVal)
                             }
+                            disabled={userSigningIn}
                         />
                         <View style={{ alignItems: 'flex-end' }}>
-                            <TouchableOpacity onPress={toggleShowModal}>
+                            <TouchableOpacity
+                                onPress={toggleShowModal}
+                                disabled={userSigningIn}
+                            >
                                 <SBText color={COLORS.white} size='sm'>
                                     Forgot Password?
                                 </SBText>
@@ -93,6 +99,7 @@ const SignInView = () => {
                             text='Login'
                             textCentered
                             onPress={onLoginButtonPress}
+                            disabled={userSigningIn}
                         />
                         <View
                             style={{

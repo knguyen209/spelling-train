@@ -31,7 +31,7 @@ const useWordListFormController = ({
     })
 
     const { wordLists, fetchingWordLists } = useAppSelector(
-        (state) => state.practiceList
+        (state) => state.spellTrain
     )
 
     useEffect(() => {

@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../store'
-import { generateWordList } from '../../store/practiceListSlice'
-import { WordListType } from '../../types/genericTypes'
+import { generateWordList } from '../../store/spellTrainSlice'
 
 const useAIWordListFormController = () => {
     const dispatch = useAppDispatch()
@@ -10,13 +9,15 @@ const useAIWordListFormController = () => {
     // a state to control whether a word list generating request is made
     const [isRequestMade, setIsRequestMade] = useState(false)
 
-    const { generatedWordList, generatingWordList } = useAppSelector(
-        (state) => state.practiceList
+    const { user, generatedWordList, generatingWordList } = useAppSelector(
+        (state) => state.spellTrain
     )
 
     const onGenerateBtnPress = async () => {
         setIsRequestMade(true)
-        dispatch(generateWordList(topicName))
+        dispatch(
+            generateWordList({ topicName, token: user?.accessToken || '' })
+        )
     }
 
     const onTopicNameChanged = (newVal: string) => {

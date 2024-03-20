@@ -37,7 +37,7 @@ const MissingLetterGame = forwardRef<
         <MotiView
             animate={{ translateX: 0 }}
             from={{ translateX: 200 }}
-            transition={{ type: 'spring', duration: 1000 }}
+            transition={{ type: 'timing', duration: 500 }}
             exit={{ translateX: -200 }}
             style={{ gap: 40 }}
         >

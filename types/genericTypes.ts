@@ -60,7 +60,7 @@ export type WordType = {
     languageOrigin?: string
     partsOfSpeech?: string
     alternatePronunciation?: string
-    url?: string
+    audioUrl?: string
 }
 
 export type JourneyType = {
@@ -128,6 +128,15 @@ export type SentenceType = {
 
 export type GameContainerControlHandle = {
     onNextClick: () => void
+}
+
+export type UserType = {
+    name: string
+    email: string
+    phone: string
+    password?: string
+    accessToken?: string
+    isActive?: boolean
 }
 
 interface IWithTabsProps {

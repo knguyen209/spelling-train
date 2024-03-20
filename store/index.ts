@@ -1,14 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 
-import practiceListReducer from './practiceListSlice'
-import journeyListReducer from './journeyListSlice'
+import spellTrainReducer from './spellTrainSlice'
 
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
 const store = configureStore({
     reducer: {
-        practiceList: practiceListReducer,
-        journeyList: journeyListReducer,
+        spellTrain: spellTrainReducer,
     },
 })
 

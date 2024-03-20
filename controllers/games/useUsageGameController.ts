@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
-// import { IMissingLetterGame } from '../../types/genericTypes'
+
 import { nanoid } from '@reduxjs/toolkit'
 import { useConfirmationModalContext } from '../../providers/modal-dialog/ModalDialogProvider'
 import { playCorrectSound, playIncorrectSound } from '../../utils'
 import { IJourneyGame, WordType } from '../../types/genericTypes'
-import { fetchWordData } from '../../store/practiceListSlice'
+import { fetchWordData } from '../../store/spellTrainSlice'
+import { useAppSelector } from '../../store'
 
 const useUsageGameController = (gameData: IJourneyGame) => {
     const { words } = gameData
@@ -13,6 +14,8 @@ const useUsageGameController = (gameData: IJourneyGame) => {
     const [options, setOptions] = useState<Array<QuizOption>>([])
     const [answers, setAnswers] = useState<Array<QuizAnswer | undefined>>([])
     const [loading, setLoading] = useState(true)
+
+    const { user } = useAppSelector((state) => state.spellTrain)
 
     const confirm = useConfirmationModalContext()
 
@@ -23,7 +26,9 @@ const useUsageGameController = (gameData: IJourneyGame) => {
     const initialize = async () => {
         const data: Array<WordType> = await Promise.all(
             words.map((word) =>
-                word.usage!.length > 0 ? word : fetchWordData(word.id)
+                word.usage!.length > 0
+                    ? word
+                    : fetchWordData(word.id, user?.accessToken || '')
             )
         )
 

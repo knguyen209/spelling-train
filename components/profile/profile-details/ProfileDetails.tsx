@@ -5,13 +5,15 @@ import STButton from '../../commons/st-button/STButton'
 import { View, ViewStyle } from 'react-native'
 import { BORDER_RADIUS, COLORS, SVGS } from '../../../constants'
 import { Link } from 'expo-router'
+import useProfileController from '../../../controllers/accounts/useProfileController'
 
 const ProfileDetails = () => {
+    const { user, onLogoutButtonPressed } = useProfileController()
     return (
         <ViewContainer style={{ gap: 20 }}>
             <ProfileSectionContainer style={{ gap: 10 }}>
                 <STText weight='bold' size='xl'>
-                    Kenny Nguyen
+                    {user?.name || ''}
                 </STText>
                 <View
                     style={{
@@ -67,7 +69,11 @@ const ProfileDetails = () => {
                     <SVGS.AchievementIcons.diamond width={40} height={40} />
                 </View>
             </ProfileSectionContainer>
-            <STButton text='Log out' textCentered />
+            <STButton
+                text='Log out'
+                textCentered
+                onPress={onLogoutButtonPressed}
+            />
         </ViewContainer>
     )
 }
