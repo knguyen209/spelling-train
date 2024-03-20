@@ -12,7 +12,7 @@ const useLoginFormController = () => {
     const { user, userSigningIn, userSignInSuccess, userSignInError } =
         useAppSelector((state) => state.spellTrain)
     const modalContext = useConfirmationModalContext()
-    const authenticationContext = useContext(AuthenticationContext)
+    const authContext = useContext(AuthenticationContext)
 
     const [showModal, toggleShowModal] = useReducer((s) => !s, false)
     const [loginPressed, setLoginPressed] = useState(false)
@@ -24,19 +24,19 @@ const useLoginFormController = () => {
     useEffect(() => {
         if (userSignInSuccess) {
             if (user) {
-                authenticationContext?.updateUserProfile(user)
-            }
-
-            modalContext
-                .showConfirmation(
-                    'Information',
-                    'User login successfully.',
-                    true,
-                    'OK'
-                )
-                .then(() => {
-                    router.push('/tabs/journey')
+                authContext?.updateUserProfile(user).then(() => {
+                    modalContext
+                        .showConfirmation(
+                            'Information',
+                            'User login successfully.',
+                            true,
+                            'OK'
+                        )
+                        .then(() => {
+                            router.push('/tabs/journey')
+                        })
                 })
+            }
         }
 
         if (userSignInError) {

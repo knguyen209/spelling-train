@@ -97,6 +97,13 @@ export const spellTrainSlice = createSlice({
             )
             state.journeys = updatedJourney
         },
+
+        signOut: (state) => {
+            state.user = undefined
+            state.userSignInSuccess = false
+            state.userSignInError = false
+            state.userSigningIn = false
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(signIn.pending, (state) => {
@@ -184,6 +191,7 @@ const {
     deletePracticeList,
     setSelectedJourneyLevel,
     completeJourneyLevel,
+    signOut,
 } = spellTrainSlice.actions
 
 export const SpellTrainAction = {
@@ -193,6 +201,8 @@ export const SpellTrainAction = {
 
     setSelectedJourneyLevel,
     completeJourneyLevel,
+
+    signOut,
 }
 
 export default spellTrainSlice.reducer

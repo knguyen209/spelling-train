@@ -8,8 +8,8 @@ export const AuthenticationContext =
 
 export type AuthenticationContextType = {
     userProfile: UserType | null | undefined
-    updateUserProfile: (newProfile: UserType) => void
-    logout: () => void
+    updateUserProfile: (newProfile: UserType) => Promise<void>
+    logout: () => Promise<void>
 }
 
 const AuthenticationProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -35,13 +35,12 @@ const AuthenticationProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const updateUserProfile = (newProfile: UserType) => {
         setUserProfile(newProfile)
-        storeData(newProfile)
+        return storeData(newProfile)
     }
 
     const logout = () => {
         setUserProfile(null)
-        storeData(null)
-        router.push('/login')
+        return storeData(null)
     }
 
     return (
@@ -57,8 +56,10 @@ export default AuthenticationProvider
 
 const storeData = async (value: UserType | undefined | null) => {
     try {
-        const jsonValue = JSON.stringify(value)
-        await AsyncStorage.setItem('user-profile', jsonValue)
+        return await AsyncStorage.setItem(
+            'user-profile',
+            value ? JSON.stringify(value) : ''
+        )
     } catch (e) {
         console.log(e)
     }
