@@ -64,6 +64,8 @@ export type SpellTrainStateType = {
     selectedJourneyId: string | undefined
     selectedLevel: JourneyLevelType | undefined
     generatingJourney: boolean
+    generatingJourneySuccess: boolean
+    generatingJourneyError: boolean
 
     fetchingWordLists: boolean
     wordLists: Array<WordListType>

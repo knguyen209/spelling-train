@@ -160,27 +160,39 @@ export const spellTrainSlice = createSlice({
         // Generate journey games
         builder.addCase(generateJourney.pending, (state) => {
             state.generatingJourney = true
+            state.generatingJourneySuccess = false
+            state.generatingJourneyError = false
         })
         builder.addCase(generateJourney.fulfilled, (state, action) => {
             state.journeys.push(action.payload)
             state.generatingJourney = false
+            state.generatingJourneySuccess = true
+            state.generatingJourneyError = false
         })
         builder.addCase(generateJourney.rejected, (state) => {
             state.generatingJourney = false
+            state.generatingJourneySuccess = false
+            state.generatingJourneyError = true
         })
         // Generate journey games by word list
         builder.addCase(generateJourneyByWordList.pending, (state) => {
             state.generatingJourney = true
+            state.generatingJourneySuccess = false
+            state.generatingJourneyError = false
         })
         builder.addCase(
             generateJourneyByWordList.fulfilled,
             (state, action) => {
                 state.journeys.push(action.payload)
                 state.generatingJourney = false
+                state.generatingJourneySuccess = true
+                state.generatingJourneyError = false
             }
         )
         builder.addCase(generateJourneyByWordList.rejected, (state) => {
             state.generatingJourney = false
+            state.generatingJourneySuccess = false
+            state.generatingJourneyError = true
         })
     },
 })

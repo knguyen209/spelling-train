@@ -13,7 +13,10 @@ const SpellTrainStore: SpellTrainStateType = {
     journeys: [],
     selectedJourneyId: undefined,
     selectedLevel: undefined,
+
     generatingJourney: false,
+    generatingJourneySuccess: false,
+    generatingJourneyError: false,
 
     user: undefined,
     userSigningIn: false,
