@@ -14,6 +14,7 @@ import {
     WordType,
 } from '../types/genericTypes'
 import { randomInRange, shuffleArray } from '../utils'
+import { SpellTrainStateType } from '../types/stateType'
 
 const initialState = SpellTrainStore
 
@@ -114,19 +115,20 @@ export const spellTrainSlice = createSlice({
         builder.addCase(signIn.fulfilled, (state, action) => {
             state.userSigningIn = false
             if (action.payload) {
-                state.user = action.payload
+                state.user = action.payload as UserType
                 state.userSignInSuccess = true
                 state.userSignInError = false
             } else {
-                state.userSignInError = true
                 state.userSignInSuccess = false
+                state.userSignInError = true
             }
         })
-        builder.addCase(signIn.rejected, (state) => {
+        builder.addCase(signIn.rejected, (state, action) => {
             state.userSigningIn = false
             state.userSignInSuccess = false
             state.userSignInError = true
         })
+
         // Fetch word lists
         builder.addCase(fetchWordLists.pending, (state) => {
             state.fetchingWordLists = true
@@ -138,6 +140,7 @@ export const spellTrainSlice = createSlice({
         builder.addCase(fetchWordLists.rejected, (state) => {
             state.fetchingWordLists = false
         })
+
         // Generate word list by Generative AI
         builder.addCase(generateWordList.pending, (state) => {
             state.generatingWordList = true
@@ -157,6 +160,131 @@ export const spellTrainSlice = createSlice({
             state.generatingWordList = false
             state.generatedWordList = undefined
         })
+
+        // Create custom word list - i.e. manually enter words
+        builder.addCase(createCustomWordList.pending, (state) => {
+            resetManipulatingState(state)
+
+            state.creatingCustomWordList = true
+            state.creatingCustomWordListError = false
+            state.creatingCustomWordListSuccess = false
+        })
+        builder.addCase(createCustomWordList.fulfilled, (state, action) => {
+            state.creatingCustomWordList = false
+
+            if (action.payload) {
+                state.wordLists.push(action.payload)
+                state.creatingCustomWordListError = false
+                state.creatingCustomWordListSuccess = true
+            } else {
+                state.creatingCustomWordListError = true
+                state.creatingCustomWordListSuccess = false
+            }
+        })
+        builder.addCase(createCustomWordList.rejected, (state) => {
+            console.log('creating word list rejected')
+            state.creatingCustomWordList = false
+            state.creatingCustomWordListError = true
+            state.creatingCustomWordListSuccess = false
+        })
+
+        // Update word list
+        builder.addCase(updateWordList.pending, (state) => {
+            resetManipulatingState(state)
+
+            state.updatingWordList = true
+            state.updatingWordListError = false
+            state.updatingWordListSuccess = false
+        })
+        builder.addCase(updateWordList.fulfilled, (state, action) => {
+            state.updatingWordList = false
+            console.log(action.payload)
+            if (action.payload) {
+                state.updatingWordList = false
+                state.updatingWordListError = false
+                state.updatingWordListSuccess = true
+
+                const updatedWordLists = state.wordLists.map((list) =>
+                    list.id === action.payload.id ? action.payload : list
+                )
+                state.wordLists = updatedWordLists
+            } else {
+                state.updatingWordListError = true
+                state.updatingWordListSuccess = false
+            }
+        })
+        builder.addCase(updateWordList.rejected, (state, action) => {
+            state.updatingWordList = false
+            state.updatingWordListError = true
+            state.updatingWordListSuccess = false
+        })
+
+        // Delete a word list
+        builder.addCase(deleteWordList.pending, (state) => {
+            resetManipulatingState(state)
+
+            state.deletingWordList = true
+            state.deletingWordListSuccess = false
+            state.deletingWordListError = false
+        })
+        builder.addCase(deleteWordList.fulfilled, (state, action) => {
+            state.deletingWordList = false
+            if (action.payload) {
+                state.deletingWordListSuccess = true
+                state.deletingWordListError = false
+                const updatedWordLists = state.wordLists.filter(
+                    (w) => w.id != action.payload.id
+                )
+                state.wordLists = updatedWordLists
+            } else {
+                state.deletingWordListSuccess = false
+                state.deletingWordListError = true
+            }
+        })
+        builder.addCase(deleteWordList.rejected, (state) => {
+            console.log('deleting word list rejected')
+            state.deletingWordList = false
+            state.deletingWordListSuccess = false
+            state.deletingWordListError = true
+        })
+
+        // Deleting words by ids
+        builder.addCase(deleteWords.pending, (state) => {
+            resetManipulatingState(state)
+
+            state.deletingWords = true
+            state.deletingWordsSuccess = false
+            state.deletingWordsError = false
+        })
+        builder.addCase(deleteWords.fulfilled, (state, action) => {
+            resetManipulatingState(state)
+
+            const { listId, deletedWords } = action.payload
+            const deletedWordIds = deletedWords.map((w) => w.id)
+
+            const updatedWordLists = state.wordLists.map((list) =>
+                list.id === listId
+                    ? {
+                          ...list,
+                          words: list.words.filter(
+                              (w) => !deletedWordIds.includes(w.id)
+                          ),
+                      }
+                    : list
+            )
+            state.wordLists = updatedWordLists
+            state.deletingWords = false
+            state.deletingWordsSuccess = true
+            state.deletingWordsError = false
+        })
+        builder.addCase(deleteWords.rejected, (state) => {
+            resetManipulatingState(state)
+
+            state.deletingWords = false
+            state.deletingWordsSuccess = false
+            state.deletingWordsError = true
+        })
+
         // Generate journey games
         builder.addCase(generateJourney.pending, (state) => {
             state.generatingJourney = true
@@ -174,6 +302,7 @@ export const spellTrainSlice = createSlice({
             state.generatingJourneySuccess = false
             state.generatingJourneyError = true
         })
+
         // Generate journey games by word list
         builder.addCase(generateJourneyByWordList.pending, (state) => {
             state.generatingJourney = true
@@ -196,6 +325,24 @@ export const spellTrainSlice = createSlice({
         })
     },
 })
+
+const resetManipulatingState = (state: any) => {
+    state.creatingCustomWordList = false
+    state.creatingCustomWordListError = false
+    state.creatingCustomWordListSuccess = false
+
+    state.updatingWordList = false
+    state.updatingWordListError = false
+    state.updatingWordListSuccess = false
+
+    state.deletingWordList = false
+    state.deletingWordListSuccess = false
+    state.deletingWordListError = false
+
+    state.deletingWords = false
+    state.deletingWordsSuccess = false
+    state.deletingWordsError = false
+}
 
 const {
     createPracticeList,
@@ -266,12 +413,14 @@ export const signIn = createAsyncThunk(
     async (credential: {
         email: string
         password: string
-    }): Promise<UserType | undefined> => {
+    }): Promise<UserType | string | undefined> => {
         const url = 'http://127.0.0.1:8000/users/login'
         try {
             const response = await axios.post(url, credential)
             if (response.status === 200) {
                 return response.data
+            } else {
+                return undefined
             }
         } catch (e: any) {
             return undefined
@@ -297,7 +446,7 @@ export const fetchWordLists = createAsyncThunk(
 /**
  * Asynchronous function to fetch the metadata of a word
  */
-export const fetchWordData = async (id: number, token: string) => {
+export const fetchWordData = async (id: number | string, token: string) => {
     const url = `http://127.0.0.1:8000/word-lists/words/${id}`
     const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` },
@@ -326,6 +475,125 @@ export const generateWordList = createAsyncThunk(
         token: string
     }): Promise<WordListType> => {
         return await createWordList(request.topicName, request.token)
+    }
+)
+
+export const createCustomWordList = createAsyncThunk(
+    'put/create-custom-word-list',
+    async (request: {
+        wordList: WordListType
+        token: string
+    }): Promise<WordListType> => {
+        const url = 'http://localhost:8000/word-lists/'
+        const words = request.wordList.words.filter((w) => w.word.length > 0)
+        const response = await axios.put(
+            url,
+            { title: request.wordList.title, words: words },
+            {
+                headers: {
+                    Authorization: `Bearer ${request.token}`,
+                },
+            }
+        )
+        return response.data
+    }
+)
+
+export const updateWordList = createAsyncThunk(
+    'patch/update-word-list',
+    async (request: {
+        wordList: WordListType
+        token: string
+    }): Promise<WordListType> => {
+        const updateTitleUrl = 'http://localhost:8000/word-lists/'
+        const wordsUrl = 'http://localhost:8000/word-lists/words'
+
+        const updateWords = request.wordList.words.filter(
+            (w) => typeof w.id === 'number' && w.word.length > 0
+        )
+        let newWords = request.wordList.words
+            .filter((w) => typeof w.id !== 'number' && w.word.length > 0)
+            .map((w) => ({ word: w.word, wordListId: request.wordList.id }))
+
+        console.log(newWords.length)
+        if (newWords.length > 0) {
+            const response = await axios
+                .patch(
+                    updateTitleUrl,
+                    { id: request.wordList.id, title: request.wordList.title },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${request.token}`,
+                        },
+                    }
+                )
+                .then(() =>
+                    axios.patch(wordsUrl, updateWords, {
+                        headers: { Authorization: `Bearer ${request.token}` },
+                    })
+                )
+                .then(() =>
+                    axios.post(wordsUrl, newWords, {
+                        headers: { Authorization: `Bearer ${request.token}` },
+                    })
+                )
+
+            let updatedWordList: WordListType = response.data
+            return updatedWordList
+        } else {
+            const response = await axios
+                .patch(
+                    updateTitleUrl,
+                    { id: request.wordList.id, title: request.wordList.title },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${request.token}`,
+                        },
+                    }
+                )
+                .then(() =>
+                    axios.patch(wordsUrl, updateWords, {
+                        headers: { Authorization: `Bearer ${request.token}` },
+                    })
+                )
+
+            let updatedWordList: WordListType = response.data
+            return updatedWordList
+        }
+    }
+)
+
+export const deleteWordList = createAsyncThunk(
+    'delete/word-list',
+    async (request: {
+        id: number | string
+        token: string
+    }): Promise<WordListType> => {
+        const url = `http://localhost:8000/word-lists/?word_list_id=${request.id}`
+
+        const response = await axios.delete(url, {
+            headers: {
+                Authorization: `Bearer ${request.token}`,
+            },
+        })
+        return response.data
+    }
+)
+
+export const deleteWords = createAsyncThunk(
+    'delete/words',
+    async (request: {
+        listId: number | string
+        ids: number[]
+        token: string
+    }): Promise<{ listId: number | string; deletedWords: Array<WordType> }> => {
+        let deleteIdsUrl = 'word_ids=' + request.ids.join('&word_ids=')
+        const url = `http://localhost:8000/word-lists/words?${deleteIdsUrl}`
+        console.log(url)
+        const response = await axios.delete(url, {
+            headers: { Authorization: `Bearer ${request.token}` },
+        })
+        return { listId: request.listId, deletedWords: response.data }
     }
 )
 

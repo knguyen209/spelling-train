@@ -22,6 +22,26 @@ const SpellTrainStore: SpellTrainStateType = {
     userSigningIn: false,
     userSignInError: false,
     userSignInSuccess: false,
+
+    creatingCustomWordList: false,
+    creatingCustomWordListSuccess: false,
+    creatingCustomWordListError: false,
+    creatingCustomWordListErrorMessage: '',
+
+    updatingWordList: false,
+    updatingWordListSuccess: false,
+    updatingWordListError: false,
+    updatingWordListErrorMessage: '',
+
+    deletingWordList: false,
+    deletingWordListSuccess: false,
+    deletingWordListError: false,
+    deletingWordListErrorMessage: '',
+
+    deletingWords: false,
+    deletingWordsSuccess: false,
+    deletingWordsError: false,
+    deletingWordsErrorMessage: '',
 }
 
 export default SpellTrainStore

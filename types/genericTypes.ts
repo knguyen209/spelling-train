@@ -45,14 +45,14 @@ export type PracticeResultType = {
 }
 
 export type WordListType = {
-    id: number
+    id: number | string
     title: string
     ownerId: number
     words: Array<WordType>
 }
 
 export type WordType = {
-    id: number
+    id: number | string
     word: string
     definition?: string
     rootOrigin?: string

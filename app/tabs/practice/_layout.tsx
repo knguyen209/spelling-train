@@ -34,7 +34,10 @@ export default function PracticeTabLayout() {
             />
             <Stack.Screen
                 name='practice-game'
-                options={{ headerTitle: 'Practice' }}
+                options={{
+                    headerTitle: 'Practice',
+                    presentation: 'fullScreenModal',
+                }}
             />
             <Stack.Screen
                 name='practice-result'
@@ -46,7 +49,7 @@ export default function PracticeTabLayout() {
             <Stack.Screen
                 name='word-list-modal'
                 options={{
-                    presentation: 'modal',
+                    presentation: 'fullScreenModal',
                     headerTitle: 'Word List',
                     headerLeft: () => (
                         <TouchableOpacity
@@ -74,7 +77,7 @@ export default function PracticeTabLayout() {
             <Stack.Screen
                 name='ai-word-list-modal'
                 options={{
-                    presentation: 'modal',
+                    presentation: 'fullScreenModal',
                     headerTitle: 'Generate Word List by AI',
                     headerLeft: () => (
                         <TouchableOpacity

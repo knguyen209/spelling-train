@@ -75,4 +75,24 @@ export type SpellTrainStateType = {
 
     generatingWordList: boolean
     generatedWordList: WordListType | undefined
+
+    creatingCustomWordList: boolean
+    creatingCustomWordListSuccess: boolean
+    creatingCustomWordListError: boolean
+    creatingCustomWordListErrorMessage: string
+
+    updatingWordList: boolean
+    updatingWordListSuccess: boolean
+    updatingWordListError: boolean
+    updatingWordListErrorMessage: string
+
+    deletingWordList: boolean
+    deletingWordListSuccess: boolean
+    deletingWordListError: boolean
+    deletingWordListErrorMessage: string
+
+    deletingWords: boolean
+    deletingWordsSuccess: boolean
+    deletingWordsError: boolean
+    deletingWordsErrorMessage: string
 }

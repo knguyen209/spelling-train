@@ -21,6 +21,7 @@ const useJourneyGenerationController = () => {
         wordLists,
         fetchingWordLists,
     } = useAppSelector((state) => state.spellTrain)
+    const [requestSent, setRequestSent] = useState(false)
     const authContext = useContext(AuthenticationContext)
     const confirmationContext = useConfirmationModalContext()
 
@@ -33,7 +34,7 @@ const useJourneyGenerationController = () => {
     }, [])
 
     useEffect(() => {
-        if (generatingJourneySuccess && !generatingJourneyError) {
+        if (requestSent && generatingJourneySuccess) {
             confirmationContext
                 .showConfirmation(
                     'Information',
@@ -45,7 +46,7 @@ const useJourneyGenerationController = () => {
                     router.back()
                 })
         }
-        if (!generatingJourneySuccess && generatingJourneyError) {
+        if (requestSent && generatingJourneyError) {
             confirmationContext
                 .showConfirmation(
                     'Error',
@@ -57,7 +58,7 @@ const useJourneyGenerationController = () => {
                     router.back()
                 })
         }
-    }, [generatingJourneySuccess, generatingJourneyError])
+    }, [requestSent, generatingJourneySuccess, generatingJourneyError])
 
     const onTopicNameChanged = (newValue: string) => {
         setTopicName(newValue)
@@ -65,10 +66,12 @@ const useJourneyGenerationController = () => {
 
     const onGenerateButtonPressed = async () => {
         dispatch(generateJourney(topicName))
+        setRequestSent(true)
     }
 
     const onWordListItemPressed = async (wordList: WordListType) => {
         dispatch(generateJourneyByWordList(wordList))
+        setRequestSent(true)
     }
 
     return {

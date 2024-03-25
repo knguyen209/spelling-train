@@ -2,6 +2,7 @@ import { Stack, useRouter } from 'expo-router'
 import { COLORS, SVGS } from '../../../constants'
 import { TouchableOpacity } from 'react-native'
 import ResultModalContextProvider from '../../../providers/result-dialog/ResultDialogProvider'
+import ConfirmationModalContextProvider from '../../../providers/modal-dialog/ModalDialogProvider'
 
 export default function Layout() {
     const router = useRouter()
@@ -33,27 +34,14 @@ export default function Layout() {
                     options={{
                         headerTitle: 'Journey',
                         headerLeft: () => null,
+                        presentation: 'fullScreenModal',
                     }}
                 />
                 <Stack.Screen
                     name='generate-journey-games-modal'
-                    // options={{
-                    //     presentation: 'modal',
-                    //     headerTitle: 'Create Journey Games by AI',
-                    //     headerLeft: () => (
-                    //         <TouchableOpacity
-                    //             onPress={() => {
-                    //                 router.back()
-                    //             }}
-                    //         >
-                    //             <SVGS.CloseIcon
-                    //                 width={30}
-                    //                 height={30}
-                    //                 fill={COLORS.primary}
-                    //             />
-                    //         </TouchableOpacity>
-                    //     ),
-                    // }}
+                    options={{
+                        headerTitle: 'Create Journey Games by AI',
+                    }}
                 />
             </Stack>
         </ResultModalContextProvider>

@@ -36,9 +36,7 @@ const usePracticeGameController = (wordListId: number) => {
     }, [])
 
     useEffect(() => {
-        setTimeout(() => {
-            speak(wordData)
-        }, 100)
+        speak(wordData)
     }, [wordData])
 
     const fetchAnotherWord = async () => {
@@ -171,7 +169,11 @@ const usePracticeGameController = (wordListId: number) => {
 
         const message: MessageType = {
             type: 'ai',
-            text: wordData?.usage || '',
+            text:
+                wordData?.usage?.replace(
+                    wordData.word,
+                    Array(wordData.word.length).fill('_').join('')
+                ) || '',
         }
 
         const newMessages = [...messages, requestMsg, message]

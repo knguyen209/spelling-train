@@ -13,7 +13,6 @@ import { MessageType } from '../../../types/genericTypes'
 import STTextField from '../../commons/st-textfield/STTextField'
 import { useRef } from 'react'
 import usePracticeGameController from '../../../controllers/practice-list/usePracticeGameController'
-import { AnimatePresence, MotiView } from 'moti'
 import { MotiPressable } from 'moti/interactions'
 
 const PracticeGame = ({ practiceListId }: { practiceListId: number }) => {

@@ -48,6 +48,9 @@ import IncompleteLevelLightReflect from '../assets/svgs/incomplete-level-light-r
 import CompleteLevelStripes from '../assets/svgs/complete-level-stripes.svg'
 import CompleleLevelStars from '../assets/svgs/complete-level-stars.svg'
 
+import CheckboxUnchecked from '../assets/svgs/checkbox-unchecked.svg'
+import CheckboxChecked from '../assets/svgs/checkbox-checked.svg'
+
 const AchievementIcons = {
     star: AchievementStarIcon,
     diamond: AchievementDiamondIcon,
@@ -102,4 +105,7 @@ export default {
 
     CompleteLevelStripes,
     CompleleLevelStars,
+
+    CheckboxChecked,
+    CheckboxUnchecked,
 }
