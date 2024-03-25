@@ -14,9 +14,12 @@ import {
     WordType,
 } from '../types/genericTypes'
 import { randomInRange, shuffleArray } from '../utils'
-import { SpellTrainStateType } from '../types/stateType'
 
 const initialState = SpellTrainStore
+
+const backEndUrl = process.env.EXPO_PUBLIC_BACK_END_BASE_URL
+const portNumber = process.env.EXPO_PUBLIC_BACK_END_PORT_NUM
+const baseUrl = backEndUrl + ':' + portNumber
 
 export const spellTrainSlice = createSlice({
     name: 'spellTrain',
@@ -370,7 +373,7 @@ export const createAccount = async (
     phone: string,
     password: string
 ) => {
-    const url = 'http://127.0.0.1:8000/users/'
+    const url = `${baseUrl}/users/`
     try {
         const response = await axios.post(url, {
             name: name,
@@ -412,7 +415,7 @@ export const signIn = createAsyncThunk(
         email: string
         password: string
     }): Promise<UserType | string | undefined> => {
-        const url = 'http://127.0.0.1:8000/users/login'
+        const url = `${baseUrl}/users/login`
         try {
             const response = await axios.post(url, credential)
             if (response.status === 200) {
@@ -432,8 +435,7 @@ export const signIn = createAsyncThunk(
 export const fetchWordLists = createAsyncThunk(
     'get/practice-lists',
     async (request: { token: string }): Promise<[WordListType]> => {
-        // const response = await fetch('http://127.0.0.1:8000/word-lists/get-all')
-        const url = 'http://127.0.0.1:8000/word-lists/get-all'
+        const url = `${baseUrl}/word-lists/get-all`
         const response = await axios.get(url, {
             headers: { Authorization: `Bearer ${request.token}` },
         })
@@ -445,7 +447,7 @@ export const fetchWordLists = createAsyncThunk(
  * Asynchronous function to fetch the metadata of a word
  */
 export const fetchWordData = async (id: number | string, token: string) => {
-    const url = `http://127.0.0.1:8000/word-lists/words/${id}`
+    const url = `${baseUrl}/word-lists/words/${id}`
     const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` },
     })
@@ -458,7 +460,7 @@ export const fetchWordData = async (id: number | string, token: string) => {
 export const fetchWordList = createAsyncThunk(
     'get/word-list',
     async (id: number): Promise<WordListType> => {
-        const response = await fetch('http://127.0.0.1:8000/word-lists/' + id)
+        const response = await fetch(`${baseUrl}/word-lists/${id}`)
         return await response.json()
     }
 )
@@ -482,7 +484,7 @@ export const createCustomWordList = createAsyncThunk(
         wordList: WordListType
         token: string
     }): Promise<WordListType> => {
-        const url = 'http://localhost:8000/word-lists/'
+        const url = `${baseUrl}/word-lists/`
         const words = request.wordList.words.filter((w) => w.word.length > 0)
         const response = await axios.put(
             url,
@@ -503,8 +505,8 @@ export const updateWordList = createAsyncThunk(
         wordList: WordListType
         token: string
     }): Promise<WordListType> => {
-        const updateTitleUrl = 'http://localhost:8000/word-lists/'
-        const wordsUrl = 'http://localhost:8000/word-lists/words'
+        const updateTitleUrl = `${baseUrl}/word-lists/`
+        const wordsUrl = `${baseUrl}/word-lists/words`
 
         const updateWords = request.wordList.words.filter(
             (w) => typeof w.id === 'number' && w.word.length > 0
@@ -566,7 +568,7 @@ export const deleteWordList = createAsyncThunk(
         id: number | string
         token: string
     }): Promise<WordListType> => {
-        const url = `http://localhost:8000/word-lists/?word_list_id=${request.id}`
+        const url = `${baseUrl}/word-lists/?word_list_id=${request.id}`
 
         const response = await axios.delete(url, {
             headers: {
@@ -585,7 +587,7 @@ export const deleteWords = createAsyncThunk(
         token: string
     }): Promise<{ listId: number | string; deletedWords: Array<WordType> }> => {
         let deleteIdsUrl = 'word_ids=' + request.ids.join('&word_ids=')
-        const url = `http://localhost:8000/word-lists/words?${deleteIdsUrl}`
+        const url = `${baseUrl}/word-lists/words?${deleteIdsUrl}`
 
         const response = await axios.delete(url, {
             headers: { Authorization: `Bearer ${request.token}` },
@@ -595,7 +597,7 @@ export const deleteWords = createAsyncThunk(
 )
 
 export const createWordList = async (topicName: string, token: string) => {
-    const url = `http://127.0.0.1:8000/word-lists/?topic=${topicName}`
+    const url = `${baseUrl}/word-lists/?topic=${topicName}`
 
     const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` },
@@ -619,9 +621,7 @@ export const generateJourneyByWordList = createAsyncThunk(
 )
 
 export const createJourney = async (topicName: string) => {
-    const response = await fetch(
-        'http://127.0.0.1:8000/word-lists/?topic=' + topicName
-    )
+    const response = await fetch(`${baseUrl}/word-lists/?topic=${topicName}`)
     const wordList: WordListType = await response.json()
 
     return createJourneyByWordList(wordList)

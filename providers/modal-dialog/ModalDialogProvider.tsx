@@ -24,7 +24,7 @@ const useModalShow = (): UseModalShowReturnType => {
 type ModalContextType = {
     showConfirmation: (
         title: string,
-        message: string,
+        message: string | React.ReactNode,
         alertOnly?: boolean,
         confirmText?: string,
         cancelText?: string
@@ -44,7 +44,7 @@ const ConfirmationModalContextProvider: React.FC<
 
     const [content, setContent] = useState<{
         title: string
-        message: string
+        message: string | React.ReactNode
         alertOnly?: boolean
         confirmText?: string
         cancelText?: string
@@ -54,7 +54,7 @@ const ConfirmationModalContextProvider: React.FC<
 
     const handleShow = (
         title: string,
-        message: string,
+        message: string | React.ReactNode,
         alertOnly?: boolean,
         confirmText?: string,
         cancelText?: string
@@ -150,7 +150,14 @@ const ConfirmationModalContextProvider: React.FC<
                                             <STText size='lg' weight='bold'>
                                                 {content.title}
                                             </STText>
-                                            <STText>{content.message}</STText>
+                                            {typeof content.message ===
+                                            'string' ? (
+                                                <STText>
+                                                    {content.message}
+                                                </STText>
+                                            ) : (
+                                                content.message
+                                            )}
                                         </View>
 
                                         <View

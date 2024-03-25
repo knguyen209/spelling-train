@@ -11,6 +11,9 @@ import { useRouter } from 'expo-router'
 import { useAppSelector } from '../../store'
 import { playCorrectSound, playIncorrectSound } from '../../utils'
 import { fetchWordData } from '../../store/spellTrainSlice'
+import { useConfirmationModalContext } from '../../providers/modal-dialog/ModalDialogProvider'
+import { View } from 'react-native'
+import STText from '../../components/commons/st-text/STText'
 
 const usePracticeGameController = (wordListId: number) => {
     const router = useRouter()
@@ -29,6 +32,7 @@ const usePracticeGameController = (wordListId: number) => {
         totalTime: 0,
     })
 
+    const confirmModal = useConfirmationModalContext()
     const startTime = new Date()
 
     useEffect(() => {
@@ -42,13 +46,27 @@ const usePracticeGameController = (wordListId: number) => {
     const fetchAnotherWord = async () => {
         let wordList = wordLists.filter((item) => item.id == wordListId)[0]
         setFetchingWordData(true)
+
         if (wordList) {
             // randomly select a word in the list
             let index = Math.floor(Math.random() * wordList.words.length)
             let word = wordList.words[index]
             try {
-                let data = await fetchWordData(word.id, user?.accessToken || '')
-                setWordData(data)
+                if (isEmptyWordData(word)) {
+                    let data = await fetchWordData(
+                        word.id,
+                        user?.accessToken || ''
+                    )
+
+                    setWordData(data)
+                } else {
+                    setWordData(word)
+                }
+
+                setPracticeResult({
+                    ...practiceResult,
+                    noQuestions: practiceResult.noQuestions + 1,
+                })
             } catch (e) {
                 console.log(e)
             } finally {
@@ -129,7 +147,8 @@ const usePracticeGameController = (wordListId: number) => {
     const onSendAnswerPress = () => {
         if (playerAnswer.trim()) {
             const isCorrect =
-                playerAnswer.toLowerCase() === wordData?.word.toLowerCase()
+                playerAnswer.toLowerCase().trim() ===
+                wordData?.word.toLowerCase()
 
             const requestMsg: MessageType = {
                 type: 'player',
@@ -142,22 +161,25 @@ const usePracticeGameController = (wordListId: number) => {
             }
 
             if (isCorrect) {
-                playCorrectSound()
-                const updatedResult: PracticeResultType = {
-                    ...practiceResult,
-                    noCorrect: practiceResult.noCorrect + 1,
-                }
-                setPracticeResult(updatedResult)
+                playCorrectSound().then(() => {
+                    const updatedResult: PracticeResultType = {
+                        ...practiceResult,
+                        noCorrect: practiceResult.noCorrect + 1,
+                    }
+                    setPracticeResult(updatedResult)
+                    fetchAnotherWord()
+                    // setTimeout(() => {
+                    //     fetchAnotherWord()
+                    // }, 500)
+                })
             } else {
                 playIncorrectSound()
             }
 
-            setPlayerAnswer('')
-
             const newMessages = [...messages, requestMsg, message]
             setMessages(newMessages)
 
-            fetchAnotherWord()
+            setPlayerAnswer('')
         }
     }
 
@@ -233,22 +255,38 @@ const usePracticeGameController = (wordListId: number) => {
         increaseNoHints()
     }
 
-    const onEndPracicePress = () => {
-        const endTime = new Date()
-
-        // calculate the total time elapsed
-        const elapsedTime = Math.floor(
-            (endTime.getTime() - startTime.getTime()) / 1000 / 60
+    const onEndPracicePress = async () => {
+        const result = await confirmModal.showConfirmation(
+            'Message',
+            'Are you sure you want to end the practice?',
+            false,
+            'End Practice',
+            'No'
         )
-        const result: PracticeResultType = {
-            ...practiceResult,
-            totalTime: elapsedTime,
-        }
+        if (result) {
+            const endTime = new Date()
 
-        router.push({
-            pathname: '/tabs/practice/practice-result',
-            params: result,
-        })
+            // calculate the total time elapsed
+            const elapsedTime = Math.floor(
+                (endTime.getTime() - startTime.getTime()) / 1000 / 60
+            )
+
+            const pracResult: PracticeResultType = {
+                ...practiceResult,
+                totalTime: elapsedTime,
+            }
+
+            confirmModal
+                .showConfirmation(
+                    'Your practice result',
+                    createPracticeResultView(pracResult),
+                    true,
+                    'Continue'
+                )
+                .then(() => {
+                    router.back()
+                })
+        }
     }
 
     const speakCurrentWord = async () => {
@@ -296,6 +334,63 @@ const usePracticeGameController = (wordListId: number) => {
         onSendAnswerPress,
         onEndPracicePress,
     }
+}
+
+const isEmptyWordData = (wordData: WordType) => {
+    return (
+        wordData.word === '' ||
+        wordData.definition === '' ||
+        wordData.alternatePronunciation === '' ||
+        wordData.audioUrl === '' ||
+        wordData.usage === '' ||
+        wordData.languageOrigin === '' ||
+        wordData.rootOrigin === '' ||
+        wordData.partsOfSpeech === ''
+    )
+}
+
+const createPracticeResultView = (result: PracticeResultType) => {
+    const { totalTime, noQuestions, noCorrect, noHintsUsed } = result
+    return (
+        <View style={{ width: '100%' }}>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                }}
+            >
+                <STText>Practice Time:</STText>
+                <STText>{totalTime?.toString() || ''}</STText>
+            </View>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                }}
+            >
+                <STText>No. of Questions:</STText>
+                <STText>{noQuestions?.toString() || ''}</STText>
+            </View>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                }}
+            >
+                <STText>No. of Correct Answers:</STText>
+                <STText>{noCorrect?.toString() || ''}</STText>
+            </View>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                }}
+            >
+                <STText>No. of Hints Used:</STText>
+                <STText>{noHintsUsed?.toString() || ''}</STText>
+            </View>
+        </View>
+    )
 }
 
 export default usePracticeGameController

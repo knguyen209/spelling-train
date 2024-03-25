@@ -33,7 +33,19 @@ export default function Layout() {
                     name='journey-game'
                     options={{
                         headerTitle: 'Journey',
-                        headerLeft: () => null,
+                        headerLeft: () => (
+                            <TouchableOpacity
+                                onPress={() => {
+                                    router.back()
+                                }}
+                            >
+                                <SVGS.CloseIcon
+                                    width={30}
+                                    height={30}
+                                    fill={COLORS.primary}
+                                />
+                            </TouchableOpacity>
+                        ),
                         presentation: 'fullScreenModal',
                     }}
                 />
