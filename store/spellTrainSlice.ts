@@ -182,7 +182,6 @@ export const spellTrainSlice = createSlice({
             }
         })
         builder.addCase(createCustomWordList.rejected, (state) => {
-            console.log('creating word list rejected')
             state.creatingCustomWordList = false
             state.creatingCustomWordListError = true
             state.creatingCustomWordListSuccess = false
@@ -198,7 +197,7 @@ export const spellTrainSlice = createSlice({
         })
         builder.addCase(updateWordList.fulfilled, (state, action) => {
             state.updatingWordList = false
-            console.log(action.payload)
+
             if (action.payload) {
                 state.updatingWordList = false
                 state.updatingWordListError = false
@@ -242,7 +241,6 @@ export const spellTrainSlice = createSlice({
             }
         })
         builder.addCase(deleteWordList.rejected, (state) => {
-            console.log('deleting word list rejected')
             state.deletingWordList = false
             state.deletingWordListSuccess = false
             state.deletingWordListError = true
@@ -515,7 +513,6 @@ export const updateWordList = createAsyncThunk(
             .filter((w) => typeof w.id !== 'number' && w.word.length > 0)
             .map((w) => ({ word: w.word, wordListId: request.wordList.id }))
 
-        console.log(newWords.length)
         if (newWords.length > 0) {
             const response = await axios
                 .patch(
@@ -589,7 +586,7 @@ export const deleteWords = createAsyncThunk(
     }): Promise<{ listId: number | string; deletedWords: Array<WordType> }> => {
         let deleteIdsUrl = 'word_ids=' + request.ids.join('&word_ids=')
         const url = `http://localhost:8000/word-lists/words?${deleteIdsUrl}`
-        console.log(url)
+
         const response = await axios.delete(url, {
             headers: { Authorization: `Bearer ${request.token}` },
         })
