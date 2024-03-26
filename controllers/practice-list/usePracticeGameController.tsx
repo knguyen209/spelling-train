@@ -9,7 +9,11 @@ import {
 import { useRouter } from 'expo-router'
 
 import { useAppSelector } from '../../store'
-import { playCorrectSound, playIncorrectSound } from '../../utils'
+import {
+    isEmptyWordData,
+    playCorrectSound,
+    playIncorrectSound,
+} from '../../utils'
 import { fetchWordData } from '../../store/spellTrainSlice'
 import { useConfirmationModalContext } from '../../providers/modal-dialog/ModalDialogProvider'
 import { View } from 'react-native'
@@ -22,31 +26,38 @@ const usePracticeGameController = (wordListId: number) => {
 
     const [wordData, setWordData] = useState<WordType | undefined>(undefined)
     const [fetchingWordData, setFetchingWordData] = useState(true)
+    const [isSpeaking, setIsSpeaking] = useState(false)
     const [messages, setMessages] = useState<Array<MessageType>>([])
 
     const [playerAnswer, setPlayerAnswer] = useState('')
-    const [practiceResult, setPracticeResult] = useState<PracticeResultType>({
-        noQuestions: 0,
-        noCorrect: 0,
-        noHintsUsed: 0,
-        totalTime: 0,
-    })
+    const [sound, setSound] = useState<Audio.Sound>()
+    const [noQuestions, setNoQuestions] = useState(0)
+    const [noHints, setNoHints] = useState(0)
+    const [noCorrects, setNoCorrects] = useState(0)
+    const [startTime, setStartTime] = useState<Date>()
 
     const confirmModal = useConfirmationModalContext()
-    const startTime = new Date()
 
     useEffect(() => {
         fetchAnotherWord()
+        setStartTime(new Date())
     }, [])
 
     useEffect(() => {
         speak(wordData)
     }, [wordData])
 
+    useEffect(() => {
+        return sound
+            ? () => {
+                  sound.unloadAsync()
+              }
+            : undefined
+    }, [sound])
+
     const fetchAnotherWord = async () => {
         let wordList = wordLists.filter((item) => item.id == wordListId)[0]
         setFetchingWordData(true)
-
         if (wordList) {
             // randomly select a word in the list
             let index = Math.floor(Math.random() * wordList.words.length)
@@ -57,20 +68,15 @@ const usePracticeGameController = (wordListId: number) => {
                         word.id,
                         user?.accessToken || ''
                     )
-
                     setWordData(data)
                 } else {
                     setWordData(word)
                 }
-
-                setPracticeResult({
-                    ...practiceResult,
-                    noQuestions: practiceResult.noQuestions + 1,
-                })
             } catch (e) {
                 console.log(e)
             } finally {
                 setFetchingWordData(false)
+                setNoQuestions(noQuestions + 1)
             }
         }
     }
@@ -161,17 +167,9 @@ const usePracticeGameController = (wordListId: number) => {
             }
 
             if (isCorrect) {
-                playCorrectSound().then(() => {
-                    const updatedResult: PracticeResultType = {
-                        ...practiceResult,
-                        noCorrect: practiceResult.noCorrect + 1,
-                    }
-                    setPracticeResult(updatedResult)
-                    fetchAnotherWord()
-                    // setTimeout(() => {
-                    //     fetchAnotherWord()
-                    // }, 500)
-                })
+                setNoCorrects(noCorrects + 1)
+                playCorrectSound()
+                fetchAnotherWord()
             } else {
                 playIncorrectSound()
             }
@@ -266,24 +264,28 @@ const usePracticeGameController = (wordListId: number) => {
         if (result) {
             const endTime = new Date()
 
-            // calculate the total time elapsed
-            const elapsedTime = Math.floor(
-                (endTime.getTime() - startTime.getTime()) / 1000 / 60
-            )
-
-            const pracResult: PracticeResultType = {
-                ...practiceResult,
-                totalTime: elapsedTime,
+            let elapsedTime = 0
+            if (startTime) {
+                // calculate the total time elapsed
+                elapsedTime = Math.floor(
+                    (endTime.getTime() - startTime.getTime()) / 1000 / 60
+                )
             }
 
             confirmModal
                 .showConfirmation(
                     'Your practice result',
-                    createPracticeResultView(pracResult),
+                    createPracticeResultView(
+                        noQuestions,
+                        noCorrects,
+                        noHints,
+                        elapsedTime
+                    ),
                     true,
                     'Continue'
                 )
                 .then(() => {
+                    sound?.unloadAsync()
                     router.back()
                 })
         }
@@ -294,25 +296,28 @@ const usePracticeGameController = (wordListId: number) => {
     }
 
     const speak = async (data: WordType | null | undefined) => {
+        setIsSpeaking(true)
         if (data) {
             if (data.audioUrl) {
                 const { sound } = await Audio.Sound.createAsync(
                     { uri: `http://localhost:8000/${data.audioUrl}` },
-                    { shouldPlay: true }
+                    { shouldPlay: false }
                 )
-                await sound.playAsync()
+                setSound(sound)
+                setTimeout(() => {
+                    sound.playAsync().then(() => {
+                        setTimeout(() => setIsSpeaking(false), 500)
+                    })
+                }, 500)
             } else {
                 Speech.speak(data.word)
             }
         }
+        setIsSpeaking(false)
     }
 
     const increaseNoHints = () => {
-        const updatedResult: PracticeResultType = {
-            ...practiceResult,
-            noHintsUsed: practiceResult.noHintsUsed + 1,
-        }
-        setPracticeResult(updatedResult)
+        setNoHints(noHints + 1)
     }
 
     return {
@@ -333,24 +338,16 @@ const usePracticeGameController = (wordListId: number) => {
         onAnotherWordPress,
         onSendAnswerPress,
         onEndPracicePress,
+        isSpeaking,
     }
 }
 
-const isEmptyWordData = (wordData: WordType) => {
-    return (
-        wordData.word === '' ||
-        wordData.definition === '' ||
-        wordData.alternatePronunciation === '' ||
-        wordData.audioUrl === '' ||
-        wordData.usage === '' ||
-        wordData.languageOrigin === '' ||
-        wordData.rootOrigin === '' ||
-        wordData.partsOfSpeech === ''
-    )
-}
-
-const createPracticeResultView = (result: PracticeResultType) => {
-    const { totalTime, noQuestions, noCorrect, noHintsUsed } = result
+const createPracticeResultView = (
+    noQuestions: number,
+    noCorrects: number,
+    noHints: number,
+    totalTime: number
+) => {
     return (
         <View style={{ width: '100%' }}>
             <View
@@ -360,7 +357,11 @@ const createPracticeResultView = (result: PracticeResultType) => {
                 }}
             >
                 <STText>Practice Time:</STText>
-                <STText>{totalTime?.toString() || ''}</STText>
+                <STText>
+                    {(totalTime?.toString() || '') +
+                        ` minute` +
+                        (totalTime != 1 ? 's' : '')}
+                </STText>
             </View>
             <View
                 style={{
@@ -378,7 +379,7 @@ const createPracticeResultView = (result: PracticeResultType) => {
                 }}
             >
                 <STText>No. of Correct Answers:</STText>
-                <STText>{noCorrect?.toString() || ''}</STText>
+                <STText>{noCorrects?.toString() || ''}</STText>
             </View>
             <View
                 style={{
@@ -387,7 +388,7 @@ const createPracticeResultView = (result: PracticeResultType) => {
                 }}
             >
                 <STText>No. of Hints Used:</STText>
-                <STText>{noHintsUsed?.toString() || ''}</STText>
+                <STText>{noHints?.toString() || ''}</STText>
             </View>
         </View>
     )

@@ -1,6 +1,8 @@
 import {
+    ActivityIndicator,
     KeyboardAvoidingView,
     Platform,
+    Pressable,
     ScrollView,
     TouchableOpacity,
     View,
@@ -14,9 +16,12 @@ import STTextField from '../../commons/st-textfield/STTextField'
 import { useRef } from 'react'
 import usePracticeGameController from '../../../controllers/practice-list/usePracticeGameController'
 import { MotiPressable } from 'moti/interactions'
+import { MotiView } from 'moti'
+import { nanoid } from '@reduxjs/toolkit'
 
 const PracticeGame = ({ practiceListId }: { practiceListId: number }) => {
     const {
+        isSpeaking,
         fetchingWordData,
         wordData,
         playerAnswer,
@@ -48,17 +53,17 @@ const PracticeGame = ({ practiceListId }: { practiceListId: number }) => {
                         backgroundColor: COLORS.appBodyBg,
                     }}
                 >
-                    <MotiPressable
-                        onPress={speakCurrentWord}
-                        animate={({ hovered, pressed }) => {
-                            'worklet'
-                            return {
-                                scale: hovered || pressed ? 1.1 : 1,
-                            }
-                        }}
-                    >
-                        <SVGS.GenieSpeaker width={150} height={150} />
-                    </MotiPressable>
+                    {fetchingWordData ? (
+                        <ActivityIndicator size='large' />
+                    ) : (
+                        <Pressable
+                            onPress={speakCurrentWord}
+                            disabled={fetchingWordData || isSpeaking}
+                        >
+                            <SVGS.GenieSpeaker width={150} height={150} />
+                        </Pressable>
+                    )}
+
                     <ScrollView
                         ref={scrollViewRef}
                         style={{ paddingHorizontal: 20 }}

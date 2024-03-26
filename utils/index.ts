@@ -1,5 +1,6 @@
 import { Audio } from 'expo-av'
 import { sounds } from '../constants'
+import { WordType } from '../types/genericTypes'
 
 /*
  * Source: https://natclark.com/tutorials/javascript-lighten-darken-hex-color/
@@ -45,4 +46,17 @@ export const playCorrectSound = async () => {
 export const playIncorrectSound = async () => {
     const { sound } = await Audio.Sound.createAsync(sounds.IncorrectSound)
     await sound.playAsync()
+}
+
+export const isEmptyWordData = (wordData: WordType) => {
+    return (
+        wordData.word === '' ||
+        wordData.definition === '' ||
+        wordData.alternatePronunciation === '' ||
+        wordData.audioUrl === '' ||
+        wordData.usage === '' ||
+        wordData.languageOrigin === '' ||
+        wordData.rootOrigin === '' ||
+        wordData.partsOfSpeech === ''
+    )
 }

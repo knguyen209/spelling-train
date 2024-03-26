@@ -87,7 +87,7 @@ const useWordListDetailsController = (id: number) => {
     const onWordItemPress = (id: number | string) => {
         router.push({
             pathname: '/tabs/practice/word-detail-modal',
-            params: { id: id },
+            params: { id: id, listId: wordList?.id },
         })
     }
 

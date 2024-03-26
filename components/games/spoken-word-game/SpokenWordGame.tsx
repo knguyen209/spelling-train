@@ -6,6 +6,7 @@ import {
 import {
     ActivityIndicator,
     FlatList,
+    Pressable,
     TouchableOpacity,
     View,
 } from 'react-native'
@@ -16,6 +17,7 @@ import STButton from '../../commons/st-button/STButton'
 import { MotiView } from 'moti'
 import useSpokenWordGameController from '../../../controllers/games/useSpokenWordGameController'
 import { MotiPressable } from 'moti/interactions'
+import { nanoid } from '@reduxjs/toolkit'
 
 type SpokenWordGameProps = {
     gameData: IJourneyGame
@@ -66,9 +68,23 @@ const SpokenWordGame = forwardRef<
             ) : (
                 <>
                     <View style={{ alignItems: 'center' }}>
-                        <TouchableOpacity onPress={() => quiz && speak(quiz)}>
-                            <SVGS.GenieSpeaker width={160} height={160} />
-                        </TouchableOpacity>
+                        <MotiView
+                            from={{ scale: 1.0 }}
+                            animate={{ scale: 1.1 }}
+                            transition={{
+                                loop: isSpeaking,
+                                duration: 500,
+                                type: 'timing',
+                            }}
+                            key={nanoid()}
+                        >
+                            <Pressable
+                                onPress={() => quiz && speak(quiz)}
+                                disabled={loading || isSpeaking}
+                            >
+                                <SVGS.GenieSpeaker width={160} height={160} />
+                            </Pressable>
+                        </MotiView>
                     </View>
                     <View
                         style={{

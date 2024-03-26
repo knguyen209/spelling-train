@@ -5,7 +5,7 @@ import { COLORS, SVGS } from '../../../constants'
 import STButton from '../st-button/STButton'
 import { Skeleton } from 'moti/skeleton'
 
-const WordDetailView = ({ id }: { id: string }) => {
+const WordDetailView = ({ id, listId }: { id: string; listId: string }) => {
     if (!id) {
         return (
             <View style={{ flexGrow: 1 }}>
@@ -13,8 +13,8 @@ const WordDetailView = ({ id }: { id: string }) => {
             </View>
         )
     } else {
-        const { wordData, fetchingWordData, closeModal, speak } =
-            useWordDetailController(parseInt(id))
+        const { wordData, fetchingWordData, closeModal, speak, isSpeaking } =
+            useWordDetailController(parseInt(id), parseInt(listId))
 
         return (
             <View
@@ -48,11 +48,18 @@ const WordDetailView = ({ id }: { id: string }) => {
                                     </STText>
                                 </Skeleton>
                                 {!fetchingWordData && (
-                                    <TouchableOpacity onPress={speak}>
-                                        <SVGS.SpeakerIcon
-                                            width={30}
-                                            height={30}
-                                        />
+                                    <TouchableOpacity
+                                        onPress={speak}
+                                        disabled={isSpeaking}
+                                    >
+                                        {isSpeaking ? (
+                                            <ActivityIndicator />
+                                        ) : (
+                                            <SVGS.SpeakerIcon
+                                                width={30}
+                                                height={30}
+                                            />
+                                        )}
                                     </TouchableOpacity>
                                 )}
                             </View>

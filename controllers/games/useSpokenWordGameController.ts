@@ -16,10 +16,19 @@ const useSpokenWordGameController = (gameData: IJourneyGame) => {
     const [isSpeaking, setIsSpeaking] = useState(true)
     const [options, setOptions] = useState<Array<QuizOption>>([])
     const [loading, setLoading] = useState(true)
+    const [sound, setSound] = useState<Audio.Sound>()
     const authContext = useContext(AuthenticationContext)
     useEffect(() => {
         initialize()
     }, [])
+
+    useEffect(() => {
+        return sound
+            ? () => {
+                  sound.unloadAsync()
+              }
+            : undefined
+    }, [sound])
 
     const initialize = async () => {
         const tData: Array<WordType> = await Promise.all(
@@ -39,8 +48,6 @@ const useSpokenWordGameController = (gameData: IJourneyGame) => {
 
         setQuiz(quiz)
 
-        speak(quiz)
-
         let quizOptions = tData.map((i) => ({
             id: nanoid(),
             text: i.word,
@@ -49,29 +56,31 @@ const useSpokenWordGameController = (gameData: IJourneyGame) => {
         }))
 
         setOptions(quizOptions)
+        setTimeout(() => {
+            speak(quiz)
+        }, 500)
         setLoading(false)
     }
 
     const confirm = useConfirmationModalContext()
 
     const speak = async (data: QuizData) => {
-        // setIsSpeaking(true)
-
         if (data) {
+            setIsSpeaking(true)
             const { sound } = await Audio.Sound.createAsync(
                 { uri: `http://localhost:8000/${data.audioUrl}` || '' },
-                { shouldPlay: true }
+                { shouldPlay: false }
             )
-            let res = await sound.playAsync()
-            if (res) {
-                // setIsSpeaking(false)
-            }
+            setSound(sound)
+
+            sound.playAsync().then(() => {
+                setTimeout(() => {
+                    setIsSpeaking(false)
+                }, 500)
+            })
+        } else {
+            setIsSpeaking(false)
         }
-        // setIsSpeaking(false)
-        // else {
-        //     Speech.speak(word.word)
-        //     setIsSpeaking(false)
-        // }
     }
 
     const onQuizOpenSelected = (id: string) => {
@@ -130,7 +139,7 @@ const generateQuestion = (words: Array<WordType>) => {
 }
 
 type QuizData = {
-    id: number
+    id: number | string
     correctAnswer: string
     audioUrl: string
 }
