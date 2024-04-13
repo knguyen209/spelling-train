@@ -1,12 +1,15 @@
 import { useRouter } from 'expo-router'
 
-import { JourneyLevelType } from '../../types/genericTypes'
+import {
+    JourneyLevelType,
+    JourneyStationLevelType,
+} from '../../types/genericTypes'
 import { useDispatch } from 'react-redux'
 import { SpellTrainAction } from '../../store/spellTrainSlice'
 
 const useJourneyListItemController = (
     journeyId: string,
-    item: JourneyLevelType
+    item: JourneyStationLevelType
 ) => {
     const router = useRouter()
     const dispatch = useDispatch()
@@ -15,11 +18,11 @@ const useJourneyListItemController = (
     const handleItemPressed = () => {
         dispatch(
             setSelectedJourneyLevel({
-                journeyId: journeyId,
                 journeyLevel: item,
             })
         )
         router.push('/tabs/journey/journey-game')
+        item.games.map((game) => console.log(game))
     }
 
     return { handleItemPressed }

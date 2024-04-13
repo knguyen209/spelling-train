@@ -71,6 +71,7 @@ const WordList = ({ id }: { id: number }) => {
                                     onPress={() => {
                                         onWordItemPress(item.id)
                                     }}
+                                    textTransformType='none'
                                 />
                             </View>
                         )}

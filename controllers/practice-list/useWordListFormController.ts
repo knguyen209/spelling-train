@@ -26,6 +26,7 @@ const useWordListFormController = ({
         id: nanoid(),
         title: '',
         ownerId: -1,
+        isAIGenerated: false,
         words: [
             {
                 id: nanoid(),
@@ -37,6 +38,7 @@ const useWordListFormController = ({
                 partsOfSpeech: '',
                 alternatePronunciation: '',
                 selected: false,
+                isAIGenerated: false,
             },
         ],
     })
@@ -48,10 +50,12 @@ const useWordListFormController = ({
         creatingCustomWordList,
         creatingCustomWordListError,
         creatingCustomWordListSuccess,
+        creatingCustomWordListErrorMessage,
 
         updatingWordList,
         updatingWordListError,
         updatingWordListSuccess,
+        updatingWordListErrorMessage,
 
         deletingWordsSuccess,
         deletingWordsError,
@@ -93,7 +97,9 @@ const useWordListFormController = ({
                 confirmationModal
                     .showConfirmation(
                         'Information',
-                        `An error has occurred. Please try again!`,
+                        updatingWordListErrorMessage ||
+                            creatingCustomWordListErrorMessage ||
+                            'Something went wrong, please try again!',
                         true
                     )
                     .then(() => {
@@ -140,11 +146,13 @@ const useWordListFormController = ({
                     partsOfSpeech: '',
                     alternatePronunciation: '',
                     selected: false,
+                    isAIGenerated: false,
                 })
                 let editableList: EditableWordListType = {
                     id: list.id,
                     ownerId: list.ownerId,
                     title: list.title,
+                    isAIGenerated: list.isAIGenerated,
                     words: deletableWords,
                 }
                 setWordList(editableList)
@@ -176,6 +184,7 @@ const useWordListFormController = ({
                 partsOfSpeech: '',
                 alternatePronunciation: '',
                 selected: false,
+                isAIGenerated: false,
             })
         }
         setWordList({ ...wordList, words: updatedWords })

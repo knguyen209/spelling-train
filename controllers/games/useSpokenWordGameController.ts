@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
-import { IJourneyGame, WordType } from '../../types/genericTypes'
-import * as Speech from 'expo-speech'
+import { ISpokenWordGame, WordType } from '../../types/genericTypes'
+
 import { Audio } from 'expo-av'
 import { nanoid } from '@reduxjs/toolkit'
 import { playCorrectSound, playIncorrectSound } from '../../utils'
@@ -8,14 +8,13 @@ import { useConfirmationModalContext } from '../../providers/modal-dialog/ModalD
 import { fetchWordData } from '../../store/spellTrainSlice'
 import { AuthenticationContext } from '../../providers/authentication-provider/AuthenticationProvider'
 
-const useSpokenWordGameController = (gameData: IJourneyGame) => {
-    const { words } = gameData
-
+const useSpokenWordGameController = (gameData: ISpokenWordGame) => {
     const [quiz, setQuiz] = useState<QuizData | undefined>(undefined)
     const [data, setData] = useState<Array<WordType>>([])
-    const [isSpeaking, setIsSpeaking] = useState(true)
+
     const [options, setOptions] = useState<Array<QuizOption>>([])
     const [loading, setLoading] = useState(true)
+    const [isSpeaking, setIsSpeaking] = useState(true)
     const [sound, setSound] = useState<Audio.Sound>()
     const authContext = useContext(AuthenticationContext)
     useEffect(() => {
@@ -31,62 +30,41 @@ const useSpokenWordGameController = (gameData: IJourneyGame) => {
     }, [sound])
 
     const initialize = async () => {
-        const tData: Array<WordType> = await Promise.all(
-            words.map((word) =>
-                word.definition!.length > 0
-                    ? word
-                    : fetchWordData(
-                          word.id,
-                          authContext?.userProfile?.accessToken || ''
-                      )
-            )
-        )
-
-        setData(tData)
-
-        let quiz: QuizData = generateQuestion(tData)
-
-        setQuiz(quiz)
-
-        let quizOptions = tData.map((i) => ({
+        let quizOptions = gameData.options.map((o) => ({
             id: nanoid(),
-            text: i.word,
+            text: o,
             isCorrect: false,
             selected: false,
         }))
 
         setOptions(quizOptions)
         setTimeout(() => {
-            speak(quiz)
+            speak()
         }, 500)
         setLoading(false)
     }
 
     const confirm = useConfirmationModalContext()
 
-    const speak = async (data: QuizData) => {
-        if (data) {
-            setIsSpeaking(true)
-            const { sound } = await Audio.Sound.createAsync(
-                { uri: `http://localhost:8000/${data.audioUrl}` || '' },
-                { shouldPlay: false }
-            )
-            setSound(sound)
+    const speak = async () => {
+        setIsSpeaking(true)
+        const { sound } = await Audio.Sound.createAsync(
+            { uri: `http://localhost:8000/${gameData.audioUrl}` || '' },
+            { shouldPlay: false }
+        )
+        setSound(sound)
 
-            sound.playAsync().then(() => {
-                setTimeout(() => {
-                    setIsSpeaking(false)
-                }, 500)
-            })
-        } else {
-            setIsSpeaking(false)
-        }
+        sound.playAsync().then(() => {
+            setTimeout(() => {
+                setIsSpeaking(false)
+            }, 500)
+        })
     }
 
     const onQuizOpenSelected = (id: string) => {
         let selectedOption = options.find((o) => o.id === id)
         if (selectedOption) {
-            let isCorrect = selectedOption.text === quiz?.correctAnswer
+            let isCorrect = selectedOption.text === gameData.correctAnswer
             let updatedOptions = options.map((o) =>
                 o.id === id
                     ? { ...o, selected: true, isCorrect: isCorrect }

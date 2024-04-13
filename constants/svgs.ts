@@ -4,6 +4,7 @@ import SpellTrainLogo from '../assets/svgs/spell-train-logo.svg'
 import GenieFemale from '../assets/svgs/genie-female.svg'
 import GenieMale from '../assets/svgs/genie-male.svg'
 import SpeakerIcon from '../assets/svgs/speaker-icon.svg'
+import TrainIcon from '../assets/svgs/train-icon.svg'
 
 import HomeTabIcon from '../assets/svgs/home_tab_icon.svg'
 import ProfileTabIcon from '../assets/svgs/profile_tab_icon.svg'
@@ -50,6 +51,9 @@ import CompleleLevelStars from '../assets/svgs/complete-level-stars.svg'
 
 import CheckboxUnchecked from '../assets/svgs/checkbox-unchecked.svg'
 import CheckboxChecked from '../assets/svgs/checkbox-checked.svg'
+import GenerativeAIIcon from '../assets/svgs/bling-icon.svg'
+
+import SpeakerWaveIcon from '../assets/svgs/speaker-wave.svg'
 
 const AchievementIcons = {
     star: AchievementStarIcon,
@@ -63,6 +67,7 @@ export default {
     GenieFemale,
     GenieMale,
     SpeakerIcon,
+    TrainIcon,
 
     HomeTabIcon,
     ProfileTabIcon,
@@ -108,4 +113,8 @@ export default {
 
     CheckboxChecked,
     CheckboxUnchecked,
+
+    GenerativeAIIcon,
+
+    SpeakerWaveIcon,
 }

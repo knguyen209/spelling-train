@@ -1,5 +1,6 @@
 import {
     JourneyLevelType,
+    JourneyStationLevelType,
     JourneyType,
     PracticeListType,
     UserType,
@@ -59,6 +60,13 @@ export type SpellTrainStateType = {
     userSigningIn: boolean
     userSignInSuccess: boolean
     userSignInError: boolean
+
+    journeyLevels: Array<JourneyStationLevelType>
+    selectedJourneyLevel: JourneyStationLevelType | undefined
+    generatingJourneyLevels: boolean
+    generatingJourneyLevelsSuccess: boolean
+    generatingJourneyLevelsError: boolean
+    generatingJourneyLevelsErrorMessage: string
 
     journeys: Array<JourneyType>
     selectedJourneyId: string | undefined

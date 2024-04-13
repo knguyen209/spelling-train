@@ -2,7 +2,10 @@ import { View, StyleSheet, FlexAlignType, Pressable } from 'react-native'
 
 import { COLORS, SVGS } from '../../../constants'
 import STText from '../../commons/st-text/STText'
-import { JourneyLevelType } from '../../../types/genericTypes'
+import {
+    JourneyLevelType,
+    JourneyStationLevelType,
+} from '../../../types/genericTypes'
 import { useRouter } from 'expo-router'
 import useJourneyListItemController from '../../../controllers/journey/useJourneyListItemController'
 
@@ -11,7 +14,7 @@ const JourneyListItemView = ({
     item,
 }: {
     journeyId: string
-    item: JourneyLevelType
+    item: JourneyStationLevelType
 }) => {
     let position: FlexAlignType = 'center'
 

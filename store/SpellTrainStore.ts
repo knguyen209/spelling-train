@@ -42,6 +42,13 @@ const SpellTrainStore: SpellTrainStateType = {
     deletingWordsSuccess: false,
     deletingWordsError: false,
     deletingWordsErrorMessage: '',
+
+    journeyLevels: [],
+    selectedJourneyLevel: undefined,
+    generatingJourneyLevels: false,
+    generatingJourneyLevelsSuccess: false,
+    generatingJourneyLevelsError: false,
+    generatingJourneyLevelsErrorMessage: '',
 }
 
 export default SpellTrainStore

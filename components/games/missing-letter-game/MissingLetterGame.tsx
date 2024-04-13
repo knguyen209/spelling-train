@@ -1,31 +1,27 @@
 import { View } from 'react-native'
 import STText from '../../commons/st-text/STText'
-import { SVGS } from '../../../constants'
+import { BORDER_RADIUS, COLORS, SVGS } from '../../../constants'
 import {
     GameContainerControlHandle,
+    IFindMissingLetterGame,
     IJourneyGame,
 } from '../../../types/genericTypes'
 import useMissingGameController from '../../../controllers/games/useMissingGameController'
 import STButton from '../../commons/st-button/STButton'
 import { forwardRef, useImperativeHandle } from 'react'
 import { MotiView } from 'moti'
+import { MotiPressable } from 'moti/interactions'
 
 type MissingLetterGameProps = {
-    gameData: IJourneyGame
+    gameData: IFindMissingLetterGame
 }
 
 const MissingLetterGame = forwardRef<
     GameContainerControlHandle,
     MissingLetterGameProps
 >((props, ref) => {
-    const {
-        quizzes,
-        options,
-        answers,
-        onAnswerOptionSelected,
-        onUncheckAnswerPress,
-        validateAnswers,
-    } = useMissingGameController(props.gameData)
+    const { options, onAnswerOptionSelected, validateAnswers } =
+        useMissingGameController(props.gameData)
 
     useImperativeHandle(ref, () => ({
         onNextClick() {
@@ -50,7 +46,7 @@ const MissingLetterGame = forwardRef<
             >
                 <SVGS.GenieMale width={80} height={80} />
                 <STText size='lg' weight='semibold'>
-                    Find the missing letter
+                    {props.gameData.gameTitle}
                 </STText>
             </View>
             <View
@@ -59,64 +55,75 @@ const MissingLetterGame = forwardRef<
                     gap: 20,
                 }}
             >
-                {quizzes.map((quiz, quizIdx) => (
-                    <View
-                        key={quizIdx}
-                        style={{
-                            flexDirection: 'row',
-                            gap: 20,
-                            alignItems: 'center',
-                        }}
-                    >
-                        {quiz.quizWord.split('').map((letter, letterIdx) =>
-                            letter === '_' ? (
-                                <View key={letterIdx} style={{ marginTop: 8 }}>
-                                    <STButton
-                                        text={answers[quizIdx]?.text || '  '}
-                                        textTransformType='lowercase'
-                                        textSize='xl'
-                                        listItemType
-                                        onPress={() =>
-                                            onUncheckAnswerPress(quizIdx)
-                                        }
-                                        disabled={answers[quizIdx]?.isCorrect}
-                                    />
-                                </View>
-                            ) : (
-                                <STText
-                                    key={letterIdx}
-                                    size='2xl'
-                                    weight='bold'
-                                >
-                                    {letter}
+                <View style={{ flexDirection: 'row', gap: 8 }}>
+                    {props.gameData.wordWithMissingLetter
+                        .split('')
+                        .map((w, idx) => (
+                            <MotiView
+                                key={idx}
+                                style={{
+                                    padding: 20,
+                                    borderRadius: BORDER_RADIUS.md,
+                                    minWidth: 40,
+                                    minHeight: 40,
+                                    alignItems: 'center',
+                                }}
+                                animate={{
+                                    backgroundColor:
+                                        options.filter((o) => o.isCorrect)
+                                            .length === 1
+                                            ? COLORS.correctAnswer
+                                            : COLORS.gray,
+                                }}
+                            >
+                                <STText size='2xl' weight='bold' color='black'>
+                                    {w === '_'
+                                        ? options.filter((o) => o.isCorrect)
+                                              .length === 1
+                                            ? props.gameData.correctAnswer
+                                            : w
+                                        : w}
                                 </STText>
-                            )
-                        )}
-
-                        {answers[quizIdx] && answers[quizIdx]?.isCorrect && (
-                            <SVGS.CheckMark width={25} height={25} />
-                        )}
-                    </View>
-                ))}
-            </View>
-            <View
-                style={{
-                    flexDirection: 'row',
-                    gap: 20,
-                    justifyContent: 'center',
-                }}
-            >
-                {options.map((option) => (
-                    <STButton
-                        key={option.id}
-                        text={option.text}
-                        textTransformType='lowercase'
-                        textSize='xl'
-                        listItemType
-                        onPress={() => onAnswerOptionSelected(option.id)}
-                        disabled={option.selected}
-                    />
-                ))}
+                            </MotiView>
+                        ))}
+                </View>
+                <STText>Select an option:</STText>
+                <View
+                    style={{
+                        gap: 16,
+                        flexWrap: 'wrap',
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                    }}
+                >
+                    {options.map((option) => (
+                        <MotiPressable
+                            onPress={() => onAnswerOptionSelected(option.id)}
+                            animate={{
+                                backgroundColor: option.isSelected
+                                    ? option.isCorrect
+                                        ? COLORS.correctAnswer
+                                        : COLORS.incorrectAnswer
+                                    : COLORS.black,
+                            }}
+                            style={{
+                                padding: 20,
+                                borderRadius: BORDER_RADIUS.md,
+                                minWidth: 40,
+                                minHeight: 40,
+                                alignItems: 'center',
+                            }}
+                            key={option.id}
+                            disabled={
+                                options.filter((o) => o.isCorrect).length === 1
+                            }
+                        >
+                            <STText size='2xl' weight='bold'>
+                                {option.text}
+                            </STText>
+                        </MotiPressable>
+                    ))}
+                </View>
             </View>
         </MotiView>
     )

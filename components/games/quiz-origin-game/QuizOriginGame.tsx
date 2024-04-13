@@ -2,6 +2,7 @@ import { forwardRef, useImperativeHandle } from 'react'
 import {
     GameContainerControlHandle,
     IJourneyGame,
+    IQuizOriginGame,
     ISpokenWordGame,
 } from '../../../types/genericTypes'
 import {
@@ -19,24 +20,23 @@ import { MotiView } from 'moti'
 import useSpokenWordGameController from '../../../controllers/games/useSpokenWordGameController'
 import { MotiPressable } from 'moti/interactions'
 import { nanoid } from '@reduxjs/toolkit'
+import useQuizOriginGameController from '../../../controllers/games/useQuizOriginGameController'
 
-type SpokenWordGameProps = {
-    gameData: ISpokenWordGame
+type QuizOriginGameProps = {
+    gameData: IQuizOriginGame
 }
 
-const SpokenWordGame = forwardRef<
+const QuizOriginGame = forwardRef<
     GameContainerControlHandle,
-    SpokenWordGameProps
+    QuizOriginGameProps
 >((props, ref) => {
     const {
-        quiz,
-        options,
-        isSpeaking,
-        speak,
-        onQuizOpenSelected,
-        validateAnswers,
         loading,
-    } = useSpokenWordGameController(props.gameData)
+        options,
+        answers,
+        onAnswerOptionSelected,
+        validateAnswers,
+    } = useQuizOriginGameController(props.gameData)
 
     useImperativeHandle(ref, () => ({
         onNextClick() {
@@ -60,7 +60,7 @@ const SpokenWordGame = forwardRef<
             >
                 <SVGS.GenieMale width={80} height={80} />
                 <STText size='lg' weight='semibold'>
-                    Choose the spoken word
+                    {props.gameData.gameTitle}
                 </STText>
             </View>
 
@@ -68,24 +68,8 @@ const SpokenWordGame = forwardRef<
                 <ActivityIndicator />
             ) : (
                 <>
-                    <View style={{ alignItems: 'center' }}>
-                        <MotiView
-                            from={{ scale: 1.0 }}
-                            animate={{ scale: 1.1 }}
-                            transition={{
-                                loop: isSpeaking,
-                                duration: 500,
-                                type: 'timing',
-                            }}
-                            key={nanoid()}
-                        >
-                            <Pressable
-                                onPress={() => speak()}
-                                disabled={loading || isSpeaking}
-                            >
-                                <SVGS.GenieSpeaker width={160} height={160} />
-                            </Pressable>
-                        </MotiView>
+                    <View>
+                        <STText>{props.gameData.question}</STText>
                     </View>
                     <View
                         style={{
@@ -96,7 +80,9 @@ const SpokenWordGame = forwardRef<
                     >
                         {options.map((option) => (
                             <MotiPressable
-                                onPress={() => onQuizOpenSelected(option.id)}
+                                onPress={() =>
+                                    onAnswerOptionSelected(option.id)
+                                }
                                 animate={{
                                     backgroundColor: option.selected
                                         ? option.isCorrect
@@ -173,4 +159,4 @@ const SpokenWordItem = ({
     )
 }
 
-export default SpokenWordGame
+export default QuizOriginGame

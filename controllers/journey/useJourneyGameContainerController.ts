@@ -10,7 +10,9 @@ import { useDispatch } from 'react-redux'
 import { SpellTrainAction } from '../../store/spellTrainSlice'
 
 const useJourneyGameContainerController = (id: string) => {
-    const { selectedLevel } = useAppSelector((state) => state.spellTrain)
+    const { selectedLevel, selectedJourneyLevel } = useAppSelector(
+        (state) => state.spellTrain
+    )
 
     const [currentGameIndex, setCurrentGameIndex] = useState(0)
     const [currentGame, setCurrentGame] = useState<IJourneyGame | undefined>(
@@ -27,11 +29,10 @@ const useJourneyGameContainerController = (id: string) => {
 
     const resultDialog = useResultModalContext()
 
-    const games = selectedLevel?.games || []
+    const games = selectedJourneyLevel?.games || []
 
     useEffect(() => {
         if (games.length > 0) {
-            console.log(games.map((g) => g.gameType))
             setCurrentGame(games[0])
             setLoading(false)
         }
@@ -50,10 +51,14 @@ const useJourneyGameContainerController = (id: string) => {
                 setLoading(false)
             }, 500)
             if (nextIndex >= games.length) {
-                dispatch(completeJourneyLevel({ journeyLevel: selectedLevel! }))
+                dispatch(
+                    completeJourneyLevel({
+                        journeyLevel: selectedJourneyLevel!,
+                    })
+                )
                 let dialogResult = await resultDialog.showResult(
                     'Congrats',
-                    `You have completed Level ${selectedLevel?.level}`
+                    `You have completed Level ${selectedJourneyLevel?.level}`
                 )
                 if (dialogResult) {
                     router.back()

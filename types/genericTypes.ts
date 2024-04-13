@@ -49,6 +49,7 @@ export type WordListType = {
     title: string
     ownerId: number
     words: Array<WordType>
+    isAIGenerated: boolean
 }
 
 export type WordType = {
@@ -61,6 +62,7 @@ export type WordType = {
     partsOfSpeech?: string
     alternatePronunciation?: string
     audioUrl?: string
+    isAIGenerated: boolean
 }
 
 export type JourneyType = {
@@ -76,6 +78,19 @@ export type JourneyLevelType = {
     isCompleted: boolean
 }
 
+export type JourneyStationType = {
+    levels: Array<JourneyStationLevelType>
+}
+
+export type JourneyStationLevelType = {
+    id: number
+    isCompleted: boolean
+    gameId: number
+    stationNumber: number
+    level: number
+    games: Array<IJourneyGame>
+}
+
 export interface IJourneyGame {
     id: string
     gameType:
@@ -85,10 +100,64 @@ export interface IJourneyGame {
         | 'match-origin-pair'
         | 'choose-spoken-word'
         | 'find-missing-letter'
+        | 'findCorrectWord'
+        | 'matchingPair'
+        | 'spellWord'
+        | 'quizOrigin'
+        | 'findCorrectWord'
+        | 'findMissingLetter'
+        | 'spellWord'
+        | 'hangman'
+        | 'chooseSpokenWord'
     words: Array<WordType>
+    gameTitle: string
 }
 
 export type GameTypes = IJourneyGame['gameType']
+
+export interface IFindCorrectWord extends IJourneyGame {
+    definition: string
+    options: Array<string>
+    correctAnswer: string
+}
+
+export interface ISpokenWordGame extends IJourneyGame {
+    options: Array<string>
+    correctAnswer: string
+    audioUrl: string
+}
+
+export interface ISpellWordGame extends IJourneyGame {
+    word: string
+    audioUrl: string
+}
+
+export interface IHangmanGame extends IJourneyGame {
+    usageWithBlanks: string
+    correctAnswer: string
+    defaultAttempts: number
+}
+
+export interface IFindMissingLetterGame extends IJourneyGame {
+    wordWithMissingLetter: string
+    options: Array<string>
+    correctAnswer: string
+}
+
+export interface IQuizOriginGame extends IJourneyGame {
+    question: string
+    options: Array<string>
+    correctAnswer: string
+}
+
+export interface IMatchingPairGame extends IJourneyGame {
+    correctPairs: Array<IAudioData>
+    shuffledPairs: Array<IAudioData>
+}
+
+export interface IAudioData {
+    [key: string]: string
+}
 
 // export interface ISpellWordGame extends IJourneyGame {
 //     words: Array<string>

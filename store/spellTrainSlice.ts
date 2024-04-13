@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice, nanoid } from '@reduxjs/toolkit'
 import SpellTrainStore from './SpellTrainStore'
 
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import {
     GameTypes,
     IJourneyGame,
     JourneyLevelType,
+    JourneyStationLevelType,
     JourneyType,
     PracticeListItemType,
     PracticeListType,
@@ -73,20 +74,23 @@ export const spellTrainSlice = createSlice({
         setSelectedJourneyLevel: (
             state,
             action: {
-                payload: { journeyId: string; journeyLevel: JourneyLevelType }
+                payload: { journeyLevel: JourneyStationLevelType } //{ journeyId: string; journeyLevel: JourneyLevelType }
                 type: string
             }
         ) => {
-            state.selectedJourneyId = action.payload.journeyId
-            state.selectedLevel = action.payload.journeyLevel
+            // state.selectedJourneyId = action.payload.journeyId
+            // state.selectedLevel = action.payload.journeyLevel
+            state.selectedJourneyLevel = action.payload.journeyLevel
         },
         completeJourneyLevel: (
             state,
             action: {
-                payload: { journeyLevel: JourneyLevelType }
+                payload: { journeyLevel: JourneyStationLevelType }
                 type: string
             }
         ) => {
+            const { journeyLevel } = action.payload
+            // state.journeyLevels.map((level) => level.id === journeyLevel.id && level.gameId === journeyLevel.gameId && level.level === journeyLevel.level ? { ...level, })
             const updatedJourney = state.journeys.map((j) =>
                 j.id === state.selectedJourneyId
                     ? {
@@ -184,10 +188,11 @@ export const spellTrainSlice = createSlice({
                 state.creatingCustomWordListSuccess = false
             }
         })
-        builder.addCase(createCustomWordList.rejected, (state) => {
+        builder.addCase(createCustomWordList.rejected, (state, action) => {
             state.creatingCustomWordList = false
             state.creatingCustomWordListError = true
             state.creatingCustomWordListSuccess = false
+            state.creatingCustomWordListErrorMessage = String(action.payload)
         })
 
         // Update word list
@@ -201,13 +206,15 @@ export const spellTrainSlice = createSlice({
         builder.addCase(updateWordList.fulfilled, (state, action) => {
             state.updatingWordList = false
 
-            if (action.payload) {
+            if (action.payload && typeof action.payload === 'object') {
                 state.updatingWordList = false
                 state.updatingWordListError = false
                 state.updatingWordListSuccess = true
 
+                const updatedWordList = action.payload
+
                 const updatedWordLists = state.wordLists.map((list) =>
-                    list.id === action.payload.id ? action.payload : list
+                    list.id === updatedWordList.id ? updatedWordList : list
                 )
                 state.wordLists = updatedWordLists
             } else {
@@ -219,6 +226,7 @@ export const spellTrainSlice = createSlice({
             state.updatingWordList = false
             state.updatingWordListError = true
             state.updatingWordListSuccess = false
+            state.updatingWordListErrorMessage = String(action.payload)
         })
 
         // Delete a word list
@@ -324,6 +332,30 @@ export const spellTrainSlice = createSlice({
             state.generatingJourneySuccess = false
             state.generatingJourneyError = true
         })
+
+        builder.addCase(generateJourneyGames.pending, (state) => {
+            state.generatingJourneyLevels = true
+            state.generatingJourneyLevelsSuccess = false
+            state.generatingJourneyLevelsError = false
+            state.generatingJourneyLevelsErrorMessage = ''
+        })
+        builder.addCase(generateJourneyGames.fulfilled, (state, action) => {
+            // console.log(action.payload.levels)
+            state.generatingJourneyLevels = false
+            state.generatingJourneyLevelsSuccess = true
+            state.generatingJourneyLevelsError = false
+            state.generatingJourneyLevelsErrorMessage = ''
+
+            let levels: Array<JourneyStationLevelType> = action.payload
+            state.journeyLevels = levels
+        })
+        builder.addCase(generateJourneyGames.rejected, (state) => {
+            console.log('rejected generating journey station games')
+            state.generatingJourneyLevels = false
+            state.generatingJourneyLevelsSuccess = false
+            state.generatingJourneyLevelsError = true
+            state.generatingJourneyLevelsErrorMessage = ''
+        })
     },
 })
 
@@ -331,18 +363,22 @@ const resetManipulatingState = (state: any) => {
     state.creatingCustomWordList = false
     state.creatingCustomWordListError = false
     state.creatingCustomWordListSuccess = false
+    state.creatingCustomWordListErrorMessage = ''
 
     state.updatingWordList = false
     state.updatingWordListError = false
     state.updatingWordListSuccess = false
+    state.updatingWordListErrorMessage = ''
 
     state.deletingWordList = false
     state.deletingWordListSuccess = false
     state.deletingWordListError = false
+    state.deletingWordListErrorMessage = ''
 
     state.deletingWords = false
     state.deletingWordsSuccess = false
     state.deletingWordsError = false
+    state.deletingWordListErrorMessage = ''
 }
 
 const {
@@ -480,31 +516,43 @@ export const generateWordList = createAsyncThunk(
 
 export const createCustomWordList = createAsyncThunk(
     'put/create-custom-word-list',
-    async (request: {
-        wordList: WordListType
-        token: string
-    }): Promise<WordListType> => {
+    async (
+        request: {
+            wordList: WordListType
+            token: string
+        },
+        { rejectWithValue }
+    ) => {
         const url = `${baseUrl}/word-lists/`
         const words = request.wordList.words.filter((w) => w.word.length > 0)
-        const response = await axios.put(
-            url,
-            { title: request.wordList.title, words: words },
-            {
-                headers: {
-                    Authorization: `Bearer ${request.token}`,
-                },
-            }
-        )
-        return response.data
+        try {
+            const response = await axios.put(
+                url,
+                { title: request.wordList.title, words: words },
+                {
+                    headers: {
+                        Authorization: `Bearer ${request.token}`,
+                    },
+                }
+            )
+            return response.data
+        } catch (err: any) {
+            return rejectWithValue(
+                err.response.data.detail || 'Error updating word list.'
+            )
+        }
     }
 )
 
 export const updateWordList = createAsyncThunk(
     'patch/update-word-list',
-    async (request: {
-        wordList: WordListType
-        token: string
-    }): Promise<WordListType> => {
+    async (
+        request: {
+            wordList: WordListType
+            token: string
+        },
+        { rejectWithValue }
+    ) => {
         const updateTitleUrl = `${baseUrl}/word-lists/`
         const wordsUrl = `${baseUrl}/word-lists/words`
 
@@ -516,48 +564,72 @@ export const updateWordList = createAsyncThunk(
             .map((w) => ({ word: w.word, wordListId: request.wordList.id }))
 
         if (newWords.length > 0) {
-            const response = await axios
-                .patch(
-                    updateTitleUrl,
-                    { id: request.wordList.id, title: request.wordList.title },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${request.token}`,
+            try {
+                const response = await axios
+                    .patch(
+                        updateTitleUrl,
+                        {
+                            id: request.wordList.id,
+                            title: request.wordList.title,
                         },
-                    }
-                )
-                .then(() =>
-                    axios.patch(wordsUrl, updateWords, {
-                        headers: { Authorization: `Bearer ${request.token}` },
-                    })
-                )
-                .then(() =>
-                    axios.post(wordsUrl, newWords, {
-                        headers: { Authorization: `Bearer ${request.token}` },
-                    })
-                )
+                        {
+                            headers: {
+                                Authorization: `Bearer ${request.token}`,
+                            },
+                        }
+                    )
+                    .then(() =>
+                        axios.patch(wordsUrl, updateWords, {
+                            headers: {
+                                Authorization: `Bearer ${request.token}`,
+                            },
+                        })
+                    )
+                    .then(() =>
+                        axios.post(wordsUrl, newWords, {
+                            headers: {
+                                Authorization: `Bearer ${request.token}`,
+                            },
+                        })
+                    )
 
-            let updatedWordList: WordListType = response.data
-            return updatedWordList
+                let updatedWordList: WordListType = response.data
+                return updatedWordList
+            } catch (err: any) {
+                return rejectWithValue(
+                    err.response.data.detail || 'Error updating word list.'
+                )
+            }
         } else {
-            const response = await axios
-                .patch(
-                    updateTitleUrl,
-                    { id: request.wordList.id, title: request.wordList.title },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${request.token}`,
+            try {
+                const response = await axios
+                    .patch(
+                        updateTitleUrl,
+                        {
+                            id: request.wordList.id,
+                            title: request.wordList.title,
                         },
-                    }
-                )
-                .then(() =>
-                    axios.patch(wordsUrl, updateWords, {
-                        headers: { Authorization: `Bearer ${request.token}` },
-                    })
-                )
+                        {
+                            headers: {
+                                Authorization: `Bearer ${request.token}`,
+                            },
+                        }
+                    )
+                    .then(() =>
+                        axios.patch(wordsUrl, updateWords, {
+                            headers: {
+                                Authorization: `Bearer ${request.token}`,
+                            },
+                        })
+                    )
 
-            let updatedWordList: WordListType = response.data
-            return updatedWordList
+                let updatedWordList: WordListType = response.data
+                return updatedWordList
+            } catch (err: any) {
+                return rejectWithValue(
+                    err.response.data.detail || 'Error updating word list.'
+                )
+            }
         }
     }
 )
@@ -605,6 +677,19 @@ export const createWordList = async (topicName: string, token: string) => {
 
     return response.data
 }
+
+export const generateJourneyGames = createAsyncThunk(
+    'get/generate-journey-games',
+    async (request: { id: number | string; token: string }) => {
+        const url = `${baseUrl}/games/?word_list_id=${request.id}`
+        const response = await axios.post(
+            url,
+            {},
+            { headers: { Authorization: `Bearer ${request.token}` } }
+        )
+        return response.data
+    }
+)
 
 export const generateJourney = createAsyncThunk(
     'get/generate-journey-levels',
@@ -684,6 +769,7 @@ const generateRandomJourneyLevelGame = (words: Array<WordType>) => {
         gameType: randomGameType,
         // Get first 4 words of the shuffled array
         words: words.slice(0, 4),
+        gameTitle: '',
     }
 
     return journeyGame

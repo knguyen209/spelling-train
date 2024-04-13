@@ -4,6 +4,7 @@ import {
     fetchWordLists,
     generateJourney,
     generateJourneyByWordList,
+    generateJourneyGames,
 } from '../../store/spellTrainSlice'
 import { WordListType } from '../../types/genericTypes'
 import { AuthenticationContext } from '../../providers/authentication-provider/AuthenticationProvider'
@@ -70,7 +71,13 @@ const useJourneyGenerationController = () => {
     }
 
     const onWordListItemPressed = async (wordList: WordListType) => {
-        dispatch(generateJourneyByWordList(wordList))
+        // dispatch(generateJourneyByWordList(wordList))
+        dispatch(
+            generateJourneyGames({
+                id: wordList.id,
+                token: authContext?.userProfile?.accessToken || '',
+            })
+        )
         setRequestSent(true)
     }
 

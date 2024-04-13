@@ -5,7 +5,7 @@ import useJourneyListController from '../../../controllers/journey/useJourneyLis
 import STButton from '../../commons/st-button/STButton'
 
 const JourneyListView = () => {
-    const { journeys, onGenerateButtonPress } = useJourneyListController()
+    const { journeyLevels, onGenerateButtonPress } = useJourneyListController()
 
     return (
         <View
@@ -18,19 +18,26 @@ const JourneyListView = () => {
             }}
         >
             <View style={{ flex: 1 }}>
-                {journeys.length > 0 && journeys[0] !== undefined && (
-                    <FlatList
-                        data={journeys[0].levels}
-                        keyExtractor={(item, idx) => item.id.toString()}
-                        renderItem={({ item }) => (
-                            <JourneyListItemView
-                                journeyId={journeys[0].id}
-                                item={item}
-                            />
-                        )}
-                        inverted={true}
-                    />
-                )}
+                {/* {journeyLevels.length > 0 && journeyLevels[0] !== undefined && ( */}
+                <FlatList
+                    data={journeyLevels}
+                    keyExtractor={(item, idx) =>
+                        `${item.stationNumber}-${item.gameId}-${item.level}`
+                    }
+                    renderItem={({ item }) => (
+                        <JourneyListItemView
+                            journeyId={item.gameId.toString()}
+                            item={item}
+                        />
+                        // <STButton
+                        //     text={`Level ${item.level}`}
+                        //     listItemType
+                        //     style={{ marginTop: 10 }}
+                        // />
+                    )}
+                    inverted={true}
+                />
+                {/* )} */}
             </View>
             <STButton
                 text='Generate Journey Games'
