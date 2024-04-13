@@ -55,17 +55,17 @@ const MissingLetterGame = forwardRef<
                     gap: 20,
                 }}
             >
-                <View style={{ flexDirection: 'row', gap: 8 }}>
+                <View
+                    style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}
+                >
                     {props.gameData.wordWithMissingLetter
                         .split('')
                         .map((w, idx) => (
                             <MotiView
                                 key={idx}
                                 style={{
-                                    padding: 20,
+                                    padding: 10,
                                     borderRadius: BORDER_RADIUS.md,
-                                    minWidth: 40,
-                                    minHeight: 40,
                                     alignItems: 'center',
                                 }}
                                 animate={{
@@ -76,7 +76,16 @@ const MissingLetterGame = forwardRef<
                                             : COLORS.gray,
                                 }}
                             >
-                                <STText size='2xl' weight='bold' color='black'>
+                                <STText
+                                    size={
+                                        props.gameData.wordWithMissingLetter
+                                            .length > 10
+                                            ? 'md'
+                                            : 'lg'
+                                    }
+                                    weight='bold'
+                                    color='black'
+                                >
                                     {w === '_'
                                         ? options.filter((o) => o.isCorrect)
                                               .length === 1

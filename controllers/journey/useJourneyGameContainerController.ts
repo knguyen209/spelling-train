@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { useAppSelector } from '../../store'
+import { useContext, useEffect, useRef, useState } from 'react'
+import { useAppDispatch, useAppSelector } from '../../store'
 import {
     GameContainerControlHandle,
     IJourneyGame,
@@ -7,7 +7,8 @@ import {
 import { useResultModalContext } from '../../providers/result-dialog/ResultDialogProvider'
 import { useRouter } from 'expo-router'
 import { useDispatch } from 'react-redux'
-import { SpellTrainAction } from '../../store/spellTrainSlice'
+import { markJourneyStationCompleted } from '../../store/spellTrainSlice'
+import { AuthenticationContext } from '../../providers/authentication-provider/AuthenticationProvider'
 
 const useJourneyGameContainerController = (id: string) => {
     const { selectedLevel, selectedJourneyLevel } = useAppSelector(
@@ -21,9 +22,9 @@ const useJourneyGameContainerController = (id: string) => {
     const [loading, setLoading] = useState(true)
 
     const router = useRouter()
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
 
-    const { completeJourneyLevel } = SpellTrainAction
+    const authContext = useContext(AuthenticationContext)
 
     const gameRef = useRef<GameContainerControlHandle>(null)
 
@@ -52,8 +53,9 @@ const useJourneyGameContainerController = (id: string) => {
             }, 500)
             if (nextIndex >= games.length) {
                 dispatch(
-                    completeJourneyLevel({
-                        journeyLevel: selectedJourneyLevel!,
+                    markJourneyStationCompleted({
+                        stationId: selectedJourneyLevel?.id || '',
+                        token: authContext?.userProfile?.accessToken || '',
                     })
                 )
                 let dialogResult = await resultDialog.showResult(

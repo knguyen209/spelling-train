@@ -103,4 +103,9 @@ export type SpellTrainStateType = {
     deletingWordsSuccess: boolean
     deletingWordsError: boolean
     deletingWordsErrorMessage: string
+
+    markingStationCompleted: boolean
+    markingStationCompletedSuccess: boolean
+    markingStationCompletedError: boolean
+    markingStationCompletedErrorMessage: string
 }

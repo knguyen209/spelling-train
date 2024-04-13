@@ -49,6 +49,11 @@ const SpellTrainStore: SpellTrainStateType = {
     generatingJourneyLevelsSuccess: false,
     generatingJourneyLevelsError: false,
     generatingJourneyLevelsErrorMessage: '',
+
+    markingStationCompleted: false,
+    markingStationCompletedSuccess: false,
+    markingStationCompletedError: false,
+    markingStationCompletedErrorMessage: '',
 }
 
 export default SpellTrainStore

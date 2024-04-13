@@ -19,7 +19,7 @@ const JourneyGenerationView = () => {
         topicName,
         onTopicNameChanged,
         onGenerateButtonPressed,
-        generatingJourney,
+        generatingJourneyLevels,
         wordLists,
         fetchingWordLists,
         onWordListItemPressed,
@@ -43,15 +43,17 @@ const JourneyGenerationView = () => {
                             placeholder='Enter a topic name...'
                             val={topicName}
                             onChange={onTopicNameChanged}
-                            disabled={generatingJourney}
+                            disabled={generatingJourneyLevels}
                         />
 
                         <STButton
                             text={
-                                generatingJourney ? 'Generating...' : 'Generate'
+                                generatingJourneyLevels
+                                    ? 'Generating...'
+                                    : 'Generate'
                             }
                             onPress={onGenerateButtonPressed}
-                            disabled={generatingJourney}
+                            disabled={generatingJourneyLevels}
                         />
                         <STText>Or, select one of the below word lists:</STText>
                     </View>

@@ -19,6 +19,10 @@ const useJourneyGenerationController = () => {
         generatingJourney,
         generatingJourneySuccess,
         generatingJourneyError,
+        generatingJourneyLevels,
+        generatingJourneyLevelsSuccess,
+        generatingJourneyLevelsErrorMessage,
+        generatingJourneyLevelsError,
         wordLists,
         fetchingWordLists,
     } = useAppSelector((state) => state.spellTrain)
@@ -33,6 +37,37 @@ const useJourneyGenerationController = () => {
             })
         )
     }, [])
+
+    useEffect(() => {
+        if (requestSent && generatingJourneyLevelsSuccess) {
+            confirmationContext
+                .showConfirmation(
+                    'Information',
+                    'Journey generated successfully',
+                    true,
+                    'OK'
+                )
+                .then(() => {
+                    router.back()
+                })
+        }
+        if (requestSent && generatingJourneyLevelsError) {
+            confirmationContext
+                .showConfirmation(
+                    'Error',
+                    generatingJourneyLevelsErrorMessage,
+                    true,
+                    'OK'
+                )
+                .then(() => {
+                    router.back()
+                })
+        }
+    }, [
+        requestSent,
+        generatingJourneyLevelsSuccess,
+        generatingJourneyLevelsError,
+    ])
 
     useEffect(() => {
         if (requestSent && generatingJourneySuccess) {
@@ -86,6 +121,7 @@ const useJourneyGenerationController = () => {
         onTopicNameChanged,
         onGenerateButtonPressed,
         generatingJourney,
+        generatingJourneyLevels,
         wordLists,
         fetchingWordLists,
         onWordListItemPressed,

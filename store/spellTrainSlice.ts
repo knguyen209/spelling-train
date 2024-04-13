@@ -350,12 +350,46 @@ export const spellTrainSlice = createSlice({
             state.journeyLevels = levels
         })
         builder.addCase(generateJourneyGames.rejected, (state) => {
-            console.log('rejected generating journey station games')
             state.generatingJourneyLevels = false
             state.generatingJourneyLevelsSuccess = false
             state.generatingJourneyLevelsError = true
             state.generatingJourneyLevelsErrorMessage = ''
         })
+
+        builder.addCase(markJourneyStationCompleted.pending, (state) => {
+            state.markingStationCompleted = true
+            state.markingStationCompletedSuccess = false
+            state.markingStationCompletedError = false
+            state.creatingCustomWordListErrorMessage = ''
+        })
+        builder.addCase(
+            markJourneyStationCompleted.fulfilled,
+            (state, action) => {
+                state.markingStationCompleted = false
+                state.creatingCustomWordListSuccess = true
+                state.creatingCustomWordListError = false
+                state.creatingCustomWordListErrorMessage = ''
+
+                const journeyLevel: JourneyStationLevelType = action.payload
+                const updatedJourneyLevels = state.journeyLevels.map((level) =>
+                    level.id === journeyLevel.id &&
+                    level.gameId === journeyLevel.gameId &&
+                    level.level === journeyLevel.level
+                        ? journeyLevel
+                        : level
+                )
+                state.journeyLevels = updatedJourneyLevels
+            }
+        )
+        builder.addCase(
+            markJourneyStationCompleted.rejected,
+            (state, action) => {
+                state.markingStationCompleted = false
+                state.creatingCustomWordListSuccess = false
+                state.creatingCustomWordListError = true
+                state.creatingCustomWordListErrorMessage = ''
+            }
+        )
     },
 })
 
@@ -702,6 +736,20 @@ export const generateJourneyByWordList = createAsyncThunk(
     'get/generate-journey-levels-by-word-list',
     async (wordList: WordListType): Promise<JourneyType> => {
         return await createJourneyByWordList(wordList)
+    }
+)
+
+export const markJourneyStationCompleted = createAsyncThunk(
+    'patch/mark-journey-station-completed',
+    async (request: { stationId: number | string; token: string }) => {
+        const url = `${baseUrl}/games/stations/${request.stationId}`
+        console.log(`StationID: ${request.stationId}`)
+        const response = await axios.patch(
+            url,
+            {},
+            { headers: { Authorization: `Bearer ${request.token}` } }
+        )
+        return response.data
     }
 )
 

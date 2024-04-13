@@ -86,11 +86,13 @@ const HangmanGame = forwardRef<GameContainerControlHandle, HangmanGameProps>(
                             <STText>You have</STText>
                             <STText color={COLORS.primary} weight='bold'>
                                 {(
-                                    props.gameData.defaultAttempts - attempts
+                                    props.gameData.correctAnswer.length -
+                                    attempts
                                 ).toString()}
                             </STText>
                             <STText>{`attempt${
-                                props.gameData.defaultAttempts - attempts > 1
+                                props.gameData.correctAnswer.length - attempts >
+                                1
                                     ? 's'
                                     : ''
                             } left`}</STText>
@@ -126,7 +128,7 @@ const HangmanGame = forwardRef<GameContainerControlHandle, HangmanGameProps>(
                                     onPress={() => onKeyPress(key.character)}
                                     disabled={
                                         attempts ===
-                                        props.gameData.defaultAttempts
+                                        props.gameData.correctAnswer.length
                                     }
                                 >
                                     <STText weight='bold'>

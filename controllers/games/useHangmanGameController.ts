@@ -77,7 +77,7 @@ const useHangmanGameController = (gameData: IHangmanGame) => {
         if (currentAnswer === gameData.correctAnswer) {
             playCorrectSound()
         } else {
-            if (newAttempts >= gameData.defaultAttempts) {
+            if (newAttempts >= gameData.correctAnswer.length) {
                 playIncorrectSound()
                 confirm
                     .showConfirmation(
