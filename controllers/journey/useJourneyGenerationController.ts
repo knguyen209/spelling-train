@@ -5,6 +5,7 @@ import {
     generateJourney,
     generateJourneyByWordList,
     generateJourneyGames,
+    generateWordList,
 } from '../../store/spellTrainSlice'
 import { WordListType } from '../../types/genericTypes'
 import { AuthenticationContext } from '../../providers/authentication-provider/AuthenticationProvider'
@@ -23,10 +24,15 @@ const useJourneyGenerationController = () => {
         generatingJourneyLevelsSuccess,
         generatingJourneyLevelsErrorMessage,
         generatingJourneyLevelsError,
+        generatingWordList,
+        generatingWordListSuccess,
+        generatingWordListError,
+        generatingWordListErrorMessage,
         wordLists,
         fetchingWordLists,
     } = useAppSelector((state) => state.spellTrain)
     const [requestSent, setRequestSent] = useState(false)
+    const [requestWithTopicSent, setRequestWithTopicSent] = useState(false)
     const authContext = useContext(AuthenticationContext)
     const confirmationContext = useConfirmationModalContext()
 
@@ -40,6 +46,7 @@ const useJourneyGenerationController = () => {
 
     useEffect(() => {
         if (requestSent && generatingJourneyLevelsSuccess) {
+            setRequestSent(false)
             confirmationContext
                 .showConfirmation(
                     'Information',
@@ -52,21 +59,43 @@ const useJourneyGenerationController = () => {
                 })
         }
         if (requestSent && generatingJourneyLevelsError) {
-            confirmationContext
-                .showConfirmation(
-                    'Error',
-                    generatingJourneyLevelsErrorMessage,
-                    true,
-                    'OK'
-                )
-                .then(() => {
-                    router.back()
-                })
+            setRequestSent(false)
+            confirmationContext.showConfirmation(
+                'Error',
+                generatingJourneyLevelsErrorMessage,
+                true,
+                'OK'
+            )
         }
     }, [
         requestSent,
         generatingJourneyLevelsSuccess,
         generatingJourneyLevelsError,
+    ])
+
+    useEffect(() => {
+        if (requestWithTopicSent && generatingWordListSuccess) {
+            dispatch(
+                generateJourneyGames({
+                    id: wordLists[wordLists.length - 1].id,
+                    token: authContext?.userProfile?.accessToken || '',
+                })
+            )
+            setRequestSent(true)
+        }
+        if (requestWithTopicSent && generatingWordListError) {
+            setRequestSent(false)
+            confirmationContext.showConfirmation(
+                'Error',
+                generatingWordListErrorMessage,
+                true,
+                'OK'
+            )
+        }
+    }, [
+        requestWithTopicSent,
+        generatingWordListSuccess,
+        generatingWordListError,
     ])
 
     useEffect(() => {
@@ -101,8 +130,14 @@ const useJourneyGenerationController = () => {
     }
 
     const onGenerateButtonPressed = async () => {
-        dispatch(generateJourney(topicName))
-        setRequestSent(true)
+        // dispatch(generateJourney(topicName))
+        dispatch(
+            generateWordList({
+                topicName: topicName,
+                token: authContext?.userProfile?.accessToken || '',
+            })
+        )
+        setRequestWithTopicSent(true)
     }
 
     const onWordListItemPressed = async (wordList: WordListType) => {
@@ -120,6 +155,7 @@ const useJourneyGenerationController = () => {
         topicName,
         onTopicNameChanged,
         onGenerateButtonPressed,
+        generatingWordList,
         generatingJourney,
         generatingJourneyLevels,
         wordLists,

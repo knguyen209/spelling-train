@@ -57,6 +57,12 @@ export type StoreType = {
 
 export type SpellTrainStateType = {
     user: UserType | undefined
+
+    registeringAccount: boolean
+    registerAccountSuccess: boolean
+    registerAccountError: boolean
+    registerAccountErrorMessage: string
+
     userSigningIn: boolean
     userSignInSuccess: boolean
     userSignInError: boolean
@@ -82,6 +88,9 @@ export type SpellTrainStateType = {
     wordData: WordType | undefined
 
     generatingWordList: boolean
+    generatingWordListSuccess: boolean
+    generatingWordListError: boolean
+    generatingWordListErrorMessage: string
     generatedWordList: WordListType | undefined
 
     creatingCustomWordList: boolean

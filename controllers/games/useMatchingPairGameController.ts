@@ -23,7 +23,6 @@ const useMatchingPairGameController = (gameData: IMatchingPairGame) => {
     }, [])
 
     useEffect(() => {
-        console.log(selectedLeftOption, selectedRightOption)
         if (selectedLeftOption && selectedRightOption) {
             const correctRightOption = correctPairs?.get(selectedLeftOption)
             if (selectedRightOption === correctRightOption) {
@@ -106,37 +105,6 @@ const useMatchingPairGameController = (gameData: IMatchingPairGame) => {
             setRightOptions(updatedRightOptions)
             setSelectedRightOption(option)
         }
-        // if (!isRight) {
-        //     const updatedLeftOptions = leftOptions.map((o) =>
-        //         o.text === option
-        //             ? {
-        //                   ...o,
-        //                   isSelected: true,
-        //               }
-        //             : {
-        //                   ...o,
-        //                   isSelected: false,
-        //               }
-        //     )
-        //     console.log('Left', option)
-        //     setLeftOptions(updatedLeftOptions)
-        //     setSelectedLeftOption(option)
-        // } else {
-        //     const updatedRightOptions = rightOptions.map((o) =>
-        //         o.text === option
-        //             ? {
-        //                   ...o,
-        //                   isSelected: true,
-        //               }
-        //             : {
-        //                   ...o,
-        //                   isSelected: false,
-        //               }
-        //     )
-        //     console.log('Right', option)
-        //     setRightOptions(updatedRightOptions)
-        //     setSelectedRightOption(option)
-        // }
     }
 
     const speak = async (audioUrl: string) => {

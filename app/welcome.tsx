@@ -16,7 +16,6 @@ export default function WelcomeScreen() {
 
     const checkIfUserLoggedIn = async () => {
         if (authContext?.userProfile) {
-            console.log('Auth: ' + authContext?.userProfile.accessToken)
             router.push('/tabs/journey')
         }
     }

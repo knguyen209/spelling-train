@@ -206,6 +206,7 @@ export type UserType = {
     password?: string
     accessToken?: string
     isActive?: boolean
+    selectedJourneyWordListId?: string
 }
 
 interface IWithTabsProps {

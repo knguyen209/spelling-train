@@ -12,16 +12,28 @@ import useJourneyListItemController from '../../../controllers/journey/useJourne
 const JourneyListItemView = ({
     journeyId,
     item,
+    index,
 }: {
     journeyId: string
     item: JourneyStationLevelType
+    index: number
 }) => {
     let position: FlexAlignType = 'center'
 
-    const { handleItemPressed } = useJourneyListItemController(journeyId, item)
+    const { isCurrentLevel, handleItemPressed } = useJourneyListItemController(
+        journeyId,
+        item,
+        index
+    )
 
     return (
-        <View style={{ alignItems: position, padding: 24 }}>
+        <View
+            style={{
+                alignItems: position,
+                padding: 24,
+                marginLeft: findValue(item.level - 1) * 150,
+            }}
+        >
             <Pressable onPress={handleItemPressed}>
                 {({ pressed }) => (
                     <View>
@@ -30,7 +42,9 @@ const JourneyListItemView = ({
                                 ...styles.buttonContainer,
                                 backgroundColor: item.isCompleted
                                     ? COLORS.primaryBtnShadowColor
-                                    : COLORS.disabledBtnShadowColor,
+                                    : isCurrentLevel
+                                    ? COLORS.correctAnswer
+                                    : COLORS.disabledBtnColor,
                             }}
                         >
                             <STText color='#000' weight='bold' size='lg'>
@@ -42,6 +56,8 @@ const JourneyListItemView = ({
                                 ...styles.buttonContainer,
                                 backgroundColor: item.isCompleted
                                     ? COLORS.primaryBtnColor
+                                    : isCurrentLevel
+                                    ? COLORS.correctAnswerBg
                                     : COLORS.disabledBtnColor,
                                 position: 'absolute',
                                 bottom: pressed ? 0 : 5,
@@ -64,11 +80,15 @@ const JourneyListItemView = ({
                                     />
                                 </>
                             ) : (
-                                <SVGS.IncompleteLevelStripes
-                                    width='90%'
-                                    height='90%'
-                                    style={{ position: 'absolute' }}
-                                />
+                                <>
+                                    {!isCurrentLevel && (
+                                        <SVGS.IncompleteLevelStripes
+                                            width='90%'
+                                            height='90%'
+                                            style={{ position: 'absolute' }}
+                                        />
+                                    )}
+                                </>
                             )}
 
                             <STText color='#000' weight='bold' size='lg'>
@@ -91,5 +111,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 })
+
+const findValue = (n: number) => {
+    // Calculate the index within one complete cycle of the pattern
+    let indexWithinCycle = n % 8
+
+    // Define the values in one cycle of the pattern
+    let cycleValues = [0, 1, 2, 1, 0, -1, -2, -1]
+
+    // Return the value at the calculated index
+    return cycleValues[indexWithinCycle]
+}
 
 export default JourneyListItemView

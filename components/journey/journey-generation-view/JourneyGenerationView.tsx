@@ -20,6 +20,7 @@ const JourneyGenerationView = () => {
         onTopicNameChanged,
         onGenerateButtonPressed,
         generatingJourneyLevels,
+        generatingWordList,
         wordLists,
         fetchingWordLists,
         onWordListItemPressed,
@@ -43,7 +44,9 @@ const JourneyGenerationView = () => {
                             placeholder='Enter a topic name...'
                             val={topicName}
                             onChange={onTopicNameChanged}
-                            disabled={generatingJourneyLevels}
+                            disabled={
+                                generatingJourneyLevels || generatingWordList
+                            }
                         />
 
                         <STButton
@@ -53,7 +56,9 @@ const JourneyGenerationView = () => {
                                     : 'Generate'
                             }
                             onPress={onGenerateButtonPressed}
-                            disabled={generatingJourneyLevels}
+                            disabled={
+                                generatingJourneyLevels || generatingWordList
+                            }
                         />
                         <STText>Or, select one of the below word lists:</STText>
                     </View>
@@ -78,6 +83,10 @@ const JourneyGenerationView = () => {
                                     style={{ marginBottom: 16 }}
                                     listItemType
                                     onPress={() => onWordListItemPressed(item)}
+                                    disabled={
+                                        generatingJourneyLevels ||
+                                        generatingWordList
+                                    }
                                 />
                             )}
                             style={{

@@ -15,6 +15,7 @@ import {
     WordType,
 } from '../types/genericTypes'
 import { randomInRange, shuffleArray } from '../utils'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const initialState = SpellTrainStore
 
@@ -89,8 +90,6 @@ export const spellTrainSlice = createSlice({
                 type: string
             }
         ) => {
-            const { journeyLevel } = action.payload
-            // state.journeyLevels.map((level) => level.id === journeyLevel.id && level.gameId === journeyLevel.gameId && level.level === journeyLevel.level ? { ...level, })
             const updatedJourney = state.journeys.map((j) =>
                 j.id === state.selectedJourneyId
                     ? {
@@ -114,6 +113,28 @@ export const spellTrainSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
+        builder.addCase(registerAccount.pending, (state) => {
+            state.registeringAccount = true
+            state.registerAccountSuccess = false
+            state.registerAccountError = false
+            state.registerAccountErrorMessage = ''
+        })
+        builder.addCase(registerAccount.fulfilled, (state, action) => {
+            state.registeringAccount = false
+            state.registerAccountSuccess = true
+            state.registerAccountError = false
+            state.registerAccountErrorMessage = ''
+            console.log(action.payload)
+            console.log('Register Success')
+        })
+        builder.addCase(registerAccount.rejected, (state, action) => {
+            state.registeringAccount = false
+            state.registerAccountSuccess = false
+            state.registerAccountError = true
+            state.registerAccountErrorMessage = action.payload as string
+        })
+
+        // Sign In
         builder.addCase(signIn.pending, (state) => {
             state.userSigningIn = true
             state.userSignInSuccess = false
@@ -151,10 +172,16 @@ export const spellTrainSlice = createSlice({
         // Generate word list by Generative AI
         builder.addCase(generateWordList.pending, (state) => {
             state.generatingWordList = true
+            state.generatingWordListSuccess = false
+            state.generatingWordListError = false
+            state.generatingWordListErrorMessage = ''
             state.generatedWordList = undefined
         })
         builder.addCase(generateWordList.fulfilled, (state, action) => {
             state.generatingWordList = false
+            state.generatingWordListSuccess = true
+            state.generatingWordListError = false
+            state.generatingWordListErrorMessage = ''
             state.generatedWordList = action.payload
             if (
                 state.wordLists.find((i) => i.id === action.payload.id) ===
@@ -163,8 +190,11 @@ export const spellTrainSlice = createSlice({
                 state.wordLists.push(action.payload)
             }
         })
-        builder.addCase(generateWordList.rejected, (state) => {
+        builder.addCase(generateWordList.rejected, (state, action) => {
             state.generatingWordList = false
+            state.generatingWordListSuccess = false
+            state.generatingWordListError = true
+            state.generatingWordListErrorMessage = String(action.payload)
             state.generatedWordList = undefined
         })
 
@@ -340,14 +370,17 @@ export const spellTrainSlice = createSlice({
             state.generatingJourneyLevelsErrorMessage = ''
         })
         builder.addCase(generateJourneyGames.fulfilled, (state, action) => {
-            // console.log(action.payload.levels)
             state.generatingJourneyLevels = false
             state.generatingJourneyLevelsSuccess = true
             state.generatingJourneyLevelsError = false
             state.generatingJourneyLevelsErrorMessage = ''
 
-            let levels: Array<JourneyStationLevelType> = action.payload
+            let levels: Array<JourneyStationLevelType> = action.payload.data
+            let wordListId = action.payload.wordListId
+
             state.journeyLevels = levels
+
+            storeJourneyWordListIdToLocalStorage(wordListId)
         })
         builder.addCase(generateJourneyGames.rejected, (state) => {
             state.generatingJourneyLevels = false
@@ -437,47 +470,35 @@ export const SpellTrainAction = {
 
 export default spellTrainSlice.reducer
 
-export const createAccount = async (
-    name: string,
-    email: string,
-    phone: string,
-    password: string
-) => {
-    const url = `${baseUrl}/users/`
-    try {
-        const response = await axios.post(url, {
-            name: name,
-            email: email,
-            phone: phone,
-            password: password,
-            wordLists: [],
-        })
+export const registerAccount = createAsyncThunk(
+    'post/create-account',
+    async (
+        userInfo: {
+            name: string
+            email: string
+            phone: string
+            password: string
+        },
+        { rejectWithValue }
+    ) => {
+        const url = `${baseUrl}/users/`
+        try {
+            const response = await axios.post(url, {
+                name: userInfo.name,
+                email: userInfo.email,
+                phone: userInfo.phone,
+                password: userInfo.password,
+                wordLists: [],
+            })
 
-        if (response.status === 200) {
-            return {
-                isSuccess: true,
-                message: 'Account created successfully.',
-            }
-        }
-
-        if (response.status === 400) {
-            return {
-                isSuccess: false,
-                message: response.data.detail,
-            }
-        }
-    } catch (e: any) {
-        return {
-            isSuccess: false,
-            message: e.response.data.detail,
-        }
-    } finally {
-        return {
-            isSuccess: false,
-            message: 'Error creating your account. Please try again.',
+            return response.data
+        } catch (err: any) {
+            return rejectWithValue(
+                err.response.data.detail || 'Error creating user account.'
+            )
         }
     }
-}
+)
 
 export const signIn = createAsyncThunk(
     'post/login',
@@ -540,11 +561,28 @@ export const fetchWordList = createAsyncThunk(
  */
 export const generateWordList = createAsyncThunk(
     'get/generate-word-list',
-    async (request: {
-        topicName: string
-        token: string
-    }): Promise<WordListType> => {
-        return await createWordList(request.topicName, request.token)
+    async (
+        request: {
+            topicName: string
+            token: string
+        },
+        { rejectWithValue }
+    ) => {
+        // return await createWordList(request.topicName, request.token)
+        try {
+            const url = `${baseUrl}/word-lists/?topic=${request.topicName}`
+
+            const response = await axios.get(url, {
+                headers: { Authorization: `Bearer ${request.token}` },
+            })
+
+            return response.data
+        } catch (err: any) {
+            console.log(err.response.data.detail)
+            return rejectWithValue(
+                err.response.data.detail || 'Error creating word list'
+            )
+        }
     }
 )
 
@@ -702,16 +740,6 @@ export const deleteWords = createAsyncThunk(
     }
 )
 
-export const createWordList = async (topicName: string, token: string) => {
-    const url = `${baseUrl}/word-lists/?topic=${topicName}`
-
-    const response = await axios.get(url, {
-        headers: { Authorization: `Bearer ${token}` },
-    })
-
-    return response.data
-}
-
 export const generateJourneyGames = createAsyncThunk(
     'get/generate-journey-games',
     async (request: { id: number | string; token: string }) => {
@@ -721,7 +749,7 @@ export const generateJourneyGames = createAsyncThunk(
             {},
             { headers: { Authorization: `Bearer ${request.token}` } }
         )
-        return response.data
+        return { data: response.data, wordListId: request.id }
     }
 )
 
@@ -821,4 +849,26 @@ const generateRandomJourneyLevelGame = (words: Array<WordType>) => {
     }
 
     return journeyGame
+}
+
+// store word list id to local storage for preloading on start app
+const storeJourneyWordListIdToLocalStorage = async (
+    wordListId: number | string
+) => {
+    try {
+        const jsonValue = await AsyncStorage.getItem('user-profile')
+        const userProfile =
+            jsonValue != null ? (JSON.parse(jsonValue) as UserType) : null
+        if (userProfile) {
+            return await AsyncStorage.setItem(
+                'user-profile',
+                JSON.stringify({
+                    ...userProfile,
+                    selectedJourneyWordListId: wordListId,
+                })
+            )
+        }
+    } catch (e) {
+        console.log(e)
+    }
 }

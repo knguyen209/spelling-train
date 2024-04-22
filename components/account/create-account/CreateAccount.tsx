@@ -20,7 +20,7 @@ import useCreateAccountFormController from '../../../controllers/accounts/useCre
 
 const CreateAccount = () => {
     const {
-        router,
+        registeringAccount,
         sources,
         objectives,
         goals,
@@ -371,6 +371,7 @@ const CreateAccount = () => {
                         text='Continue'
                         textCentered
                         onPress={handleContinuePress}
+                        disabled={registeringAccount}
                     />
                 </View>
             </View>

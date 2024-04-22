@@ -1,7 +1,8 @@
 import { useRouter } from 'expo-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useConfirmationModalContext } from '../../providers/modal-dialog/ModalDialogProvider'
-import { createAccount } from '../../store/spellTrainSlice'
+import { createAccount, registerAccount } from '../../store/spellTrainSlice'
+import { useAppDispatch, useAppSelector } from '../../store'
 
 type CreateAccountProfileType = {
     name: string
@@ -27,7 +28,46 @@ const useCreateAccountFormController = () => {
         learningGoal: '',
     })
 
+    const {
+        registeringAccount,
+        registerAccountSuccess,
+        registerAccountError,
+        registerAccountErrorMessage,
+    } = useAppSelector((state) => state.spellTrain)
+
+    const dispatch = useAppDispatch()
+
     const confirm = useConfirmationModalContext()
+
+    useEffect(() => {
+        if (registerAccountSuccess) {
+            onRegisterAccountSuccess()
+        }
+
+        if (registerAccountError) {
+            onRegisterFailed()
+        }
+    }, [registerAccountSuccess, registerAccountError])
+
+    const onRegisterAccountSuccess = async () => {
+        let result = await confirm.showConfirmation(
+            'Information',
+            'Account registered successfully!',
+            true
+        )
+        if (result) {
+            router.push('login')
+        }
+    }
+
+    const onRegisterFailed = () => {
+        confirm.showConfirmation(
+            'Error',
+            registerAccountErrorMessage,
+            true,
+            'Try again'
+        )
+    }
 
     const onTextFieldChanged = (name: string, value: string) => {
         setProfile({ ...profile, [name]: value })
@@ -66,29 +106,34 @@ const useCreateAccountFormController = () => {
         }
 
         if (currentIndex === 3 && isValidLearningGoalStage()) {
-            let res = await registerAccount()
-            const { isSuccess, message } = res
-
-            let result = await confirm.showConfirmation(
-                'Information',
-                message,
-                true
+            dispatch(
+                registerAccount({
+                    ...profile,
+                })
             )
-            if (result && isSuccess) {
-                router.push('login')
-            }
+            // let res = await registerAccount()
+            // const { isSuccess, message } = res
+
+            // let result = await confirm.showConfirmation(
+            //     'Information',
+            //     message,
+            //     true
+            // )
+            // if (result && isSuccess) {
+            //     router.push('login')
+            // }
         }
     }
 
-    const registerAccount = async () => {
-        const res = await createAccount(
-            profile.name,
-            profile.email,
-            profile.phone,
-            profile.password
-        )
-        return res
-    }
+    // const registerAccount = async () => {
+    //     const res = await createAccount(
+    //         profile.name,
+    //         profile.email,
+    //         profile.phone,
+    //         profile.password
+    //     )
+    //     return res
+    // }
 
     const handleSourceSelected = (source: string) => {
         if (sources.includes(source)) {
@@ -195,6 +240,7 @@ const useCreateAccountFormController = () => {
         goals,
         currentIndex,
         profile,
+        registeringAccount,
         handleContinuePress,
         handleGoBackPress,
         handleSourceSelected,

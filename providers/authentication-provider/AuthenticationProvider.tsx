@@ -58,7 +58,7 @@ const storeData = async (value: UserType | undefined | null) => {
     try {
         return await AsyncStorage.setItem(
             'user-profile',
-            value ? JSON.stringify(value) : ''
+            value ? JSON.stringify(value) : JSON.stringify({})
         )
     } catch (e) {
         console.log(e)

@@ -8,6 +8,9 @@ const SpellTrainStore: SpellTrainStateType = {
     wordData: undefined,
 
     generatingWordList: false,
+    generatingWordListSuccess: false,
+    generatingWordListError: false,
+    generatingWordListErrorMessage: '',
     generatedWordList: undefined,
 
     journeys: [],
@@ -22,6 +25,11 @@ const SpellTrainStore: SpellTrainStateType = {
     userSigningIn: false,
     userSignInError: false,
     userSignInSuccess: false,
+
+    registeringAccount: false,
+    registerAccountSuccess: false,
+    registerAccountError: false,
+    registerAccountErrorMessage: '',
 
     creatingCustomWordList: false,
     creatingCustomWordListSuccess: false,
