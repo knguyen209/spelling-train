@@ -26,7 +26,6 @@ const useMatchingPairGameController = (gameData: IMatchingPairGame) => {
         if (selectedLeftOption && selectedRightOption) {
             const correctRightOption = correctPairs?.get(selectedLeftOption)
             if (selectedRightOption === correctRightOption) {
-                console.log('Correct')
                 playCorrectSound()
                 let tLeftOptions = leftOptions.map((o) =>
                     o.value === selectedLeftOption

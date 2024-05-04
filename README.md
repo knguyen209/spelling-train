@@ -1,5 +1,7 @@
 # Installation
 
+Enter the following command to install required modules:
+
 ```
 npm install
 ```

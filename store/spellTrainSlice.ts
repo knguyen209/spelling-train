@@ -27,50 +27,50 @@ export const spellTrainSlice = createSlice({
     name: 'spellTrain',
     initialState,
     reducers: {
-        createPracticeList: (
-            state,
-            action: {
-                payload: { title: string; words: Array<PracticeListItemType> }
-                type: string
-            }
-        ) => {
-            if (
-                action.payload.title !== '' &&
-                action.payload.words.length > 0
-            ) {
-                // state.wordLists = state.wordLists.concat([
-                //     {
-                //         id: nanoid(),
-                //         title: action.payload.title,
-                //         words: action.payload.words.filter(
-                //             (w) => w.text !== ''
-                //         ),
-                //     },
-                // ])
-            }
-        },
-        updatePracticeList: (
-            state,
-            action: { payload: { practiceList: PracticeListType } }
-        ) => {
-            // let updatedLists = state.practiceLists.map((list) =>
-            //     list.id === action.payload.practiceList.id
-            //         ? {
-            //               ...action.payload.practiceList,
-            //               words: action.payload.practiceList.words.filter(
-            //                   (w) => w.text !== ''
-            //               ),
-            //           }
-            //         : list
-            // )
-            // state.practiceLists = updatedLists
-        },
-        deletePracticeList: (state, action: { payload: { id: string } }) => {
-            // let updatedLists = state.practiceLists.filter(
-            //     (list) => list.id !== action.payload.id
-            // )
-            // state.practiceLists = updatedLists
-        },
+        // createPracticeList: (
+        //     state,
+        //     action: {
+        //         payload: { title: string; words: Array<PracticeListItemType> }
+        //         type: string
+        //     }
+        // ) => {
+        //     if (
+        //         action.payload.title !== '' &&
+        //         action.payload.words.length > 0
+        //     ) {
+        //         // state.wordLists = state.wordLists.concat([
+        //         //     {
+        //         //         id: nanoid(),
+        //         //         title: action.payload.title,
+        //         //         words: action.payload.words.filter(
+        //         //             (w) => w.text !== ''
+        //         //         ),
+        //         //     },
+        //         // ])
+        //     }
+        // },
+        // updatePracticeList: (
+        //     state,
+        //     action: { payload: { practiceList: PracticeListType } }
+        // ) => {
+        //     // let updatedLists = state.practiceLists.map((list) =>
+        //     //     list.id === action.payload.practiceList.id
+        //     //         ? {
+        //     //               ...action.payload.practiceList,
+        //     //               words: action.payload.practiceList.words.filter(
+        //     //                   (w) => w.text !== ''
+        //     //               ),
+        //     //           }
+        //     //         : list
+        //     // )
+        //     // state.practiceLists = updatedLists
+        // },
+        // deletePracticeList: (state, action: { payload: { id: string } }) => {
+        //     // let updatedLists = state.practiceLists.filter(
+        //     //     (list) => list.id !== action.payload.id
+        //     // )
+        //     // state.practiceLists = updatedLists
+        // },
 
         setSelectedJourneyLevel: (
             state,
@@ -363,6 +363,7 @@ export const spellTrainSlice = createSlice({
             state.generatingJourneyError = true
         })
 
+        // Generating Journey Levels - API call
         builder.addCase(generateJourneyGames.pending, (state) => {
             state.generatingJourneyLevels = true
             state.generatingJourneyLevelsSuccess = false
@@ -389,6 +390,7 @@ export const spellTrainSlice = createSlice({
             state.generatingJourneyLevelsErrorMessage = ''
         })
 
+        // Mark a Journey Station Completed
         builder.addCase(markJourneyStationCompleted.pending, (state) => {
             state.markingStationCompleted = true
             state.markingStationCompletedSuccess = false
@@ -404,13 +406,15 @@ export const spellTrainSlice = createSlice({
                 state.creatingCustomWordListErrorMessage = ''
 
                 const journeyLevel: JourneyStationLevelType = action.payload
+
                 const updatedJourneyLevels = state.journeyLevels.map((level) =>
                     level.id === journeyLevel.id &&
                     level.gameId === journeyLevel.gameId &&
                     level.level === journeyLevel.level
-                        ? journeyLevel
+                        ? { ...journeyLevel, isCompleted: true }
                         : level
                 )
+
                 state.journeyLevels = updatedJourneyLevels
             }
         )
@@ -449,18 +453,18 @@ const resetManipulatingState = (state: any) => {
 }
 
 const {
-    createPracticeList,
-    updatePracticeList,
-    deletePracticeList,
+    // createPracticeList,
+    // updatePracticeList,
+    // deletePracticeList,
     setSelectedJourneyLevel,
     completeJourneyLevel,
     signOut,
 } = spellTrainSlice.actions
 
 export const SpellTrainAction = {
-    createPracticeList,
-    updatePracticeList,
-    deletePracticeList,
+    // createPracticeList,
+    // updatePracticeList,
+    // deletePracticeList,
 
     setSelectedJourneyLevel,
     completeJourneyLevel,
@@ -771,7 +775,7 @@ export const markJourneyStationCompleted = createAsyncThunk(
     'patch/mark-journey-station-completed',
     async (request: { stationId: number | string; token: string }) => {
         const url = `${baseUrl}/games/stations/${request.stationId}`
-        console.log(`StationID: ${request.stationId}`)
+
         const response = await axios.patch(
             url,
             {},

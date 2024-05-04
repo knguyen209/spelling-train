@@ -71,8 +71,6 @@ const useJourneyListController = () => {
             } else {
                 return null
             }
-            // const jsonValue = await AsyncStorage.getItem('journey-word-list-id')
-            // return jsonValue != null ? (JSON.parse(jsonValue) as string) : null
         } catch (e) {
             console.log(e)
         }

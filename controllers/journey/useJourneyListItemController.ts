@@ -27,6 +27,14 @@ const useJourneyListItemController = (
     const confirm = useConfirmationModalContext()
 
     useEffect(() => {
+        initialize()
+    }, [])
+
+    useEffect(() => {
+        initialize()
+    }, [journeyLevels])
+
+    const initialize = () => {
         if (index > 0) {
             const prevLevel = journeyLevels[index - 1]
             if (prevLevel.isCompleted) {
@@ -36,7 +44,7 @@ const useJourneyListItemController = (
         } else {
             setDisabled(false)
         }
-    }, [])
+    }
 
     const handleItemPressed = () => {
         if (disabled) {

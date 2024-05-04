@@ -22,9 +22,6 @@ const useAIWordListFormController = () => {
     const confirm = useConfirmationModalContext()
 
     useEffect(() => {
-        if (isRequestMade && generatingWordListSuccess) {
-            console.log('generating success')
-        }
         if (isRequestMade && generatingWordListError) {
             confirm.showConfirmation(
                 'Error',
