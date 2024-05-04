@@ -10,7 +10,6 @@ const ViewContainer = ({
     style?: ViewStyle
 }) => {
     return (
-        // <SafeAreaView style={{ backgroundColor: '#151F25' }}>
         <View
             style={{
                 backgroundColor: '#151F25',
@@ -22,7 +21,6 @@ const ViewContainer = ({
         >
             {children}
         </View>
-        // </SafeAreaView>
     )
 }
 

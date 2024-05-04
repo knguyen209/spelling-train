@@ -101,12 +101,7 @@ const WordListForm = ({ id = undefined }: Props) => {
                                     onChange={(newVal) => {
                                         onWordTextChanged(word.id, newVal)
                                     }}
-                                    disabled={
-                                        // creatingCustomWordList ||
-                                        // updatingWordList ||
-                                        // deleteMode
-                                        typeof word.id === 'number'
-                                    }
+                                    disabled={typeof word.id === 'number'}
                                     style={{
                                         backgroundColor: 'transparent',
                                         display:

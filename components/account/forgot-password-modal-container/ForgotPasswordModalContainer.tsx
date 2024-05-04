@@ -44,9 +44,6 @@ const ForgotPasswordModalContainer = ({
             setCurrentIndex(newIndex)
         }
         if (currentIndex === 2) {
-            // Save new password
-            // show success popup
-            // close modal
             closeModal()
         }
     }

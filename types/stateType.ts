@@ -12,18 +12,6 @@ export type PracticeListStateType = {
     fetchingPracticeLists: boolean
     practiceLists: Array<PracticeListType>
     wordLists: Array<WordListType>
-
-    // creatingPracticeList: boolean
-    // createPracticeListSuccess: boolean
-    // createPracticeListError: boolean
-
-    // updatingPracticeList: boolean
-    // updatePracticeListSuccess: boolean
-    // updatePracticeListError: boolean
-
-    // deletingPracticeList: boolean
-    // deletePracticeListSuccess: boolean
-    // deletePracticeListError: boolean
 }
 
 export type JourneyListStateType = {

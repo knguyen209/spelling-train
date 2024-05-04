@@ -3,7 +3,6 @@ import { COLORS, FONT } from '../../../constants'
 
 const styles = StyleSheet.create({
     container: {
-        // paddingVertical: 10,
         marginVertical: 10,
         paddingHorizontal: 14,
         flexDirection: 'row',

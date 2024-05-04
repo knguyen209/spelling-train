@@ -9,7 +9,6 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         paddingBottom: 40,
         paddingHorizontal: 20,
-        // height: '100%',
     },
     optionsContainer: {
         flexWrap: 'wrap',

@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { useConfirmationModalContext } from '../../providers/modal-dialog/ModalDialogProvider'
-import { createAccount, registerAccount } from '../../store/spellTrainSlice'
+import { registerAccount } from '../../store/spellTrainSlice'
 import { useAppDispatch, useAppSelector } from '../../store'
 
 type CreateAccountProfileType = {
@@ -111,29 +111,8 @@ const useCreateAccountFormController = () => {
                     ...profile,
                 })
             )
-            // let res = await registerAccount()
-            // const { isSuccess, message } = res
-
-            // let result = await confirm.showConfirmation(
-            //     'Information',
-            //     message,
-            //     true
-            // )
-            // if (result && isSuccess) {
-            //     router.push('login')
-            // }
         }
     }
-
-    // const registerAccount = async () => {
-    //     const res = await createAccount(
-    //         profile.name,
-    //         profile.email,
-    //         profile.phone,
-    //         profile.password
-    //     )
-    //     return res
-    // }
 
     const handleSourceSelected = (source: string) => {
         if (sources.includes(source)) {

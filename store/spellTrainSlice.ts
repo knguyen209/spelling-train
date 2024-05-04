@@ -27,60 +27,13 @@ export const spellTrainSlice = createSlice({
     name: 'spellTrain',
     initialState,
     reducers: {
-        // createPracticeList: (
-        //     state,
-        //     action: {
-        //         payload: { title: string; words: Array<PracticeListItemType> }
-        //         type: string
-        //     }
-        // ) => {
-        //     if (
-        //         action.payload.title !== '' &&
-        //         action.payload.words.length > 0
-        //     ) {
-        //         // state.wordLists = state.wordLists.concat([
-        //         //     {
-        //         //         id: nanoid(),
-        //         //         title: action.payload.title,
-        //         //         words: action.payload.words.filter(
-        //         //             (w) => w.text !== ''
-        //         //         ),
-        //         //     },
-        //         // ])
-        //     }
-        // },
-        // updatePracticeList: (
-        //     state,
-        //     action: { payload: { practiceList: PracticeListType } }
-        // ) => {
-        //     // let updatedLists = state.practiceLists.map((list) =>
-        //     //     list.id === action.payload.practiceList.id
-        //     //         ? {
-        //     //               ...action.payload.practiceList,
-        //     //               words: action.payload.practiceList.words.filter(
-        //     //                   (w) => w.text !== ''
-        //     //               ),
-        //     //           }
-        //     //         : list
-        //     // )
-        //     // state.practiceLists = updatedLists
-        // },
-        // deletePracticeList: (state, action: { payload: { id: string } }) => {
-        //     // let updatedLists = state.practiceLists.filter(
-        //     //     (list) => list.id !== action.payload.id
-        //     // )
-        //     // state.practiceLists = updatedLists
-        // },
-
         setSelectedJourneyLevel: (
             state,
             action: {
-                payload: { journeyLevel: JourneyStationLevelType } //{ journeyId: string; journeyLevel: JourneyLevelType }
+                payload: { journeyLevel: JourneyStationLevelType }
                 type: string
             }
         ) => {
-            // state.selectedJourneyId = action.payload.journeyId
-            // state.selectedLevel = action.payload.journeyLevel
             state.selectedJourneyLevel = action.payload.journeyLevel
         },
         completeJourneyLevel: (
@@ -322,45 +275,6 @@ export const spellTrainSlice = createSlice({
             state.deletingWords = false
             state.deletingWordsSuccess = false
             state.deletingWordsError = true
-        })
-
-        // Generate journey games
-        builder.addCase(generateJourney.pending, (state) => {
-            state.generatingJourney = true
-            state.generatingJourneySuccess = false
-            state.generatingJourneyError = false
-        })
-        builder.addCase(generateJourney.fulfilled, (state, action) => {
-            state.journeys.push(action.payload)
-            state.generatingJourney = false
-            state.generatingJourneySuccess = true
-            state.generatingJourneyError = false
-        })
-        builder.addCase(generateJourney.rejected, (state) => {
-            state.generatingJourney = false
-            state.generatingJourneySuccess = false
-            state.generatingJourneyError = true
-        })
-
-        // Generate journey games by word list
-        builder.addCase(generateJourneyByWordList.pending, (state) => {
-            state.generatingJourney = true
-            state.generatingJourneySuccess = false
-            state.generatingJourneyError = false
-        })
-        builder.addCase(
-            generateJourneyByWordList.fulfilled,
-            (state, action) => {
-                state.journeys.push(action.payload)
-                state.generatingJourney = false
-                state.generatingJourneySuccess = true
-                state.generatingJourneyError = false
-            }
-        )
-        builder.addCase(generateJourneyByWordList.rejected, (state) => {
-            state.generatingJourney = false
-            state.generatingJourneySuccess = false
-            state.generatingJourneyError = true
         })
 
         // Generating Journey Levels - API call
@@ -757,20 +671,6 @@ export const generateJourneyGames = createAsyncThunk(
     }
 )
 
-export const generateJourney = createAsyncThunk(
-    'get/generate-journey-levels',
-    async (topicName: string): Promise<JourneyType> => {
-        return await createJourney(topicName)
-    }
-)
-
-export const generateJourneyByWordList = createAsyncThunk(
-    'get/generate-journey-levels-by-word-list',
-    async (wordList: WordListType): Promise<JourneyType> => {
-        return await createJourneyByWordList(wordList)
-    }
-)
-
 export const markJourneyStationCompleted = createAsyncThunk(
     'patch/mark-journey-station-completed',
     async (request: { stationId: number | string; token: string }) => {
@@ -784,35 +684,6 @@ export const markJourneyStationCompleted = createAsyncThunk(
         return response.data
     }
 )
-
-export const createJourney = async (topicName: string) => {
-    const response = await fetch(`${baseUrl}/word-lists/?topic=${topicName}`)
-    const wordList: WordListType = await response.json()
-
-    return createJourneyByWordList(wordList)
-}
-
-export const createJourneyByWordList = (wordList: WordListType) => {
-    const numLevels = 3
-    const numGameMultiplier = 3
-
-    let journey: JourneyType = {
-        id: nanoid(),
-        title: wordList.title,
-        levels: [],
-    }
-
-    for (let i = 1; i <= numLevels; i++) {
-        const journeyLevel = generateJourneyLevel(
-            wordList.words,
-            i,
-            i * numGameMultiplier
-        )
-        journey.levels.push(journeyLevel)
-    }
-
-    return journey
-}
 
 const generateJourneyLevel = (
     words: Array<WordType>,
@@ -836,11 +707,7 @@ const generateJourneyLevel = (
 }
 
 const generateRandomJourneyLevelGame = (words: Array<WordType>) => {
-    const gameTypes: GameTypes[] = [
-        'choose-spoken-word',
-        'find-missing-letter',
-        'right-usage',
-    ]
+    const gameTypes: GameTypes[] = []
 
     const randomGameType = gameTypes[randomInRange(gameTypes.length)]
     // const shuffledWords = shuffleArray(words)

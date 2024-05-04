@@ -94,12 +94,6 @@ export type JourneyStationLevelType = {
 export interface IJourneyGame {
     id: string
     gameType:
-        | 'spell-word'
-        | 'quiz'
-        | 'right-usage'
-        | 'match-origin-pair'
-        | 'choose-spoken-word'
-        | 'find-missing-letter'
         | 'findCorrectWord'
         | 'matchingPair'
         | 'spellWord'
@@ -158,36 +152,6 @@ export interface IMatchingPairGame extends IJourneyGame {
 export interface IAudioData {
     [key: string]: string
 }
-
-// export interface ISpellWordGame extends IJourneyGame {
-//     words: Array<string>
-// }
-
-// export interface IQuizGame extends IJourneyGame {
-//     question: string
-//     options: Array<string>
-//     correctOption: string
-// }
-
-// export interface IMatchPronunciationGame extends IJourneyGame {
-//     pairs: Map<string, string>
-// }
-
-// export interface IMatchOriginGame extends IJourneyGame {
-//     pairs: Map<string, string>
-// }
-
-// export interface IRightUsageGame extends IJourneyGame {
-//     words: Array<string>
-// }
-
-// export interface IMissingLetterGame extends IJourneyGame {
-//     words: Array<string>
-// }
-
-// export interface ISpokenWordGame extends IJourneyGame {
-//     words: Array<string>
-// }
 
 export type SentenceType = {
     firstSentence: string
