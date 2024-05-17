@@ -33,7 +33,7 @@ const useHangmanGameController = (gameData: IHangmanGame) => {
             .map((c) => (selectedKeys.includes(c) ? c : '_'))
             .join('')
         if (currentAnswer === gameData.correctAnswer) {
-            playCorrectSound()
+            // playCorrectSound()
             return confirm.showConfirmation(
                 'Correct',
                 'Great job!',
@@ -41,7 +41,7 @@ const useHangmanGameController = (gameData: IHangmanGame) => {
                 'Continue'
             )
         } else {
-            playIncorrectSound()
+            // playIncorrectSound()
             confirm.showConfirmation(
                 'Incorrect',
                 'Please try again!',
@@ -67,7 +67,12 @@ const useHangmanGameController = (gameData: IHangmanGame) => {
         setSelectedKeys(mSelectedKeys)
         setKeys(mKeys)
 
-        const newAttempts = attempts + 1
+        gameData.correctAnswer.includes(key)
+            ? playCorrectSound()
+            : playIncorrectSound()
+
+        const newAttempts =
+            attempts + (!gameData.correctAnswer.includes(key) ? 1 : 0)
         setAttempts(newAttempts)
 
         let currentAnswer = gameData.correctAnswer
@@ -75,10 +80,10 @@ const useHangmanGameController = (gameData: IHangmanGame) => {
             .map((c) => (mSelectedKeys.includes(c) ? c : '_'))
             .join('')
         if (currentAnswer === gameData.correctAnswer) {
-            playCorrectSound()
+            // playCorrectSound()
         } else {
             if (newAttempts >= gameData.correctAnswer.length) {
-                playIncorrectSound()
+                // playIncorrectSound()
                 confirm
                     .showConfirmation(
                         'Incorrect',
