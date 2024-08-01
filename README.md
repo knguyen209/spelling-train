@@ -1,3 +1,7 @@
+# Demo Video
+
+[![SpellTrain 2 Demo](https://img.youtube.com/vi/UCA1jZPyKeQ/0.jpg)](https://youtu.be/UCA1jZPyKeQ "SpellTrain 2 Demo - Click to Watch!")
+
 # Installation
 
 Enter the following command to install required modules:
